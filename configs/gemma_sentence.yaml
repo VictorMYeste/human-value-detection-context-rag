@@ -1,0 +1,7 @@
+model:
+  family: gemma
+  name: google/gemma-3-12b-it
+context:
+  type: sentence
+rag:
+  enabled: False

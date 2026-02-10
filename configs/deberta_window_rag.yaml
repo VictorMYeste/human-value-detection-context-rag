@@ -1,0 +1,7 @@
+model:
+  family: deberta
+  name: microsoft/deberta-v3-base
+context:
+  type: window
+rag:
+  enabled: True

@@ -1,0 +1,7 @@
+model:
+  family: deberta
+  name: microsoft/deberta-v3-base
+context:
+  type: doc
+rag:
+  enabled: True
