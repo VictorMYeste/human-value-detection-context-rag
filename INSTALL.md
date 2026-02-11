@@ -50,6 +50,20 @@ docker build -t value-context-rag-gpu -f Dockerfile.gpu .
 docker run --rm -it --gpus all value-context-rag-gpu python -c "import torch; print(torch.cuda.is_available())"
 ```
 
+### Quick interactive shell
+
+```bash
+docker run --rm -it --gpus all -v "$PWD:/app" value-context-rag-gpu bash
+# inside:
+python scripts/train_deberta.py --config configs/deberta_sentence.yaml
+```
+
+### Fire-and-forget
+
+```bash
+docker run --rm --gpus all -v "$PWD:/app" value-context-rag-gpu python scripts/train_deberta.py --config configs/deberta_doc_rag.yaml
+```
+
 ## Knowledge Base (build FAISS index)
 
 ```bash
