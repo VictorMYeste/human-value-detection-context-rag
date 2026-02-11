@@ -30,7 +30,7 @@ We do not redistribute the dataset due to licensing. To run experiments, place t
 
 ```
 data/raw/
-    train/
+    training/
         sentences.tsv
         labels.tsv
     validation/

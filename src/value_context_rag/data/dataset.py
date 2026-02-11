@@ -11,7 +11,7 @@ from value_context_rag.utils.logging import get_logger
 
 LOGGER = get_logger(__name__)
 
-SPLITS = {"train", "validation", "test"}
+SPLITS = {"training", "validation", "test"}
 
 TEXT_ID_COL = "Text-ID"
 SENT_ID_COL = "Sentence-ID"
@@ -88,7 +88,7 @@ def _collapse_attained_constrained(
 def get_label_names(*, debug: bool = False) -> list[str]:
     """Return the label column names in the correct order."""
     LOGGER.info("Loading label names from raw data")
-    for split in ("train", "validation", "test"):
+    for split in ("training", "validation", "test"):
         labels_path = RAW_DATA_DIR / split / "labels.tsv"
         if labels_path.exists():
             labels_df = _read_tsv(labels_path, debug=debug)
