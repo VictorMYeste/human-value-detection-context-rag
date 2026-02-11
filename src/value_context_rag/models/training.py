@@ -453,7 +453,7 @@ def train_and_eval(
     ckpt_dir.mkdir(parents=True, exist_ok=True)
 
     LOGGER.info("Loading dataset splits")
-    train_df = load_split("train")
+    train_df = load_split("training")
     val_df = load_split("validation")
     max_samples = config.get("max_samples")
     if max_samples is not None:
