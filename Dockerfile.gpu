@@ -2,22 +2,31 @@ FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Install Python 3.11 and tools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         python3.11 python3.11-venv python3-pip git \
     && rm -rf /var/lib/apt/lists/*
 
+# Make "python" point to python3.11
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+
 WORKDIR /app
 
+# Copy minimal files first (better layer caching)
 COPY requirements.txt /app/requirements.txt
 COPY pyproject.toml /app/pyproject.toml
 COPY README.md /app/README.md
 
-RUN python3.11 -m pip install --upgrade pip \
-    && pip install -r /app/requirements.txt \
-    && pip install torch --index-url https://download.pytorch.org/whl/cu122
+# Install Python deps with *the same* interpreter
+RUN python -m pip install --upgrade pip \
+    && python -m pip install --no-cache-dir -r /app/requirements.txt \
+    && python -m pip install --no-cache-dir \
+         torch --index-url https://download.pytorch.org/whl/cu122
 
+# Copy the rest of the project and install in editable mode
 COPY . /app
-RUN pip install -e .
+RUN python -m pip install -e .
 
-CMD ["python3.11", "-V"]
+# Default: just show Python version (you'll usually override cmd)
+CMD ["python", "-V"]
