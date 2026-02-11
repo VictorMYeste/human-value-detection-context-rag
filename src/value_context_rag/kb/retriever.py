@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Dict, Iterable, List, Optional
 
 import numpy as np
 
@@ -14,7 +14,7 @@ from value_context_rag.utils.logging import get_logger
 LOGGER = get_logger(__name__)
 
 
-def _normalize_values(raw) -> List[str]:
+def _normalize_values(raw) -> list[str]:
     if raw is None:
         return []
     if isinstance(raw, list):
@@ -25,7 +25,7 @@ def _normalize_values(raw) -> List[str]:
     return [str(raw).strip()]
 
 
-def validate_chunks(chunks: List[dict]) -> None:
+def validate_chunks(chunks: list[dict]) -> None:
     """Basic validation for manually curated chunks."""
     required = {"id", "source", "text"}
     for idx, chunk in enumerate(chunks):
@@ -36,10 +36,10 @@ def validate_chunks(chunks: List[dict]) -> None:
             _ = _normalize_values(chunk["values"])
 
 
-def load_chunks(kb_path: Path) -> List[dict]:
+def load_chunks(kb_path: Path) -> list[dict]:
     if not kb_path.exists():
         raise FileNotFoundError(f"KB chunks not found: {kb_path}")
-    chunks: List[dict] = []
+    chunks: list[dict] = []
     with kb_path.open("r", encoding="utf-8") as handle:
         for line in handle:
             line = line.strip()
@@ -78,7 +78,7 @@ def _default_embedder():
 
 @dataclass
 class Retriever:
-    chunks: List[dict]
+    chunks: list[dict]
     index: object
     embed_query: Callable[[str], np.ndarray]
 
@@ -87,9 +87,9 @@ class Retriever:
         query_text: str,
         *,
         top_k: int = 5,
-        value: Optional[str] = None,
-        source: Optional[str] = None,
-    ) -> List[dict]:
+        value: str | None = None,
+        source: str | None = None,
+    ) -> list[dict]:
         if not query_text:
             return []
 
@@ -98,7 +98,7 @@ class Retriever:
             query_vec = query_vec.reshape(1, -1)
 
         distances, indices = self.index.search(query_vec.astype("float32"), top_k)
-        hits: List[dict] = []
+        hits: list[dict] = []
         for idx in indices[0]:
             if idx < 0 or idx >= len(self.chunks):
                 continue

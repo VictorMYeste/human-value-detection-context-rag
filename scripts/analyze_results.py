@@ -5,7 +5,6 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -49,7 +48,7 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _parse_filename(name: str) -> Tuple[str, str, bool, str, int | None]:
+def _parse_filename(name: str) -> tuple[str, str, bool, str, int | None]:
     # Expected patterns:
     # deberta_<context>_<rag|no_rag>_seed<seed>_<split>.jsonl
     # gemma_<context>_<rag|no_rag>_<split>.jsonl
@@ -71,8 +70,8 @@ def _parse_filename(name: str) -> Tuple[str, str, bool, str, int | None]:
 
 
 def _load_predictions(
-    path: Path, label_names: List[str]
-) -> Tuple[np.ndarray, np.ndarray]:
+    path: Path, label_names: list[str]
+) -> tuple[np.ndarray, np.ndarray]:
     gold = []
     pred = []
     with path.open("r", encoding="utf-8") as handle:
@@ -97,8 +96,8 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     label_names = get_label_names()
-    results: Dict[Tuple[str, str, bool, int | None], Dict[str, np.ndarray]] = {}
-    metrics_rows: List[dict] = []
+    results: dict[tuple[str, str, bool, int | None], dict[str, np.ndarray]] = {}
+    metrics_rows: list[dict] = []
 
     for path in results_dir.glob("*.jsonl"):
         model, context, rag, split, seed = _parse_filename(path.name)
@@ -194,7 +193,7 @@ def main() -> None:
     LOGGER.debug("Wrote %d rows to deltas.csv", len(deltas_df))
 
     # Prediction change stats for DeBERTa conditions (if present)
-    pred_change_by_seed: Dict[str, dict] = {}
+    pred_change_by_seed: dict[str, dict] = {}
     seed_set = {s for (_m, _c, _r, s) in results.keys() if s is not None}
     for seed in seed_set:
         pred_change = prediction_change_stats(
@@ -216,7 +215,7 @@ def main() -> None:
     LOGGER.info("Saved deltas to %s", output_dir / "deltas.csv")
 
     # Significance tests (paired) for key condition contrasts
-    test_rows: List[dict] = []
+    test_rows: list[dict] = []
     for model in {m for (m, _, _, _) in results_for_analysis.keys()}:
         for rag in [False, True]:
             for seed in {
@@ -361,7 +360,7 @@ def main() -> None:
         LOGGER.debug("Wrote %d rows to significance_tests.csv", len(tests_df))
 
     # Model comparison: DeBERTa vs Gemma (same context + RAG)
-    model_rows: List[dict] = []
+    model_rows: list[dict] = []
     for context in ["sentence", "window", "doc"]:
         for rag in [False, True]:
             for seed in {s for (_m, _c, _r, s) in results_for_analysis.keys()}:

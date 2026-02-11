@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable, List, Optional
+from collections.abc import Iterable
 
 from value_context_rag.utils.logging import get_logger
 
@@ -62,7 +62,7 @@ TASK_DESCRIPTION = (
 )
 
 
-def _format_knowledge(kb_snippets: Optional[Iterable[str]]) -> str:
+def _format_knowledge(kb_snippets: Iterable[str] | None) -> str:
     if not kb_snippets:
         return ""
     lines = ["EXTERNAL KNOWLEDGE:"]
@@ -92,7 +92,7 @@ def _format_instructions() -> str:
     )
 
 
-def _build_prompt(body: str, kb_snippets: Optional[Iterable[str]]) -> str:
+def _build_prompt(body: str, kb_snippets: Iterable[str] | None) -> str:
     prompt = (
         f"{_format_knowledge(kb_snippets)}"
         f"{TASK_DESCRIPTION}\n\n"
@@ -105,7 +105,7 @@ def _build_prompt(body: str, kb_snippets: Optional[Iterable[str]]) -> str:
 
 
 def build_prompt_sentence(
-    target_text: str, kb_snippets: Optional[Iterable[str]] = None
+    target_text: str, kb_snippets: Iterable[str] | None = None
 ) -> str:
     body = f"TARGET SENTENCE:\n{target_text}"
     return _build_prompt(body, kb_snippets)
@@ -114,7 +114,7 @@ def build_prompt_sentence(
 def build_prompt_window(
     context_text: str,
     target_text: str,
-    kb_snippets: Optional[Iterable[str]] = None,
+    kb_snippets: Iterable[str] | None = None,
 ) -> str:
     body = (
         "CONTEXT WINDOW:\n" f"{context_text}\n\n" "TARGET SENTENCE:\n" f"{target_text}"
@@ -125,7 +125,7 @@ def build_prompt_window(
 def build_prompt_doc(
     doc_text: str,
     target_text: str,
-    kb_snippets: Optional[Iterable[str]] = None,
+    kb_snippets: Iterable[str] | None = None,
 ) -> str:
     body = "DOCUMENT:\n" f"{doc_text}\n\n" "TARGET SENTENCE:\n" f"{target_text}"
     return _build_prompt(body, kb_snippets)

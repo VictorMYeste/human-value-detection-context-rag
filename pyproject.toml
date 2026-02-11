@@ -13,6 +13,7 @@ license = { text = "MIT" }
 [project.optional-dependencies]
 dev = [
     "black",
+    "pytest",
     "ruff",
 ]
 
@@ -29,5 +30,7 @@ target-version = ["py311"]
 [tool.ruff]
 line-length = 88
 target-version = "py311"
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
 ignore = ["E501"]

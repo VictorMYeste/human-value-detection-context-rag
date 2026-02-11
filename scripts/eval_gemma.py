@@ -5,7 +5,6 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import List
 
 import numpy as np
 
@@ -32,7 +31,7 @@ def _parse_args() -> argparse.Namespace:
 
 
 def load_predictions(
-    path: Path, label_names: List[str]
+    path: Path, label_names: list[str]
 ) -> tuple[np.ndarray, np.ndarray]:
     gold = []
     pred = []

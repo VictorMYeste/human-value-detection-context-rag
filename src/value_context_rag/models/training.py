@@ -6,7 +6,6 @@ import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
 
 import numpy as np
 import torch
@@ -19,8 +18,8 @@ from value_context_rag.data.context import (
     build_window_context,
 )
 from value_context_rag.data.dataset import get_label_names, load_split
-from value_context_rag.kb.retriever import init_retriever
 from value_context_rag.eval.metrics import compute_f1_metrics
+from value_context_rag.kb.retriever import init_retriever
 from value_context_rag.models.deberta import build_deberta_model, encode_batch
 from value_context_rag.utils.logging import get_logger
 from value_context_rag.utils.seed import set_seed
@@ -35,7 +34,7 @@ class TextExample:
 
 
 class TextDataset(Dataset):
-    def __init__(self, examples: List[TextExample]) -> None:
+    def __init__(self, examples: list[TextExample]) -> None:
         self.examples = examples
 
     def __len__(self) -> int:
@@ -45,14 +44,14 @@ class TextDataset(Dataset):
         return self.examples[idx]
 
 
-def _safe_int(value: str) -> Tuple[int, bool]:
+def _safe_int(value: str) -> tuple[int, bool]:
     try:
         return int(value), True
     except Exception:
         return 0, False
 
 
-def _order_doc_rows(rows: List[dict]) -> List[dict]:
+def _order_doc_rows(rows: list[dict]) -> list[dict]:
     with_parsed = []
     all_numeric = True
     for row in rows:
@@ -70,9 +69,9 @@ def _order_doc_rows(rows: List[dict]) -> List[dict]:
 
 def _build_document_index(
     df,
-) -> Tuple[Dict[str, List[str]], Dict[Tuple[str, str], int]]:
-    docs: Dict[str, List[str]] = {}
-    index: Dict[Tuple[str, str], int] = {}
+) -> tuple[dict[str, list[str]], dict[tuple[str, str], int]]:
+    docs: dict[str, list[str]] = {}
+    index: dict[tuple[str, str], int] = {}
 
     grouped = {}
     for row in df.to_dict(orient="records"):
@@ -99,7 +98,7 @@ def build_contexts(
     retriever,
     debug: bool,
     collect_kb: bool = False,
-) -> List[str] | tuple[List[str], List[List[dict]]]:
+) -> list[str] | tuple[list[str], list[list[dict]]]:
     docs, idx_map = _build_document_index(df)
     if debug:
         LOGGER.debug(
@@ -110,8 +109,8 @@ def build_contexts(
             use_rag,
             top_k,
         )
-    contexts: List[str] = []
-    kb_info: List[List[dict]] = []
+    contexts: list[str] = []
+    kb_info: list[list[dict]] = []
 
     for row in df.to_dict(orient="records"):
         text_id = str(row["text_id"])
@@ -140,7 +139,7 @@ def build_contexts(
         else:
             raise ValueError(f"Unknown context type: {context_type}")
 
-        chunks: List[dict] = []
+        chunks: list[dict] = []
         if use_rag and retriever is not None:
             chunks = retriever.retrieve(context, top_k=top_k)
             if debug and chunks:
@@ -166,7 +165,7 @@ def build_contexts(
 
 
 def _build_dataloader(
-    texts: List[str],
+    texts: list[str],
     labels: np.ndarray,
     tokenizer,
     *,
@@ -176,10 +175,10 @@ def _build_dataloader(
 ) -> DataLoader:
     examples = [
         TextExample(text=text, labels=torch.tensor(label, dtype=torch.float32))
-        for text, label in zip(texts, labels)
+        for text, label in zip(texts, labels, strict=False)
     ]
 
-    def collate(batch: List[TextExample]):
+    def collate(batch: list[TextExample]):
         batch_texts = [ex.text for ex in batch]
         batch_labels = torch.stack([ex.labels for ex in batch])
         encoded = encode_batch(tokenizer, batch_texts, max_length=max_length)
@@ -198,10 +197,10 @@ def _build_dataloader(
     )
 
 
-def _evaluate(model, dataloader, device, label_names: List[str]) -> Dict[str, float]:
+def _evaluate(model, dataloader, device, label_names: list[str]) -> dict[str, float]:
     model.eval()
-    all_labels: List[np.ndarray] = []
-    all_preds: List[np.ndarray] = []
+    all_labels: list[np.ndarray] = []
+    all_preds: list[np.ndarray] = []
 
     with torch.no_grad():
         for batch in dataloader:
@@ -222,7 +221,7 @@ def save_predictions_jsonl(
     model,
     tokenizer,
     df,
-    label_names: List[str],
+    label_names: list[str],
     output_path: Path,
     *,
     context_type: str,
@@ -303,14 +302,14 @@ def save_predictions_jsonl(
 
 
 def run_eval(
-    config: Dict,
+    config: dict,
     *,
     checkpoint_path: Path,
     split: str,
     output_pred_path: Path,
     output_metrics_path: Path,
     debug: bool = False,
-) -> Dict[str, object]:
+) -> dict[str, object]:
     """Run evaluation for a given split and save predictions + metrics."""
     label_names = get_label_names()
     model, tokenizer = build_deberta_model(num_labels=len(label_names))
@@ -364,7 +363,7 @@ def run_eval(
     labels = df[label_names].to_numpy(dtype=int)
 
     model.eval()
-    all_preds: List[np.ndarray] = []
+    all_preds: list[np.ndarray] = []
     batch_size = int(training_cfg.get("batch_size", 16))
     max_length = int(training_cfg.get("max_length", 1024))
 
@@ -424,7 +423,7 @@ def run_eval(
 
 
 def train_and_eval(
-    config: Dict,
+    config: dict,
     *,
     run_name: str | None = None,
     resume_path: Path | None = None,

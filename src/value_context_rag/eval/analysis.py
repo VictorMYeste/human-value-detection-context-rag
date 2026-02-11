@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from collections import defaultdict
-from typing import Dict, Iterable, List, Mapping, Tuple
+from collections.abc import Iterable, Mapping
 
 import numpy as np
 import pandas as pd
@@ -14,16 +13,16 @@ from value_context_rag.utils.logging import get_logger
 LOGGER = get_logger(__name__)
 
 
-Condition = Tuple[str, str, bool]
+Condition = tuple[str, str, bool]
 
 
 def per_value_metrics_across_conditions(
-    results_dict: Mapping[Tuple, Dict[str, np.ndarray]],
+    results_dict: Mapping[tuple, dict[str, np.ndarray]],
     *,
-    label_names: List[str],
+    label_names: list[str],
 ) -> pd.DataFrame:
     """Return per-value F1 for each condition."""
-    rows: List[dict] = []
+    rows: list[dict] = []
     LOGGER.debug("Computing per-value metrics for %d conditions", len(results_dict))
     for key, payload in results_dict.items():
         if len(key) == 3:
@@ -61,12 +60,12 @@ def compute_deltas(per_value_df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(f"per_value_df missing columns: {sorted(missing)}")
 
     df = per_value_df.copy()
-    deltas: List[dict] = []
+    deltas: list[dict] = []
     LOGGER.debug("Computing deltas across %d rows", len(df))
 
     for (model, value), group in df.groupby(["model", "value"]):
-        rag_on = group[group["rag"] == True]
-        rag_off = group[group["rag"] == False]
+        rag_on = group[group["rag"]]
+        rag_off = group[~group["rag"]]
         if not rag_on.empty and not rag_off.empty:
             for context in group["context"].unique():
                 f1_on = rag_on[rag_on["context"] == context]["f1"].mean()
@@ -104,8 +103,8 @@ def compute_deltas(per_value_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def prediction_change_stats(
-    predictions_by_condition: Mapping[Tuple[str, bool], Dict[str, np.ndarray]],
-) -> Dict[str, float]:
+    predictions_by_condition: Mapping[tuple[str, bool], dict[str, np.ndarray]],
+) -> dict[str, float]:
     """Compute change stats across contexts (sentence/window/doc)."""
     required_contexts = {"sentence", "window", "doc"}
     available = {ctx for (ctx, _rag) in predictions_by_condition.keys()}
@@ -115,7 +114,7 @@ def prediction_change_stats(
             f"predictions_by_condition must include {sorted(required_contexts)}"
         )
 
-    def _count_changes(a: np.ndarray, b: np.ndarray) -> Dict[str, int]:
+    def _count_changes(a: np.ndarray, b: np.ndarray) -> dict[str, int]:
         changed = (a != b).sum()
         improved = ((a == 0) & (b == 1)).sum()
         worsened = ((a == 1) & (b == 0)).sum()
@@ -152,7 +151,7 @@ def prediction_change_stats(
 
 def kb_values_per_prediction(records: Iterable[dict]) -> pd.DataFrame:
     """Expand prediction records into per-(sentence, predicted value, KB value) rows."""
-    rows: List[dict] = []
+    rows: list[dict] = []
     for record in records:
         text_id = record.get("text_id")
         sent_id = record.get("sent_id")

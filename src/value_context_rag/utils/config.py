@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import yaml
 
@@ -12,7 +12,7 @@ from value_context_rag.utils.logging import get_logger
 LOGGER = get_logger(__name__)
 
 
-DEFAULTS: Dict[str, Any] = {
+DEFAULTS: dict[str, Any] = {
     "data": {
         "raw_dir": "data/raw",
         "kb_dir": "data/kb",
@@ -47,7 +47,7 @@ DEFAULTS: Dict[str, Any] = {
 }
 
 
-def _deep_merge(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
+def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
     merged = dict(base)
     for key, value in override.items():
         if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
@@ -57,7 +57,7 @@ def _deep_merge(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any
     return merged
 
 
-def load_config(path: str) -> Dict[str, Any]:
+def load_config(path: str) -> dict[str, Any]:
     """Load a YAML config file and apply minimal defaults."""
     config_path = Path(path)
     LOGGER.info("Loading config from %s", config_path)

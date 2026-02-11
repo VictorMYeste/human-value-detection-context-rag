@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional
 
 DEFAULT_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -17,7 +16,7 @@ def _ensure_handler(logger: logging.Logger, handler: logging.Handler) -> None:
     logger.addHandler(handler)
 
 
-def get_logger(name: str, log_file: Optional[str] = None) -> logging.Logger:
+def get_logger(name: str, log_file: str | None = None) -> logging.Logger:
     """Configure console + optional file logging and return a logger."""
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)

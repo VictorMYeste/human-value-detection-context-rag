@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Dict, List
-
 import numpy as np
 
 from value_context_rag.utils.logging import get_logger
@@ -17,7 +15,7 @@ def binarize_probs(probs: np.ndarray, *, threshold: float = 0.5) -> np.ndarray:
     return (probs >= threshold).astype(int)
 
 
-def compute_global_metrics(gold: np.ndarray, pred: np.ndarray) -> Dict[str, float]:
+def compute_global_metrics(gold: np.ndarray, pred: np.ndarray) -> dict[str, float]:
     """Compute global micro/macro precision, recall, and F1."""
     gold = gold.astype(int)
     pred = pred.astype(int)
@@ -45,9 +43,9 @@ def compute_global_metrics(gold: np.ndarray, pred: np.ndarray) -> Dict[str, floa
         else 0.0
     )
 
-    precisions: List[float] = []
-    recalls: List[float] = []
-    f1s: List[float] = []
+    precisions: list[float] = []
+    recalls: list[float] = []
+    f1s: list[float] = []
     for col in range(gold.shape[1]):
         tp_c = (gold[:, col] & pred[:, col]).sum()
         fp_c = ((1 - gold[:, col]) & pred[:, col]).sum()
@@ -81,8 +79,8 @@ def compute_per_label_f1(
     gold: np.ndarray,
     pred: np.ndarray,
     *,
-    label_names: List[str],
-) -> Dict[str, float]:
+    label_names: list[str],
+) -> dict[str, float]:
     """Compute per-label F1 scores."""
     gold = gold.astype(int)
     pred = pred.astype(int)
@@ -90,7 +88,7 @@ def compute_per_label_f1(
     if gold.size == 0:
         return {name: 0.0 for name in label_names}
 
-    per_label_f1: Dict[str, float] = {}
+    per_label_f1: dict[str, float] = {}
     for col, name in enumerate(label_names):
         tp_c = (gold[:, col] & pred[:, col]).sum()
         fp_c = ((1 - gold[:, col]) & pred[:, col]).sum()
@@ -116,8 +114,8 @@ def compute_f1_metrics(
     y_true: np.ndarray,
     y_pred: np.ndarray,
     *,
-    label_names: List[str],
-) -> Dict[str, object]:
+    label_names: list[str],
+) -> dict[str, object]:
     """Compute micro/macro F1 and per-label F1."""
     global_metrics = compute_global_metrics(y_true, y_pred)
     per_label_f1 = compute_per_label_f1(y_true, y_pred, label_names=label_names)

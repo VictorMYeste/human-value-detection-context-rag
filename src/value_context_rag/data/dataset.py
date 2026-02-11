@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
 
 import pandas as pd
 
@@ -41,9 +41,9 @@ def _read_tsv(path: Path, *, debug: bool) -> pd.DataFrame:
 
 def _split_label_columns(
     columns: Iterable[str],
-) -> Tuple[Dict[str, List[str]], List[str]]:
-    label_pairs: Dict[str, List[str]] = {}
-    non_label_cols: List[str] = []
+) -> tuple[dict[str, list[str]], list[str]]:
+    label_pairs: dict[str, list[str]] = {}
+    non_label_cols: list[str] = []
     for col in columns:
         if col.endswith(" attained"):
             base = col[: -len(" attained")]
@@ -85,7 +85,7 @@ def _collapse_attained_constrained(
     return collapsed
 
 
-def get_label_names(*, debug: bool = False) -> List[str]:
+def get_label_names(*, debug: bool = False) -> list[str]:
     """Return the label column names in the correct order."""
     LOGGER.info("Loading label names from raw data")
     for split in ("train", "validation", "test"):
@@ -164,13 +164,13 @@ def load_split(split: str, *, debug: bool = False) -> pd.DataFrame:
 
 def group_by_document(
     df: pd.DataFrame, *, debug: bool = False
-) -> Dict[str, List[dict]]:
+) -> dict[str, list[dict]]:
     """Group rows by document (text_id) into a dict of lists."""
     if "text_id" not in df.columns:
         raise ValueError("DataFrame must contain a 'text_id' column")
 
     LOGGER.info("Grouping dataframe by text_id")
-    grouped: Dict[str, List[dict]] = {}
+    grouped: dict[str, list[dict]] = {}
     for text_id, group in df.groupby("text_id", sort=False):
         grouped[str(text_id)] = group.to_dict(orient="records")
 

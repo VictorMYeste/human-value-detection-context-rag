@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Iterable, List, Literal
+from typing import Literal
 
 from value_context_rag.utils.logging import get_logger
 
@@ -16,7 +16,7 @@ TGT_START_GEMMA = "<<<TARGET>>>"
 TGT_END_GEMMA = "<<<END>>>"
 
 
-def _ensure_index(doc_sentences: List[str], target_idx: int) -> None:
+def _ensure_index(doc_sentences: list[str], target_idx: int) -> None:
     if target_idx < 0 or target_idx >= len(doc_sentences):
         raise IndexError(
             f"target_idx out of range: {target_idx} for document of size {len(doc_sentences)}"
@@ -30,7 +30,7 @@ def _wrap_target(text: str, marker_style: MarkerStyle) -> str:
 
 
 def build_sentence_context(
-    doc_sentences: List[str],
+    doc_sentences: list[str],
     target_idx: int,
     *,
     debug: bool = False,
@@ -47,7 +47,7 @@ def build_sentence_context(
 
 
 def build_window_context(
-    doc_sentences: List[str],
+    doc_sentences: list[str],
     target_idx: int,
     *,
     n_prev: int = 2,
@@ -82,7 +82,7 @@ def build_window_context(
 
 
 def build_doc_context(
-    doc_sentences: List[str],
+    doc_sentences: list[str],
     target_idx: int,
     *,
     marker_style: MarkerStyle = "deberta",

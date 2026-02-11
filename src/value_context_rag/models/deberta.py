@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
-
 import torch
 from torch import nn
 
@@ -33,7 +31,7 @@ class DebertaForMultiLabel(nn.Module):
         return logits
 
 
-def build_deberta_model(num_labels: int) -> Tuple[nn.Module, object]:
+def build_deberta_model(num_labels: int) -> tuple[nn.Module, object]:
     """Load DeBERTa-v3-base and return (model, tokenizer)."""
     try:
         from transformers import AutoModel, AutoTokenizer  # type: ignore
@@ -55,9 +53,9 @@ def build_deberta_model(num_labels: int) -> Tuple[nn.Module, object]:
 
 def encode_batch(
     tokenizer,
-    texts: List[str],
+    texts: list[str],
     max_length: int = 1024,
-) -> Dict[str, torch.Tensor]:
+) -> dict[str, torch.Tensor]:
     """Tokenize a batch of texts into model inputs."""
     LOGGER.debug("Encoding batch of %d texts (max_length=%d)", len(texts), max_length)
     encoded = tokenizer(

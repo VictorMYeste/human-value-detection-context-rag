@@ -1,0 +1,23 @@
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3.11 python3.11-venv python3-pip git \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt /app/requirements.txt
+COPY pyproject.toml /app/pyproject.toml
+COPY README.md /app/README.md
+
+RUN python3.11 -m pip install --upgrade pip \
+    && pip install -r /app/requirements.txt \
+    && pip install torch --index-url https://download.pytorch.org/whl/cu122
+
+COPY . /app
+RUN pip install -e .
+
+CMD ["python3.11", "-V"]

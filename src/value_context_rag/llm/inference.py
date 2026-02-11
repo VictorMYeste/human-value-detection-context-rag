@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 from value_context_rag.data.context import (
     build_doc_context,
@@ -24,7 +23,7 @@ from value_context_rag.utils.logging import get_logger
 LOGGER = get_logger(__name__)
 
 
-def parse_labels(raw_output: str, label_names: List[str]) -> List[str]:
+def parse_labels(raw_output: str, label_names: list[str]) -> list[str]:
     """Parse comma-separated labels, normalize, and filter unknowns."""
     if not raw_output:
         return []
@@ -39,7 +38,7 @@ def parse_labels(raw_output: str, label_names: List[str]) -> List[str]:
         return []
 
     canonical = {name.lower(): name for name in label_names}
-    parsed: List[str] = []
+    parsed: list[str] = []
     for cand in candidates:
         key = cand.lower()
         if key in canonical and canonical[key] not in parsed:
@@ -49,7 +48,7 @@ def parse_labels(raw_output: str, label_names: List[str]) -> List[str]:
     return parsed
 
 
-def run_inference(config: Dict, split: str) -> None:
+def run_inference(config: dict, split: str) -> None:
     """Run Gemma inference on a split and save predictions."""
     label_names = get_label_names()
     df = load_split(split)
@@ -110,7 +109,7 @@ def run_inference(config: Dict, split: str) -> None:
         output_path,
     )
 
-    existing: Set[Tuple[str, str]] = set()
+    existing: set[tuple[str, str]] = set()
     if output_path.exists():
         with output_path.open("r", encoding="utf-8") as handle:
             for line in handle:
@@ -157,7 +156,7 @@ def run_inference(config: Dict, split: str) -> None:
             else:
                 raise ValueError(f"Unknown context type: {context_type}")
 
-            chunks: List[dict] = []
+            chunks: list[dict] = []
             if use_rag and retriever is not None:
                 chunks = retriever.retrieve(target_text, top_k=top_k)
                 snippets = [chunk["text"] for chunk in chunks]

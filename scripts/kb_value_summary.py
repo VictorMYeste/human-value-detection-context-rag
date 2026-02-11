@@ -6,8 +6,6 @@ import argparse
 import json
 from pathlib import Path
 
-import pandas as pd
-
 from value_context_rag.eval.analysis import kb_values_per_prediction
 from value_context_rag.utils.logging import get_logger
 

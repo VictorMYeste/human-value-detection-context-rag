@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 import torch
 
@@ -15,8 +14,8 @@ LOGGER = get_logger(__name__)
 @dataclass
 class GemmaConfig:
     model_name: str = "google/gemma-3-12b-it"
-    device: Optional[str] = None
-    quantization: Optional[str] = None  # "8bit" or "4bit"
+    device: str | None = None
+    quantization: str | None = None  # "8bit" or "4bit"
     max_new_tokens: int = 64
     temperature: float = 0.0
     top_p: float = 1.0
@@ -62,9 +61,9 @@ class GemmaClient:
         self,
         prompt: str,
         *,
-        max_tokens: Optional[int] = None,
-        temperature: Optional[float] = None,
-        top_p: Optional[float] = None,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
+        top_p: float | None = None,
     ) -> str:
         max_tokens = max_tokens or self.config.max_new_tokens
         temperature = (
