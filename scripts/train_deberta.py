@@ -44,6 +44,11 @@ def _parse_args() -> argparse.Namespace:
         help="Optional limit for number of samples (for quick runs).",
     )
     parser.add_argument(
+        "--dry_run",
+        action="store_true",
+        help="Use a temporary results directory and avoid persisting outputs.",
+    )
+    parser.add_argument(
         "--resume",
         default=None,
         help="Path to a checkpoint to resume training from.",
@@ -82,6 +87,9 @@ def main() -> None:
     )
 
     results_dir = Path(config.get("results_dir", "results"))
+    if args.dry_run:
+        results_dir = Path(".tmp/value-context-rag-smoke")
+        config["results_dir"] = str(results_dir)
     log_dir = results_dir / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     rag_suffix = "rag" if use_rag else "no_rag"

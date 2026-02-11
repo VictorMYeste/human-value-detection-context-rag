@@ -29,3 +29,6 @@ results/checkpoints/
 
 # Editable install metadata
 src/value_context_rag.egg-info/
+
+# Local temp outputs
+.tmp/

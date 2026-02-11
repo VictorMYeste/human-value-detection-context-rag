@@ -28,6 +28,11 @@ def _parse_args() -> argparse.Namespace:
         help="Evaluate predictions after inference.",
     )
     parser.add_argument(
+        "--dry_run",
+        action="store_true",
+        help="Use a temporary results directory and avoid persisting outputs.",
+    )
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="Enable debug logging.",
@@ -43,6 +48,8 @@ def main() -> None:
     config = load_config(args.config)
     if args.max_samples is not None:
         config["max_samples"] = args.max_samples
+    if args.dry_run:
+        config["results_dir"] = ".tmp/value-context-rag-smoke"
 
     LOGGER.info("Running Gemma with config %s on split %s", args.config, args.split)
     run_inference(config, split=args.split)
