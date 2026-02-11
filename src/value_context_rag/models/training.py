@@ -68,7 +68,9 @@ def _order_doc_rows(rows: List[dict]) -> List[dict]:
     return [row for _, _, row in with_parsed]
 
 
-def _build_document_index(df) -> Tuple[Dict[str, List[str]], Dict[Tuple[str, str], int]]:
+def _build_document_index(
+    df,
+) -> Tuple[Dict[str, List[str]], Dict[Tuple[str, str], int]]:
     docs: Dict[str, List[str]] = {}
     index: Dict[Tuple[str, str], int] = {}
 
@@ -188,7 +190,12 @@ def _build_dataloader(
         LOGGER.debug("Creating shuffled dataloader (batch_size=%d)", batch_size)
     else:
         LOGGER.debug("Creating dataloader (batch_size=%d)", batch_size)
-    return DataLoader(TextDataset(examples), batch_size=batch_size, shuffle=shuffle, collate_fn=collate)
+    return DataLoader(
+        TextDataset(examples),
+        batch_size=batch_size,
+        shuffle=shuffle,
+        collate_fn=collate,
+    )
 
 
 def _evaluate(model, dataloader, device, label_names: List[str]) -> Dict[str, float]:
@@ -268,7 +275,9 @@ def save_predictions_jsonl(
                 row_idx = start + idx
                 row = df.iloc[row_idx]
                 gold_labels = [
-                    label_names[i] for i, val in enumerate(batch_labels[idx]) if val == 1
+                    label_names[i]
+                    for i, val in enumerate(batch_labels[idx])
+                    if val == 1
                 ]
                 pred_labels = [
                     label_names[i] for i, val in enumerate(pred_vec) if val == 1
@@ -376,7 +385,9 @@ def run_eval(
                 row_idx = start + idx
                 row = df.iloc[row_idx]
                 gold_labels = [
-                    label_names[i] for i, val in enumerate(batch_labels[idx]) if val == 1
+                    label_names[i]
+                    for i, val in enumerate(batch_labels[idx])
+                    if val == 1
                 ]
                 pred_labels = [
                     label_names[i] for i, val in enumerate(pred_vec) if val == 1
@@ -450,11 +461,15 @@ def train_and_eval(
         train_df = train_df.head(int(max_samples))
         val_df = val_df.head(int(max_samples))
 
-    retriever = init_retriever(
-        rag_cfg.get("kb_path", "data/kb/kb_chunks.jsonl"),
-        rag_cfg.get("index_path", "data/kb/kb_index.faiss"),
-        debug=False,
-    ) if use_rag else None
+    retriever = (
+        init_retriever(
+            rag_cfg.get("kb_path", "data/kb/kb_chunks.jsonl"),
+            rag_cfg.get("index_path", "data/kb/kb_index.faiss"),
+            debug=False,
+        )
+        if use_rag
+        else None
+    )
 
     label_names = get_label_names()
     train_labels = train_df[label_names].to_numpy(dtype=float)
@@ -537,7 +552,9 @@ def train_and_eval(
             batch = {k: v.to(device) for k, v in batch.items()}
             if "input_ids" in batch:
                 lengths = (batch["input_ids"] != 0).sum(dim=1)
-                token_stats["train_truncated"] += int((lengths >= max_length).sum().item())
+                token_stats["train_truncated"] += int(
+                    (lengths >= max_length).sum().item()
+                )
                 token_stats["train_total"] += int(lengths.numel())
             optimizer.zero_grad()
             logits = model(**batch)
@@ -614,7 +631,9 @@ def train_and_eval(
     stats_path = results_dir / "logs" / f"token_stats_{suffix}.json"
     stats_path.parent.mkdir(parents=True, exist_ok=True)
     if token_stats["train_total"] > 0:
-        token_stats["train_truncated_rate"] = token_stats["train_truncated"] / token_stats["train_total"]
+        token_stats["train_truncated_rate"] = (
+            token_stats["train_truncated"] / token_stats["train_total"]
+        )
     stats_path.write_text(
         json.dumps(token_stats, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

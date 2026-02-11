@@ -67,7 +67,9 @@ class GemmaClient:
         top_p: Optional[float] = None,
     ) -> str:
         max_tokens = max_tokens or self.config.max_new_tokens
-        temperature = temperature if temperature is not None else self.config.temperature
+        temperature = (
+            temperature if temperature is not None else self.config.temperature
+        )
         top_p = top_p if top_p is not None else self.config.top_p
 
         LOGGER.debug(

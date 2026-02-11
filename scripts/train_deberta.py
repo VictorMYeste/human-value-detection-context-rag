@@ -28,7 +28,7 @@ def _parse_args() -> argparse.Namespace:
         help="Enable debug logging.",
     )
     parser.add_argument(
-        "--eval_test",
+        "--eval",
         action="store_true",
         help="Evaluate and save predictions on test split after training.",
     )
@@ -92,7 +92,7 @@ def main() -> None:
     logger.info("Starting DeBERTa training with config %s", args.config)
     logger.debug("Run name seed=%d context=%s rag=%s", seed, context_type, use_rag)
 
-    config["eval_test"] = True if args.eval_test else config.get("eval_test", False)
+    config["eval"] = True if args.eval else config.get("eval", False)
     run_name = f"deberta_{context_type}_{rag_suffix}_seed{seed}_best"
     LOGGER.debug("Checkpoint run name: %s", run_name)
     if args.resume:
@@ -102,7 +102,7 @@ def main() -> None:
         resume_path = auto_path if auto_path.exists() else None
     train_and_eval(config, run_name=run_name, resume_path=resume_path)
 
-    if args.eval_test or config.get("eval_test", False):
+    if args.eval or config.get("eval", False):
         label_names = get_label_names()
         model, tokenizer = build_deberta_model(num_labels=len(label_names))
         ckpt_path = results_dir / "checkpoints" / f"{run_name}.pt"
@@ -113,17 +113,23 @@ def main() -> None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)
 
-        retriever = init_retriever(
-            rag_cfg.get("kb_path", "data/kb/kb_chunks.jsonl"),
-            rag_cfg.get("index_path", "data/kb/kb_index.faiss"),
-            debug=args.debug,
-        ) if use_rag else None
+        retriever = (
+            init_retriever(
+                rag_cfg.get("kb_path", "data/kb/kb_chunks.jsonl"),
+                rag_cfg.get("index_path", "data/kb/kb_index.faiss"),
+                debug=args.debug,
+            )
+            if use_rag
+            else None
+        )
 
         test_df = load_split("test")
         if args.max_samples is not None:
             test_df = test_df.head(int(args.max_samples))
         predictions_dir = results_dir / "predictions"
-        pred_path = predictions_dir / f"deberta_{context_type}_{rag_suffix}_seed{seed}.jsonl"
+        pred_path = (
+            predictions_dir / f"deberta_{context_type}_{rag_suffix}_seed{seed}.jsonl"
+        )
 
         save_predictions_jsonl(
             model,

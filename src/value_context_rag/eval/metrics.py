@@ -120,9 +120,7 @@ def compute_f1_metrics(
 ) -> Dict[str, object]:
     """Compute micro/macro F1 and per-label F1."""
     global_metrics = compute_global_metrics(y_true, y_pred)
-    per_label_f1 = compute_per_label_f1(
-        y_true, y_pred, label_names=label_names
-    )
+    per_label_f1 = compute_per_label_f1(y_true, y_pred, label_names=label_names)
     macro_f1 = global_metrics["macro_f1"]
     micro_f1 = global_metrics["micro_f1"]
     return {

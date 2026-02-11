@@ -39,7 +39,9 @@ def _read_tsv(path: Path, *, debug: bool) -> pd.DataFrame:
     return df
 
 
-def _split_label_columns(columns: Iterable[str]) -> Tuple[Dict[str, List[str]], List[str]]:
+def _split_label_columns(
+    columns: Iterable[str],
+) -> Tuple[Dict[str, List[str]], List[str]]:
     label_pairs: Dict[str, List[str]] = {}
     non_label_cols: List[str] = []
     for col in columns:
@@ -67,7 +69,9 @@ def _collapse_attained_constrained(
     collapsed = labels_df[[TEXT_ID_COL, SENT_ID_COL]].copy()
     for base, cols in label_pairs.items():
         if len(cols) != 2:
-            raise ValueError(f"Expected attained+constrained columns for '{base}', got {cols}")
+            raise ValueError(
+                f"Expected attained+constrained columns for '{base}', got {cols}"
+            )
         series = (
             labels_df[cols]
             .apply(pd.to_numeric, errors="coerce")
@@ -107,9 +111,13 @@ def load_split(split: str, *, debug: bool = False) -> pd.DataFrame:
     sentences_df = _read_tsv(sentences_path, debug=debug)
     labels_df = _read_tsv(labels_path, debug=debug)
 
-    missing_sentence_cols = {TEXT_ID_COL, SENT_ID_COL, TEXT_COL} - set(sentences_df.columns)
+    missing_sentence_cols = {TEXT_ID_COL, SENT_ID_COL, TEXT_COL} - set(
+        sentences_df.columns
+    )
     if missing_sentence_cols:
-        raise ValueError(f"sentences.tsv missing columns: {sorted(missing_sentence_cols)}")
+        raise ValueError(
+            f"sentences.tsv missing columns: {sorted(missing_sentence_cols)}"
+        )
 
     missing_label_cols = {TEXT_ID_COL, SENT_ID_COL} - set(labels_df.columns)
     if missing_label_cols:
@@ -154,7 +162,9 @@ def load_split(split: str, *, debug: bool = False) -> pd.DataFrame:
     return merged
 
 
-def group_by_document(df: pd.DataFrame, *, debug: bool = False) -> Dict[str, List[dict]]:
+def group_by_document(
+    df: pd.DataFrame, *, debug: bool = False
+) -> Dict[str, List[dict]]:
     """Group rows by document (text_id) into a dict of lists."""
     if "text_id" not in df.columns:
         raise ValueError("DataFrame must contain a 'text_id' column")

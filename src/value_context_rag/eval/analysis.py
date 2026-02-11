@@ -104,14 +104,12 @@ def compute_deltas(per_value_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def prediction_change_stats(
-    predictions_by_condition: Mapping[Tuple[str, bool], Dict[str, np.ndarray]]
+    predictions_by_condition: Mapping[Tuple[str, bool], Dict[str, np.ndarray]],
 ) -> Dict[str, float]:
     """Compute change stats across contexts (sentence/window/doc)."""
     required_contexts = {"sentence", "window", "doc"}
     available = {ctx for (ctx, _rag) in predictions_by_condition.keys()}
-    LOGGER.debug(
-        "Computing prediction changes for contexts=%s", sorted(available)
-    )
+    LOGGER.debug("Computing prediction changes for contexts=%s", sorted(available))
     if not required_contexts.issubset(available):
         raise ValueError(
             f"predictions_by_condition must include {sorted(required_contexts)}"
@@ -133,7 +131,10 @@ def prediction_change_stats(
         for rag in {False, True}:
             key_a = (ctx_a, rag)
             key_b = (ctx_b, rag)
-            if key_a not in predictions_by_condition or key_b not in predictions_by_condition:
+            if (
+                key_a not in predictions_by_condition
+                or key_b not in predictions_by_condition
+            ):
                 continue
             pred_a = predictions_by_condition[key_a]["pred"]
             pred_b = predictions_by_condition[key_b]["pred"]

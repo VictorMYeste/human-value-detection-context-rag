@@ -119,7 +119,9 @@ def run_inference(config: Dict, split: str) -> None:
                 record = json.loads(line)
                 existing.add((str(record.get("text_id")), str(record.get("sent_id"))))
         if existing:
-            LOGGER.info("Resuming inference: %d predictions already exist", len(existing))
+            LOGGER.info(
+                "Resuming inference: %d predictions already exist", len(existing)
+            )
 
     mode = "a" if output_path.exists() else "w"
     with output_path.open(mode, encoding="utf-8") as handle:
@@ -159,7 +161,12 @@ def run_inference(config: Dict, split: str) -> None:
             if use_rag and retriever is not None:
                 chunks = retriever.retrieve(target_text, top_k=top_k)
                 snippets = [chunk["text"] for chunk in chunks]
-                LOGGER.debug("Retrieved %d KB snippets for %s/%s", len(snippets), text_id, sent_id)
+                LOGGER.debug(
+                    "Retrieved %d KB snippets for %s/%s",
+                    len(snippets),
+                    text_id,
+                    sent_id,
+                )
                 LOGGER.debug(
                     "KB chunk ids=%s values=%s",
                     [c.get("id") for c in chunks],
@@ -172,7 +179,9 @@ def run_inference(config: Dict, split: str) -> None:
                         context, target_text, kb_snippets=snippets
                     )
                 else:
-                    prompt = build_prompt_doc(context, target_text, kb_snippets=snippets)
+                    prompt = build_prompt_doc(
+                        context, target_text, kb_snippets=snippets
+                    )
 
             if token_stats["max_prompt_tokens"] is not None:
                 prompt_len = len(client.tokenizer(prompt)["input_ids"])
@@ -192,9 +201,7 @@ def run_inference(config: Dict, split: str) -> None:
                 top_p=float(llm_cfg.get("top_p", 1.0)),
             )
             pred_labels = parse_labels(raw, label_names)
-            gold_labels = [
-                name for name in label_names if int(row.get(name, 0)) == 1
-            ]
+            gold_labels = [name for name in label_names if int(row.get(name, 0)) == 1]
             LOGGER.debug(
                 "Parsed labels for %s/%s: pred=%d gold=%d",
                 text_id,
@@ -208,18 +215,32 @@ def run_inference(config: Dict, split: str) -> None:
                 "sent_id": sent_id,
                 "gold_labels": gold_labels,
                 "pred_labels": pred_labels,
-                "kb_chunk_ids": [c.get("id") for c in chunks] if use_rag and retriever is not None else [],
-                "kb_values": sorted({v for c in chunks for v in c.get("values", [])}) if use_rag and retriever is not None else [],
+                "kb_chunk_ids": (
+                    [c.get("id") for c in chunks]
+                    if use_rag and retriever is not None
+                    else []
+                ),
+                "kb_values": (
+                    sorted({v for c in chunks for v in c.get("values", [])})
+                    if use_rag and retriever is not None
+                    else []
+                ),
                 "raw_output": raw,
             }
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     LOGGER.info("Saved predictions to %s", output_path)
 
-    stats_path = results_dir / "logs" / f"gemma_token_stats_{context_type}_{rag_suffix}_{split}.json"
+    stats_path = (
+        results_dir
+        / "logs"
+        / f"gemma_token_stats_{context_type}_{rag_suffix}_{split}.json"
+    )
     stats_path.parent.mkdir(parents=True, exist_ok=True)
     if token_stats["prompt_total"] > 0:
-        token_stats["prompt_over_limit_rate"] = token_stats["prompt_over_limit"] / token_stats["prompt_total"]
+        token_stats["prompt_over_limit_rate"] = (
+            token_stats["prompt_over_limit"] / token_stats["prompt_total"]
+        )
     stats_path.write_text(
         json.dumps(token_stats, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

@@ -34,25 +34,25 @@ VALUE_NAMES = [
 
 # One-line definition for each of the 19 refined values in Table 1 of the paper “Refining the Theory of Basic Individual Values” (Journal of Personality & Social Psychology, 2012).
 VALUE_DEFINITIONS = {
-    "Self-direction: thought":      "Freedom to cultivate one’s own ideas and abilities",
-    "Self-direction: action":       "Freedom to determine one’s own actions",
-    "Stimulation":                  "Excitement, novelty, and change",
-    "Hedonism":                     "Pleasure and sensuous gratification",
-    "Achievement":                  "Success according to social standards",
-    "Power: dominance":             "Power through exercising control over people",
-    "Power: resources":             "Power through control of material and social resources",
-    "Face":                         "Maintaining one’s public image and avoiding humiliation",
-    "Security: personal":           "Safety in one’s immediate environment",
-    "Security: societal":           "Safety and stability in the wider society",
-    "Tradition":                    "Maintaining and preserving cultural, family, or religious traditions",
-    "Conformity: rules":            "Compliance with rules, laws, and formal obligations",
-    "Conformity: interpersonal":    "Avoidance of upsetting or harming other people",
-    "Humility":                     "Recognising one’s insignificance in the larger scheme of things",
-    "Benevolence: caring":          "Devotion to the welfare of in-group members",
-    "Benevolence: dependability":   "Being a reliable and trustworthy member of the in-group",
-    "Universalism: concern":        "Commitment to equality, justice, and protection for all people",
-    "Universalism: nature":         "Preservation of the natural environment",
-    "Universalism: tolerance":      "Acceptance and understanding of those who are different from oneself",
+    "Self-direction: thought": "Freedom to cultivate one’s own ideas and abilities",
+    "Self-direction: action": "Freedom to determine one’s own actions",
+    "Stimulation": "Excitement, novelty, and change",
+    "Hedonism": "Pleasure and sensuous gratification",
+    "Achievement": "Success according to social standards",
+    "Power: dominance": "Power through exercising control over people",
+    "Power: resources": "Power through control of material and social resources",
+    "Face": "Maintaining one’s public image and avoiding humiliation",
+    "Security: personal": "Safety in one’s immediate environment",
+    "Security: societal": "Safety and stability in the wider society",
+    "Tradition": "Maintaining and preserving cultural, family, or religious traditions",
+    "Conformity: rules": "Compliance with rules, laws, and formal obligations",
+    "Conformity: interpersonal": "Avoidance of upsetting or harming other people",
+    "Humility": "Recognising one’s insignificance in the larger scheme of things",
+    "Benevolence: caring": "Devotion to the welfare of in-group members",
+    "Benevolence: dependability": "Being a reliable and trustworthy member of the in-group",
+    "Universalism: concern": "Commitment to equality, justice, and protection for all people",
+    "Universalism: nature": "Preservation of the natural environment",
+    "Universalism: tolerance": "Acceptance and understanding of those who are different from oneself",
 }
 
 
@@ -104,7 +104,9 @@ def _build_prompt(body: str, kb_snippets: Optional[Iterable[str]]) -> str:
     return prompt.strip()
 
 
-def build_prompt_sentence(target_text: str, kb_snippets: Optional[Iterable[str]] = None) -> str:
+def build_prompt_sentence(
+    target_text: str, kb_snippets: Optional[Iterable[str]] = None
+) -> str:
     body = f"TARGET SENTENCE:\n{target_text}"
     return _build_prompt(body, kb_snippets)
 
@@ -115,10 +117,7 @@ def build_prompt_window(
     kb_snippets: Optional[Iterable[str]] = None,
 ) -> str:
     body = (
-        "CONTEXT WINDOW:\n"
-        f"{context_text}\n\n"
-        "TARGET SENTENCE:\n"
-        f"{target_text}"
+        "CONTEXT WINDOW:\n" f"{context_text}\n\n" "TARGET SENTENCE:\n" f"{target_text}"
     )
     return _build_prompt(body, kb_snippets)
 
@@ -128,10 +127,5 @@ def build_prompt_doc(
     target_text: str,
     kb_snippets: Optional[Iterable[str]] = None,
 ) -> str:
-    body = (
-        "DOCUMENT:\n"
-        f"{doc_text}\n\n"
-        "TARGET SENTENCE:\n"
-        f"{target_text}"
-    )
+    body = "DOCUMENT:\n" f"{doc_text}\n\n" "TARGET SENTENCE:\n" f"{target_text}"
     return _build_prompt(body, kb_snippets)

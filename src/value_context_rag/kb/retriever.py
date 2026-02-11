@@ -71,9 +71,7 @@ def _default_embedder():
     try:
         from sentence_transformers import SentenceTransformer  # type: ignore
     except Exception as exc:  # pragma: no cover - optional dependency
-        raise ImportError(
-            "sentence-transformers is required to embed queries"
-        ) from exc
+        raise ImportError("sentence-transformers is required to embed queries") from exc
 
     return SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 

@@ -6,7 +6,6 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-
 DEFAULT_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 

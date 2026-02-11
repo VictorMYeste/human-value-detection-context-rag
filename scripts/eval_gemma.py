@@ -31,7 +31,9 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_predictions(path: Path, label_names: List[str]) -> tuple[np.ndarray, np.ndarray]:
+def load_predictions(
+    path: Path, label_names: List[str]
+) -> tuple[np.ndarray, np.ndarray]:
     gold = []
     pred = []
     with path.open("r", encoding="utf-8") as handle:

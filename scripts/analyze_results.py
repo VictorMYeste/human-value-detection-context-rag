@@ -70,7 +70,9 @@ def _parse_filename(name: str) -> Tuple[str, str, bool, str, int | None]:
     return model, context, rag, split, seed
 
 
-def _load_predictions(path: Path, label_names: List[str]) -> Tuple[np.ndarray, np.ndarray]:
+def _load_predictions(
+    path: Path, label_names: List[str]
+) -> Tuple[np.ndarray, np.ndarray]:
     gold = []
     pred = []
     with path.open("r", encoding="utf-8") as handle:
@@ -130,14 +132,13 @@ def main() -> None:
     # Aggregate metrics across seeds (DeBERTa only)
     deberta_df = metrics_df[metrics_df["model"] == "deberta"].copy()
     if not deberta_df.empty:
-        agg = (
-            deberta_df.groupby(["model", "context", "rag", "split"], as_index=False)
-            .agg(
-                macro_f1_mean=("macro_f1", "mean"),
-                macro_f1_std=("macro_f1", "std"),
-                micro_f1_mean=("micro_f1", "mean"),
-                micro_f1_std=("micro_f1", "std"),
-            )
+        agg = deberta_df.groupby(
+            ["model", "context", "rag", "split"], as_index=False
+        ).agg(
+            macro_f1_mean=("macro_f1", "mean"),
+            macro_f1_std=("macro_f1", "std"),
+            micro_f1_mean=("micro_f1", "mean"),
+            micro_f1_std=("micro_f1", "std"),
         )
         agg.to_csv(output_dir / "metrics_summary_agg.csv", index=False)
         LOGGER.debug("Wrote %d rows to metrics_summary_agg.csv", len(agg))
@@ -150,10 +151,11 @@ def main() -> None:
             seed_scores = val_df.groupby("seed", as_index=False)["macro_f1"].mean()
             if not seed_scores.empty:
                 canonical_seed = int(
-                    seed_scores.sort_values("macro_f1", ascending=False)
-                    .iloc[0]["seed"]
+                    seed_scores.sort_values("macro_f1", ascending=False).iloc[0]["seed"]
                 )
-                LOGGER.info("Selected canonical seed from validation: %d", canonical_seed)
+                LOGGER.info(
+                    "Selected canonical seed from validation: %d", canonical_seed
+                )
 
     if canonical_seed is not None:
         results_for_analysis = {
@@ -165,9 +167,11 @@ def main() -> None:
             json.dumps(
                 {
                     "canonical_seed": canonical_seed,
-                    "source": "validation_macro_f1"
-                    if args.canonical_seed is None
-                    else "manual",
+                    "source": (
+                        "validation_macro_f1"
+                        if args.canonical_seed is None
+                        else "manual"
+                    ),
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -215,11 +219,16 @@ def main() -> None:
     test_rows: List[dict] = []
     for model in {m for (m, _, _, _) in results_for_analysis.keys()}:
         for rag in [False, True]:
-            for seed in {s for (m, _, _, s) in results_for_analysis.keys() if m == model}:
+            for seed in {
+                s for (m, _, _, s) in results_for_analysis.keys() if m == model
+            }:
                 key_sentence = (model, "sentence", rag, seed)
                 key_window = (model, "window", rag, seed)
                 key_doc = (model, "doc", rag, seed)
-                if key_sentence in results_for_analysis and key_window in results_for_analysis:
+                if (
+                    key_sentence in results_for_analysis
+                    and key_window in results_for_analysis
+                ):
                     y = results_for_analysis[key_sentence]["gold"]
                     a = results_for_analysis[key_window]["pred"]
                     b = results_for_analysis[key_sentence]["pred"]
@@ -256,7 +265,10 @@ def main() -> None:
                         }
                     )
 
-                if key_sentence in results_for_analysis and key_doc in results_for_analysis:
+                if (
+                    key_sentence in results_for_analysis
+                    and key_doc in results_for_analysis
+                ):
                     y = results_for_analysis[key_sentence]["gold"]
                     a = results_for_analysis[key_doc]["pred"]
                     b = results_for_analysis[key_sentence]["pred"]
@@ -295,10 +307,15 @@ def main() -> None:
 
         # RAG effect per context
         for context in ["sentence", "window", "doc"]:
-            for seed in {s for (m, _, _, s) in results_for_analysis.keys() if m == model}:
+            for seed in {
+                s for (m, _, _, s) in results_for_analysis.keys() if m == model
+            }:
                 key_no_rag = (model, context, False, seed)
                 key_rag = (model, context, True, seed)
-                if key_no_rag in results_for_analysis and key_rag in results_for_analysis:
+                if (
+                    key_no_rag in results_for_analysis
+                    and key_rag in results_for_analysis
+                ):
                     y = results_for_analysis[key_no_rag]["gold"]
                     a = results_for_analysis[key_rag]["pred"]
                     b = results_for_analysis[key_no_rag]["pred"]
@@ -338,7 +355,9 @@ def main() -> None:
     if test_rows:
         tests_df = pd.DataFrame(test_rows)
         tests_df.to_csv(output_dir / "significance_tests.csv", index=False)
-        LOGGER.info("Saved significance tests to %s", output_dir / "significance_tests.csv")
+        LOGGER.info(
+            "Saved significance tests to %s", output_dir / "significance_tests.csv"
+        )
         LOGGER.debug("Wrote %d rows to significance_tests.csv", len(tests_df))
 
     # Model comparison: DeBERTa vs Gemma (same context + RAG)
@@ -348,7 +367,10 @@ def main() -> None:
             for seed in {s for (_m, _c, _r, s) in results_for_analysis.keys()}:
                 key_deberta = ("deberta", context, rag, seed)
                 key_gemma = ("gemma", context, rag, seed)
-                if key_deberta in results_for_analysis and key_gemma in results_for_analysis:
+                if (
+                    key_deberta in results_for_analysis
+                    and key_gemma in results_for_analysis
+                ):
                     y = results_for_analysis[key_deberta]["gold"]
                     a = results_for_analysis[key_deberta]["pred"]
                     b = results_for_analysis[key_gemma]["pred"]
@@ -386,7 +408,9 @@ def main() -> None:
     if model_rows:
         model_df = pd.DataFrame(model_rows)
         model_df.to_csv(output_dir / "model_comparisons.csv", index=False)
-        LOGGER.info("Saved model comparisons to %s", output_dir / "model_comparisons.csv")
+        LOGGER.info(
+            "Saved model comparisons to %s", output_dir / "model_comparisons.csv"
+        )
         LOGGER.debug("Wrote %d rows to model_comparisons.csv", len(model_df))
 
 

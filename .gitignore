@@ -1,3 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# envs
+.venv/
+.env/
+.env*/
+
+# data, project & checkpoints
 data/raw
+data/kb/kb_index.faiss
+data/kb/kb_embeddings.npy
+src/value_context_rag.egg-info/
 results/checkpoints/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
 .DS_Store

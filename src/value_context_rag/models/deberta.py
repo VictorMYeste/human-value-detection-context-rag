@@ -71,7 +71,9 @@ def encode_batch(
         lengths = (encoded["input_ids"] != tokenizer.pad_token_id).sum(dim=1)
         max_len = int(lengths.max().item()) if lengths.numel() else 0
         mean_len = float(lengths.float().mean().item()) if lengths.numel() else 0.0
-        trunc_count = int((lengths >= max_length).sum().item()) if lengths.numel() else 0
+        trunc_count = (
+            int((lengths >= max_length).sum().item()) if lengths.numel() else 0
+        )
         LOGGER.debug(
             "Token lengths: max=%d mean=%.1f truncated=%d/%d",
             max_len,

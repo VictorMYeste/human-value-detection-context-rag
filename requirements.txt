@@ -1,0 +1,9 @@
+numpy
+pandas
+pyyaml
+transformers
+sentence-transformers
+faiss-cpu
+optuna
+# For GPU PyTorch (CUDA 12.2), install with:
+# pip install torch --index-url https://download.pytorch.org/whl/cu122

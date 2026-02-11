@@ -15,7 +15,9 @@ LOGGER = get_logger(__name__)
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Summarize KB value usage in predictions.")
+    parser = argparse.ArgumentParser(
+        description="Summarize KB value usage in predictions."
+    )
     parser.add_argument(
         "--predictions",
         required=True,

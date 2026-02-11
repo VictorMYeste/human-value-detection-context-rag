@@ -58,13 +58,23 @@ def main() -> None:
 
     results_dir = Path(config.get("results_dir", "results"))
     run_name = f"deberta_{context_type}_{rag_suffix}_seed{seed}_best"
-    ckpt_path = Path(args.checkpoint) if args.checkpoint else results_dir / "checkpoints" / f"{run_name}.pt"
+    ckpt_path = (
+        Path(args.checkpoint)
+        if args.checkpoint
+        else results_dir / "checkpoints" / f"{run_name}.pt"
+    )
     LOGGER.debug("Using checkpoint path: %s", ckpt_path)
 
     predictions_dir = results_dir / "predictions"
     logs_dir = results_dir / "logs"
-    pred_path = predictions_dir / f"deberta_{context_type}_{rag_suffix}_seed{seed}_{args.split}.jsonl"
-    metrics_path = logs_dir / f"deberta_{context_type}_{rag_suffix}_seed{seed}_{args.split}_metrics.json"
+    pred_path = (
+        predictions_dir
+        / f"deberta_{context_type}_{rag_suffix}_seed{seed}_{args.split}.jsonl"
+    )
+    metrics_path = (
+        logs_dir
+        / f"deberta_{context_type}_{rag_suffix}_seed{seed}_{args.split}_metrics.json"
+    )
 
     LOGGER.info("Evaluating checkpoint %s on %s split", ckpt_path, args.split)
     run_eval(
