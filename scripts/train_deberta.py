@@ -100,11 +100,11 @@ def main() -> None:
     logger.info("Starting DeBERTa training with config %s", args.config)
     logger.debug("Run name seed=%d context=%s rag=%s", seed, context_type, use_rag)
     logger.info(
-        "Run: model=deberta context=%s rag=%s seed=%d eval_test=%s dry_run=%s",
+        "Run: model=deberta context=%s rag=%s seed=%d eval=%s dry_run=%s",
         context_type,
         use_rag,
         seed,
-        args.eval_test,
+        args.eval,
         args.dry_run,
     )
 
