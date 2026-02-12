@@ -9,7 +9,7 @@ for seed in 42 7 1701; do
     configs/deberta_window_rag.yaml \
     configs/deberta_doc.yaml \
     configs/deberta_doc_rag.yaml; do
-      python scripts/train_deberta.py --config "$cfg" --seed "$seed" --max_samples 10 --dry_run --eval_test
+      python scripts/train_deberta.py --config "$cfg" --seed "$seed" --max_samples 10 --dry_run --eval
   done
 done
 
