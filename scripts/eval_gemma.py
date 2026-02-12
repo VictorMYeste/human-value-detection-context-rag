@@ -83,7 +83,10 @@ def main() -> None:
     if not pred_path.exists():
         raise FileNotFoundError(f"Predictions file not found: {pred_path}")
 
+    LOGGER.info("=" * 80)
+    LOGGER.info("Run: eval model=gemma predictions=%s", pred_path)
     evaluate_predictions(pred_path, debug=args.debug)
+    LOGGER.info("=" * 80)
 
 
 if __name__ == "__main__":

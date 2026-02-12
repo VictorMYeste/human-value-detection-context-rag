@@ -51,6 +51,17 @@ def main() -> None:
     if args.dry_run:
         config["results_dir"] = ".tmp/value-context-rag-smoke"
 
+    context_type = config.get("context", {}).get("type", "sentence")
+    use_rag = bool(config.get("rag", {}).get("enabled", False))
+    LOGGER.info("=" * 80)
+    LOGGER.info(
+        "Run: model=gemma context=%s rag=%s split=%s eval=%s dry_run=%s",
+        context_type,
+        use_rag,
+        args.split,
+        args.eval,
+        args.dry_run,
+    )
     LOGGER.info("Running Gemma with config %s on split %s", args.config, args.split)
     run_inference(config, split=args.split)
 
@@ -68,6 +79,7 @@ def main() -> None:
             / f"gemma_{context_type}_{rag_suffix}_{args.split}.jsonl"
         )
         evaluate_predictions(pred_path, debug=args.debug)
+    LOGGER.info("=" * 80)
 
 
 if __name__ == "__main__":

@@ -76,6 +76,14 @@ def main() -> None:
         / f"deberta_{context_type}_{rag_suffix}_seed{seed}_{args.split}_metrics.json"
     )
 
+    LOGGER.info("=" * 80)
+    LOGGER.info(
+        "Run: eval model=deberta context=%s rag=%s seed=%d split=%s",
+        context_type,
+        use_rag,
+        seed,
+        args.split,
+    )
     LOGGER.info("Evaluating checkpoint %s on %s split", ckpt_path, args.split)
     run_eval(
         config,
@@ -85,6 +93,7 @@ def main() -> None:
         output_metrics_path=metrics_path,
         debug=args.debug,
     )
+    LOGGER.info("=" * 80)
 
 
 if __name__ == "__main__":

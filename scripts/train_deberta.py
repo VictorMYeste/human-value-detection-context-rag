@@ -96,8 +96,17 @@ def main() -> None:
     log_file = log_dir / f"deberta_{context_type}_{rag_suffix}_seed{seed}.log"
 
     logger = get_logger(__name__, log_file=str(log_file))
+    logger.info("=" * 80)
     logger.info("Starting DeBERTa training with config %s", args.config)
     logger.debug("Run name seed=%d context=%s rag=%s", seed, context_type, use_rag)
+    logger.info(
+        "Run: model=deberta context=%s rag=%s seed=%d eval_test=%s dry_run=%s",
+        context_type,
+        use_rag,
+        seed,
+        args.eval_test,
+        args.dry_run,
+    )
 
     config["eval"] = True if args.eval else config.get("eval", False)
     run_name = f"deberta_{context_type}_{rag_suffix}_seed{seed}_best"
@@ -154,6 +163,8 @@ def main() -> None:
             batch_size=int(training_cfg.get("batch_size", 16)),
             debug=args.debug,
         )
+
+    logger.info("=" * 80)
 
 
 if __name__ == "__main__":
