@@ -74,64 +74,20 @@ python scripts/build_kb.py --kb_output_dir data/kb --overwrite
 
 ### Dry-run (smoke test, all configs)
 
-DeBERTa:
-
 ```bash
-for seed in 42 7 1701; do
-  for cfg in \
-    configs/deberta_sentence.yaml \
-    configs/deberta_sentence_rag.yaml \
-    configs/deberta_window.yaml \
-    configs/deberta_window_rag.yaml \
-    configs/deberta_doc.yaml \
-    configs/deberta_doc_rag.yaml; do
-      python scripts/train_deberta.py --config "$cfg" --seed "$seed" --max_samples 10 --eval --dry_run
-  done
-done
-```
-
-Gemma:
-
-```bash
-for cfg in \
-  configs/gemma_sentence.yaml \
-  configs/gemma_sentence_rag.yaml \
-  configs/gemma_window.yaml \
-  configs/gemma_window_rag.yaml \
-  configs/gemma_doc.yaml \
-  configs/gemma_doc_rag.yaml; do
-    python scripts/run_gemma.py --config "$cfg" --max_samples 5 --eval --dry_run
-done
+./scripts/run_smoke.sh
 ```
 
 ### DeBERTa (all contexts, RAG/no RAG, seeds 42/7/1701)
 
 ```bash
-for seed in 42 7 1701; do
-  for cfg in \
-    configs/deberta_sentence.yaml \
-    configs/deberta_sentence_rag.yaml \
-    configs/deberta_window.yaml \
-    configs/deberta_window_rag.yaml \
-    configs/deberta_doc.yaml \
-    configs/deberta_doc_rag.yaml; do
-      python scripts/train_deberta.py --config "$cfg" --seed "$seed" --eval
-  done
-done
+./scripts/run_deberta_all.sh
 ```
 
 ### Gemma (all contexts, RAG/no RAG)
 
 ```bash
-for cfg in \
-  configs/gemma_sentence.yaml \
-  configs/gemma_sentence_rag.yaml \
-  configs/gemma_window.yaml \
-  configs/gemma_window_rag.yaml \
-  configs/gemma_doc.yaml \
-  configs/gemma_doc_rag.yaml; do
-    python scripts/run_gemma.py --config "$cfg" --eval
-done
+./scripts/run_gemma_all.sh
 ```
 
 ## Analysis
