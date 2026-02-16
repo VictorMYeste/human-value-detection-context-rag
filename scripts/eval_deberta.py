@@ -7,7 +7,7 @@ from pathlib import Path
 
 from value_context_rag.models.training import run_eval
 from value_context_rag.utils.config import load_config
-from value_context_rag.utils.logging import get_logger
+from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 
 LOGGER = get_logger(__name__)
 
@@ -31,6 +31,29 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Enable debug logging.",
     )
+    parser.add_argument(
+        "--tune_threshold",
+        action="store_true",
+        help="Sweep thresholds on the split to maximize macro-F1.",
+    )
+    parser.add_argument(
+        "--threshold_start",
+        type=float,
+        default=0.0,
+        help="Threshold sweep start.",
+    )
+    parser.add_argument(
+        "--threshold_stop",
+        type=float,
+        default=1.0,
+        help="Threshold sweep stop.",
+    )
+    parser.add_argument(
+        "--threshold_step",
+        type=float,
+        default=0.01,
+        help="Threshold sweep step.",
+    )
     return parser.parse_args()
 
 
@@ -38,6 +61,8 @@ def main() -> None:
     args = _parse_args()
     if args.debug:
         LOGGER.setLevel("DEBUG")
+
+    silence_transformers_logging()
 
     config = load_config(args.config)
     LOGGER.debug("Loaded config keys: %s", list(config.keys()))
@@ -92,6 +117,10 @@ def main() -> None:
         output_pred_path=pred_path,
         output_metrics_path=metrics_path,
         debug=args.debug,
+        tune_threshold=args.tune_threshold,
+        threshold_start=args.threshold_start,
+        threshold_stop=args.threshold_stop,
+        threshold_step=args.threshold_step,
     )
     LOGGER.info("=" * 80)
 

@@ -10,7 +10,7 @@ import numpy as np
 
 from value_context_rag.data.dataset import get_label_names
 from value_context_rag.eval.metrics import compute_f1_metrics
-from value_context_rag.utils.logging import get_logger
+from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 
 LOGGER = get_logger(__name__)
 
@@ -78,6 +78,8 @@ def main() -> None:
     args = _parse_args()
     if args.debug:
         LOGGER.setLevel("DEBUG")
+
+    silence_transformers_logging()
 
     pred_path = Path(args.predictions)
     if not pred_path.exists():

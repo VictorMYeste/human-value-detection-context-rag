@@ -10,9 +10,9 @@ import torch
 from value_context_rag.data.dataset import get_label_names, load_split
 from value_context_rag.kb.retriever import init_retriever
 from value_context_rag.models.deberta import build_deberta_model
-from value_context_rag.models.training import save_predictions_jsonl, train_and_eval
+from value_context_rag.models.training import run_eval, save_predictions_jsonl, train_and_eval
 from value_context_rag.utils.config import load_config
-from value_context_rag.utils.logging import get_logger
+from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 from value_context_rag.utils.seed import set_seed
 
 LOGGER = get_logger(__name__)
@@ -59,7 +59,12 @@ def _parse_args() -> argparse.Namespace:
 def main() -> None:
     args = _parse_args()
     if args.debug:
-        LOGGER.setLevel("DEBUG")
+        import logging
+
+        logging.getLogger().setLevel(logging.DEBUG)
+        LOGGER.setLevel(logging.DEBUG)
+
+    silence_transformers_logging()
 
     config = load_config(args.config)
     LOGGER.debug("Loaded config keys: %s", list(config.keys()))
@@ -90,12 +95,17 @@ def main() -> None:
     if args.dry_run:
         results_dir = Path(".tmp/value-context-rag-smoke")
         config["results_dir"] = str(results_dir)
+        config["save_checkpoints"] = False
     log_dir = results_dir / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     rag_suffix = "rag" if use_rag else "no_rag"
     log_file = log_dir / f"deberta_{context_type}_{rag_suffix}_seed{seed}.log"
 
-    logger = get_logger(__name__, log_file=str(log_file))
+    logger = get_logger(__name__, log_file=str(log_file), overwrite=True)
+    # Attach the same log file to core module loggers so their INFO appears in one file.
+    get_logger("value_context_rag.models.training", log_file=str(log_file))
+    get_logger("value_context_rag.data.dataset", log_file=str(log_file))
+    get_logger("value_context_rag.models.deberta", log_file=str(log_file))
     logger.info("=" * 80)
     logger.info("Starting DeBERTa training with config %s", args.config)
     logger.debug("Run name seed=%d context=%s rag=%s", seed, context_type, use_rag)
@@ -111,7 +121,9 @@ def main() -> None:
     config["eval"] = True if args.eval else config.get("eval", False)
     run_name = f"deberta_{context_type}_{rag_suffix}_seed{seed}_best"
     LOGGER.debug("Checkpoint run name: %s", run_name)
-    if args.resume:
+    if args.dry_run:
+        resume_path = None
+    elif args.resume:
         resume_path = Path(args.resume)
     else:
         auto_path = results_dir / "checkpoints" / f"{run_name}_last.pt"
@@ -119,10 +131,24 @@ def main() -> None:
     train_and_eval(config, run_name=run_name, resume_path=resume_path)
 
     if args.eval or config.get("eval", False):
+        if not config.get("save_checkpoints", True):
+            logger.warning(
+                "Skipping eval: checkpoints disabled (dry_run=%s)", args.dry_run
+            )
+            logger.info("=" * 80)
+            return
         label_names = get_label_names()
-        model, tokenizer = build_deberta_model(num_labels=len(label_names))
+        model, tokenizer = build_deberta_model(
+            num_labels=len(label_names), label_names=label_names
+        )
         ckpt_path = results_dir / "checkpoints" / f"{run_name}.pt"
         if not ckpt_path.exists():
+            if args.dry_run:
+                logger.warning(
+                    "Skipping eval: best checkpoint not found at %s", ckpt_path
+                )
+                logger.info("=" * 80)
+                return
             raise FileNotFoundError(f"Best checkpoint not found at {ckpt_path}")
         LOGGER.debug("Loading checkpoint from %s", ckpt_path)
         model.load_state_dict(torch.load(ckpt_path, map_location="cpu"))
@@ -147,21 +173,23 @@ def main() -> None:
             predictions_dir / f"deberta_{context_type}_{rag_suffix}_seed{seed}.jsonl"
         )
 
-        save_predictions_jsonl(
-            model,
-            tokenizer,
-            test_df,
-            label_names,
-            pred_path,
-            context_type=context_type,
-            n_prev=n_prev,
-            n_next=n_next,
-            use_rag=use_rag,
-            top_k=top_k,
-            retriever=retriever,
-            max_length=int(training_cfg.get("max_length", 1024)),
-            batch_size=int(training_cfg.get("batch_size", 16)),
+        metrics_path = (
+            results_dir
+            / "logs"
+            / f"deberta_{context_type}_{rag_suffix}_seed{seed}_test_metrics.json"
+        )
+        metrics = run_eval(
+            config,
+            checkpoint_path=ckpt_path,
+            split="test",
+            output_pred_path=pred_path,
+            output_metrics_path=metrics_path,
             debug=args.debug,
+        )
+        logger.info(
+            "Test metrics - macro_f1=%.4f micro_f1=%.4f",
+            metrics.get("macro_f1", 0.0),
+            metrics.get("micro_f1", 0.0),
         )
 
     logger.info("=" * 80)

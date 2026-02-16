@@ -26,6 +26,12 @@ For GPU PyTorch (CUDA 12.2), install the CUDA wheel:
 pip install torch --index-url https://download.pytorch.org/whl/cu122
 ```
 
+If you see SentencePiece errors when loading DeBERTa, install:
+
+```bash
+pip install sentencepiece protobuf
+```
+
 ### Hugging Face Token (optional)
 
 Set `HF_TOKEN` to avoid rate limits and speed up model downloads:
@@ -47,13 +53,19 @@ docker run --rm -it value-context-rag-cpu python -V
 
 ```bash
 docker build -t value-context-rag-gpu -f Dockerfile.gpu .
-docker run --rm -it --gpus all value-context-rag-gpu python -c "import torch; print(torch.cuda.is_available())"
+docker run --rm -it --gpus all --env-file .env value-context-rag-gpu python -c "import torch; print(torch.cuda.is_available())"
+```
+
+If you update dependencies (e.g., `tiktoken`), rebuild the image after updating `requirements.txt` or `environment.yml`:
+
+```bash
+docker build -t value-context-rag-gpu -f Dockerfile.gpu .
 ```
 
 ### Quick interactive shell
 
 ```bash
-docker run --rm -it --gpus all -v "$PWD:/app" value-context-rag-gpu bash
+docker run --rm -it --gpus all --env-file .env -v "$PWD:/app" value-context-rag-gpu bash
 # inside:
 python scripts/train_deberta.py --config configs/deberta_sentence.yaml
 ```
@@ -61,7 +73,7 @@ python scripts/train_deberta.py --config configs/deberta_sentence.yaml
 ### Fire-and-forget
 
 ```bash
-docker run --rm --gpus all -v "$PWD:/app" value-context-rag-gpu python scripts/train_deberta.py --config configs/deberta_doc_rag.yaml
+docker run --rm --gpus all --env-file .env -v "$PWD:/app" value-context-rag-gpu python scripts/train_deberta.py --config configs/deberta_doc_rag.yaml
 ```
 
 ## Knowledge Base (build FAISS index)

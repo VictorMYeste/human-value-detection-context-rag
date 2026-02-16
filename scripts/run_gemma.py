@@ -7,7 +7,7 @@ from pathlib import Path
 
 from value_context_rag.llm.inference import run_inference
 from value_context_rag.utils.config import load_config
-from value_context_rag.utils.logging import get_logger
+from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 
 LOGGER = get_logger(__name__)
 
@@ -44,6 +44,8 @@ def main() -> None:
     args = _parse_args()
     if args.debug:
         LOGGER.setLevel("DEBUG")
+
+    silence_transformers_logging()
 
     config = load_config(args.config)
     if args.max_samples is not None:

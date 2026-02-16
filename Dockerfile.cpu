@@ -1,14 +1,16 @@
-FROM condaforge/miniforge3:latest
+FROM python:3.11-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tmux \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY environment.yml /app/environment.yml
-RUN conda env create -f /app/environment.yml \
-    && conda clean -afy
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt \
+    && pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
 COPY . /app
-RUN conda run -n value-context-rag pip install -e .
-
-SHELL ["conda", "run", "-n", "value-context-rag", "/bin/bash", "-c"]
+RUN pip install -e .
 
 CMD ["python", "-V"]

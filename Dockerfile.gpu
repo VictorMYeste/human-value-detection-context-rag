@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install Python 3.11 and tools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        python3.11 python3.11-venv python3-pip git \
+        python3.11 python3.11-venv python3-pip git tmux \
     && rm -rf /var/lib/apt/lists/*
 
 # Make "python" point to python3.11

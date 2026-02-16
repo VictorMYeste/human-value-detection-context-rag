@@ -5,5 +5,8 @@ transformers
 sentence-transformers
 faiss-cpu
 optuna
+tiktoken
+sentencepiece
+protobuf
 # For GPU PyTorch (CUDA 12.2), install with:
 # pip install torch --index-url https://download.pytorch.org/whl/cu122

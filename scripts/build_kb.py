@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 
 from value_context_rag.kb.retriever import load_chunks
-from value_context_rag.utils.logging import get_logger
+from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 
 LOGGER = get_logger(__name__)
 
@@ -50,6 +50,8 @@ def main() -> None:
     args = _parse_args()
     if args.debug:
         LOGGER.setLevel("DEBUG")
+
+    silence_transformers_logging()
 
     output_dir = Path(args.kb_output_dir)
     chunks_path = output_dir / "kb_chunks.jsonl"

@@ -18,13 +18,35 @@ from value_context_rag.data.context import (
     build_window_context,
 )
 from value_context_rag.data.dataset import get_label_names, load_split
-from value_context_rag.eval.metrics import compute_f1_metrics
+from value_context_rag.eval.metrics import compute_f1_metrics, sweep_thresholds
 from value_context_rag.kb.retriever import init_retriever
 from value_context_rag.models.deberta import build_deberta_model, encode_batch
 from value_context_rag.utils.logging import get_logger
 from value_context_rag.utils.seed import set_seed
 
 LOGGER = get_logger(__name__)
+
+
+def _save_hf_bundle(
+    model,
+    tokenizer,
+    label_names: list[str],
+    output_dir: Path,
+) -> None:
+    """Save model + tokenizer artifacts in a HF-friendly folder."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        model.save_pretrained(output_dir)
+    except Exception:
+        torch.save(model.state_dict(), output_dir / "pytorch_model.bin")
+    (output_dir / "label_names.json").write_text(
+        json.dumps(label_names, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    try:
+        tokenizer.save_pretrained(output_dir)
+    except Exception:
+        LOGGER.warning("Tokenizer could not be saved to %s", output_dir)
 
 
 @dataclass
@@ -197,7 +219,22 @@ def _build_dataloader(
     )
 
 
-def _evaluate(model, dataloader, device, label_names: list[str]) -> dict[str, float]:
+def _get_logits(outputs):
+    if isinstance(outputs, torch.Tensor):
+        return outputs
+    if hasattr(outputs, "logits"):
+        return outputs.logits
+    return outputs
+
+
+def _evaluate(
+    model,
+    dataloader,
+    device,
+    *,
+    label_names: list[str],
+    threshold: float,
+) -> dict[str, float]:
     model.eval()
     all_labels: list[np.ndarray] = []
     all_preds: list[np.ndarray] = []
@@ -206,9 +243,10 @@ def _evaluate(model, dataloader, device, label_names: list[str]) -> dict[str, fl
         for batch in dataloader:
             labels = batch.pop("labels").to(device)
             batch = {k: v.to(device) for k, v in batch.items()}
-            logits = model(**batch)
+            outputs = model(**batch)
+            logits = _get_logits(outputs)
             probs = torch.sigmoid(logits)
-            preds = (probs >= 0.5).long()
+            preds = (probs >= threshold).long()
             all_labels.append(labels.cpu().numpy())
             all_preds.append(preds.cpu().numpy())
 
@@ -232,6 +270,7 @@ def save_predictions_jsonl(
     retriever,
     max_length: int,
     batch_size: int,
+    threshold: float,
     debug: bool,
 ) -> None:
     """Run inference and save predictions to JSONL."""
@@ -266,9 +305,25 @@ def save_predictions_jsonl(
             encoded = encode_batch(tokenizer, batch_texts, max_length=max_length)
             encoded = {k: v.to(device) for k, v in encoded.items()}
             with torch.no_grad():
-                logits = model(**encoded)
+                outputs = model(**encoded)
+                logits = _get_logits(outputs)
                 probs = torch.sigmoid(logits).cpu().numpy()
-            preds = (probs >= 0.5).astype(int)
+            preds = (probs >= threshold).astype(int)
+            if debug and start == 0:
+                gold_rate = (
+                    float(batch_labels.mean()) if batch_labels.size else 0.0
+                )
+                pred_rate = float(preds.mean()) if preds.size else 0.0
+                LOGGER.debug(
+                    "Batch0 stats: gold_rate=%.4f pred_rate=%.4f "
+                    "probs[min=%.4f max=%.4f mean=%.4f] threshold=%.2f",
+                    gold_rate,
+                    pred_rate,
+                    float(probs.min()) if probs.size else 0.0,
+                    float(probs.max()) if probs.size else 0.0,
+                    float(probs.mean()) if probs.size else 0.0,
+                    threshold,
+                )
 
             for idx, pred_vec in enumerate(preds):
                 row_idx = start + idx
@@ -309,10 +364,16 @@ def run_eval(
     output_pred_path: Path,
     output_metrics_path: Path,
     debug: bool = False,
+    tune_threshold: bool = False,
+    threshold_start: float = 0.0,
+    threshold_stop: float = 1.0,
+    threshold_step: float = 0.01,
 ) -> dict[str, object]:
     """Run evaluation for a given split and save predictions + metrics."""
     label_names = get_label_names()
-    model, tokenizer = build_deberta_model(num_labels=len(label_names))
+    model, tokenizer = build_deberta_model(
+        num_labels=len(label_names), label_names=label_names
+    )
     if not checkpoint_path.exists():
         raise FileNotFoundError(f"Checkpoint not found at {checkpoint_path}")
     model.load_state_dict(torch.load(checkpoint_path, map_location="cpu"))
@@ -325,6 +386,7 @@ def run_eval(
     context_cfg = config.get("context", {})
     rag_cfg = config.get("rag", {})
     training_cfg = config.get("training", {})
+    threshold = float(training_cfg.get("pred_threshold", 0.5))
 
     context_type = context_cfg.get("type", "sentence")
     n_prev = int(context_cfg.get("n_prev", 2))
@@ -364,8 +426,10 @@ def run_eval(
 
     model.eval()
     all_preds: list[np.ndarray] = []
+    all_probs: list[np.ndarray] = []
     batch_size = int(training_cfg.get("batch_size", 16))
     max_length = int(training_cfg.get("max_length", 1024))
+    threshold = float(training_cfg.get("pred_threshold", 0.5))
 
     output_pred_path.parent.mkdir(parents=True, exist_ok=True)
     with output_pred_path.open("w", encoding="utf-8") as handle:
@@ -375,9 +439,24 @@ def run_eval(
             encoded = encode_batch(tokenizer, batch_texts, max_length=max_length)
             encoded = {k: v.to(device) for k, v in encoded.items()}
             with torch.no_grad():
-                logits = model(**encoded)
+                outputs = model(**encoded)
+                logits = _get_logits(outputs)
                 probs = torch.sigmoid(logits).cpu().numpy()
-            preds = (probs >= 0.5).astype(int)
+            preds = (probs >= threshold).astype(int)
+            all_probs.append(probs)
+            if debug and start == 0:
+                gold_rate = float(batch_labels.mean()) if batch_labels.size else 0.0
+                pred_rate = float(preds.mean()) if preds.size else 0.0
+                LOGGER.debug(
+                    "Eval batch0 stats: gold_rate=%.4f pred_rate=%.4f "
+                    "probs[min=%.4f max=%.4f mean=%.4f] threshold=%.2f",
+                    gold_rate,
+                    pred_rate,
+                    float(probs.min()) if probs.size else 0.0,
+                    float(probs.max()) if probs.size else 0.0,
+                    float(probs.mean()) if probs.size else 0.0,
+                    threshold,
+                )
             all_preds.append(preds)
 
             for idx, pred_vec in enumerate(preds):
@@ -410,6 +489,26 @@ def run_eval(
 
     y_pred = np.vstack(all_preds) if all_preds else np.zeros_like(labels)
     metrics = compute_f1_metrics(labels, y_pred, label_names=label_names)
+    if tune_threshold:
+        y_probs = np.vstack(all_probs) if all_probs else np.zeros_like(labels)
+        sweep = sweep_thresholds(
+            labels,
+            y_probs,
+            label_names=label_names,
+            start=threshold_start,
+            stop=threshold_stop,
+            step=threshold_step,
+        )
+        metrics["threshold_sweep"] = {
+            "best_threshold": sweep["best_threshold"],
+            "best_metrics": sweep["best_metrics"],
+        }
+        LOGGER.info(
+            "Best threshold=%.2f (macro_f1=%.4f micro_f1=%.4f)",
+            sweep["best_threshold"],
+            sweep["best_metrics"]["macro_f1"],
+            sweep["best_metrics"]["micro_f1"],
+        )
 
     output_metrics_path.parent.mkdir(parents=True, exist_ok=True)
     output_metrics_path.write_text(
@@ -437,6 +536,7 @@ def train_and_eval(
     learning_rate = float(training_cfg.get("learning_rate", 2e-5))
     weight_decay = float(training_cfg.get("weight_decay", 0.01))
     max_length = int(training_cfg.get("max_length", 512))
+    max_grad_norm = float(training_cfg.get("max_grad_norm", 1.0))
     early_patience = int(training_cfg.get("early_stopping_patience", 3))
 
     context_cfg = config.get("context", {})
@@ -474,6 +574,7 @@ def train_and_eval(
     train_labels = train_df[label_names].to_numpy(dtype=float)
     val_labels = val_df[label_names].to_numpy(dtype=float)
 
+    LOGGER.info("Building training contexts (%s)", context_type)
     train_texts = build_contexts(
         train_df,
         context_type=context_type,
@@ -484,6 +585,7 @@ def train_and_eval(
         retriever=retriever,
         debug=False,
     )
+    LOGGER.info("Building validation contexts (%s)", context_type)
     val_texts = build_contexts(
         val_df,
         context_type=context_type,
@@ -495,9 +597,15 @@ def train_and_eval(
         debug=False,
     )
 
-    model, tokenizer = build_deberta_model(num_labels=len(label_names))
+    model, tokenizer = build_deberta_model(
+        num_labels=len(label_names), label_names=label_names
+    )
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
+    if training_cfg.get("force_fp32", True):
+        model = model.float()
+        model.to(device)
+        LOGGER.info("Forced model parameters to fp32")
 
     train_loader = _build_dataloader(
         train_texts,
@@ -516,6 +624,33 @@ def train_and_eval(
         max_length=max_length,
     )
 
+    # Sanity check the first batch before training to catch NaNs early.
+    try:
+        first_batch = next(iter(train_loader))
+        first_labels = first_batch.pop("labels").to(device)
+        first_batch = {k: v.to(device) for k, v in first_batch.items()}
+        with torch.no_grad():
+            first_outputs = model(**first_batch)
+            first_logits = _get_logits(first_outputs)
+        if torch.isnan(first_logits).any() or torch.isinf(first_logits).any():
+            LOGGER.error("NaN/Inf logits detected in sanity check batch")
+            LOGGER.debug(
+                "Sanity logits stats: min=%.4f max=%.4f mean=%.4f",
+                first_logits.nan_to_num().min().item(),
+                first_logits.nan_to_num().max().item(),
+                first_logits.nan_to_num().mean().item(),
+            )
+            LOGGER.debug(
+                "Sanity labels stats: min=%.4f max=%.4f mean=%.4f",
+                first_labels.nan_to_num().min().item(),
+                first_labels.nan_to_num().max().item(),
+                first_labels.nan_to_num().mean().item(),
+            )
+            raise RuntimeError("Sanity check failed: NaN/Inf logits in first batch")
+    except StopIteration:
+        LOGGER.warning("Training dataloader is empty; skipping training")
+        return float("-inf")
+
     optimizer = torch.optim.AdamW(
         model.parameters(), lr=learning_rate, weight_decay=weight_decay
     )
@@ -527,6 +662,17 @@ def train_and_eval(
     last_path = ckpt_dir / f"{suffix}_last.pt"
     start_epoch = 1
     epochs_no_improve = 0
+    save_checkpoints = bool(config.get("save_checkpoints", True))
+    save_hf_model = bool(training_cfg.get("save_hf_model", True))
+    threshold = float(training_cfg.get("pred_threshold", 0.5))
+    LOGGER.info(
+        "Training config: batch=%d lr=%g wd=%g max_len=%d save_ckpt=%s",
+        batch_size,
+        learning_rate,
+        weight_decay,
+        max_length,
+        save_checkpoints,
+    )
 
     if resume_path is not None and resume_path.exists():
         checkpoint = torch.load(resume_path, map_location="cpu")
@@ -542,10 +688,13 @@ def train_and_eval(
         "train_truncated": 0,
         "train_total": 0,
     }
+    val_history: list[dict[str, float]] = []
 
     for epoch in range(start_epoch, num_epochs + 1):
         model.train()
         total_loss = 0.0
+        batches_used = 0
+        LOGGER.info("Starting epoch %d/%d", epoch, num_epochs)
         for batch in train_loader:
             labels = batch.pop("labels").to(device)
             batch = {k: v.to(device) for k, v in batch.items()}
@@ -556,26 +705,89 @@ def train_and_eval(
                 )
                 token_stats["train_total"] += int(lengths.numel())
             optimizer.zero_grad()
-            logits = model(**batch)
+            outputs = model(**batch)
+            logits = _get_logits(outputs)
+            if torch.isnan(logits).any() or torch.isinf(logits).any():
+                LOGGER.warning("NaN/Inf logits detected; skipping batch")
+                LOGGER.debug(
+                    "Logits stats: min=%.4f max=%.4f mean=%.4f",
+                    logits.nan_to_num().min().item(),
+                    logits.nan_to_num().max().item(),
+                    logits.nan_to_num().mean().item(),
+                )
+                LOGGER.debug(
+                    "Labels stats: min=%.4f max=%.4f mean=%.4f",
+                    labels.nan_to_num().min().item(),
+                    labels.nan_to_num().max().item(),
+                    labels.nan_to_num().mean().item(),
+                )
+                continue
+            if torch.isnan(labels).any() or torch.isinf(labels).any():
+                LOGGER.warning("NaN/Inf labels detected; skipping batch")
+                continue
             loss = loss_fn(logits, labels)
+            if torch.isnan(loss):
+                LOGGER.warning("NaN loss detected; skipping batch")
+                LOGGER.debug(
+                    "Logits stats: min=%.4f max=%.4f mean=%.4f",
+                    logits.min().item(),
+                    logits.max().item(),
+                    logits.mean().item(),
+                )
+                LOGGER.debug(
+                    "Labels stats: min=%.4f max=%.4f mean=%.4f",
+                    labels.min().item(),
+                    labels.max().item(),
+                    labels.mean().item(),
+                )
+                continue
             loss.backward()
+            if max_grad_norm > 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
             optimizer.step()
             total_loss += loss.item()
+            batches_used += 1
 
-        avg_loss = total_loss / max(len(train_loader), 1)
+        if batches_used == 0:
+            LOGGER.warning(
+                "No valid batches in epoch %d (all skipped due to NaN/Inf); "
+                "stopping training early.",
+                epoch,
+            )
+            break
+        avg_loss = total_loss / max(batches_used, 1)
         LOGGER.info("Epoch %d/%d - train loss %.4f", epoch, num_epochs, avg_loss)
 
-        metrics = _evaluate(model, val_loader, device, label_names=label_names)
+        LOGGER.info("Evaluating on validation split")
+        metrics = _evaluate(
+            model,
+            val_loader,
+            device,
+            label_names=label_names,
+            threshold=threshold,
+        )
         LOGGER.info(
             "Validation metrics - macro_f1=%.4f micro_f1=%.4f",
             metrics["macro_f1"],
             metrics["micro_f1"],
         )
+        val_history.append(
+            {
+                "epoch": float(epoch),
+                "macro_f1": float(metrics["macro_f1"]),
+                "micro_f1": float(metrics["micro_f1"]),
+            }
+        )
 
         if metrics["macro_f1"] > best_metric:
             best_metric = metrics["macro_f1"]
-            torch.save(model.state_dict(), best_path)
-            LOGGER.info("Saved best checkpoint to %s", best_path)
+            if save_checkpoints:
+                torch.save(model.state_dict(), best_path)
+                LOGGER.info("Saved best checkpoint to %s", best_path)
+                if save_hf_model:
+                    hf_dir = results_dir / "hf_models" / suffix
+                    _save_hf_bundle(model, tokenizer, label_names, hf_dir)
+                    LOGGER.info("Saved HF bundle to %s", hf_dir)
             epochs_no_improve = 0
         else:
             epochs_no_improve += 1
@@ -587,7 +799,7 @@ def train_and_eval(
                 )
                 break
 
-        if checkpoint_every > 0 and (epoch % checkpoint_every == 0):
+        if save_checkpoints and checkpoint_every > 0 and (epoch % checkpoint_every == 0):
             torch.save(
                 {
                     "model_state": model.state_dict(),
@@ -600,6 +812,7 @@ def train_and_eval(
             LOGGER.info("Saved last checkpoint to %s", last_path)
 
     if config.get("eval_test", False):
+        LOGGER.info("Evaluating on test split")
         test_df = load_split("test")
         test_labels = test_df[label_names].to_numpy(dtype=float)
         test_texts = build_contexts(
@@ -620,7 +833,13 @@ def train_and_eval(
             shuffle=False,
             max_length=max_length,
         )
-        test_metrics = _evaluate(model, test_loader, device, label_names=label_names)
+        test_metrics = _evaluate(
+            model,
+            test_loader,
+            device,
+            label_names=label_names,
+            threshold=threshold,
+        )
         LOGGER.info(
             "Test metrics - macro_f1=%.4f micro_f1=%.4f",
             test_metrics["macro_f1"],
@@ -638,4 +857,15 @@ def train_and_eval(
         encoding="utf-8",
     )
     LOGGER.info("Saved token stats to %s", stats_path)
+    if val_history:
+        LOGGER.info("Validation summary (per epoch):")
+        header = f"{'epoch':>5}  {'macro_f1':>8}  {'micro_f1':>8}"
+        LOGGER.info(header)
+        for row in val_history:
+            LOGGER.info(
+                "%5d  %8.4f  %8.4f",
+                int(row["epoch"]),
+                row["macro_f1"],
+                row["micro_f1"],
+            )
     return float(best_metric)

@@ -104,6 +104,38 @@ def compute_per_label_f1(
     return per_label_f1
 
 
+def compute_per_label_support(
+    gold: np.ndarray,
+    pred: np.ndarray,
+    *,
+    label_names: list[str],
+) -> dict[str, dict[str, float]]:
+    """Compute per-label support and prediction rates."""
+    gold = gold.astype(int)
+    pred = pred.astype(int)
+    total = int(gold.shape[0]) if gold.ndim == 2 else 0
+    LOGGER.debug("Computing per-label support for %d labels", len(label_names))
+    if gold.size == 0:
+        return {
+            name: {"gold": 0.0, "pred": 0.0, "gold_rate": 0.0, "pred_rate": 0.0}
+            for name in label_names
+        }
+
+    stats: dict[str, dict[str, float]] = {}
+    for col, name in enumerate(label_names):
+        gold_count = int(gold[:, col].sum())
+        pred_count = int(pred[:, col].sum())
+        gold_rate = gold_count / total if total > 0 else 0.0
+        pred_rate = pred_count / total if total > 0 else 0.0
+        stats[name] = {
+            "gold": float(gold_count),
+            "pred": float(pred_count),
+            "gold_rate": float(gold_rate),
+            "pred_rate": float(pred_rate),
+        }
+    return stats
+
+
 def macro_f1_from_arrays(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """Compute macro-F1 only, for efficient paired tests."""
     metrics = compute_global_metrics(y_true, y_pred)
@@ -119,10 +151,60 @@ def compute_f1_metrics(
     """Compute micro/macro F1 and per-label F1."""
     global_metrics = compute_global_metrics(y_true, y_pred)
     per_label_f1 = compute_per_label_f1(y_true, y_pred, label_names=label_names)
+    per_label_support = compute_per_label_support(
+        y_true, y_pred, label_names=label_names
+    )
     macro_f1 = global_metrics["macro_f1"]
     micro_f1 = global_metrics["micro_f1"]
     return {
         "micro_f1": float(micro_f1),
         "macro_f1": float(macro_f1),
         "per_label_f1": per_label_f1,
+        "per_label_support": per_label_support,
+    }
+
+
+def sweep_thresholds(
+    y_true: np.ndarray,
+    y_probs: np.ndarray,
+    *,
+    label_names: list[str],
+    start: float = 0.0,
+    stop: float = 1.0,
+    step: float = 0.01,
+) -> dict[str, object]:
+    """Sweep thresholds and return the best macro-F1."""
+    if y_true.size == 0:
+        return {
+            "best_threshold": 0.5,
+            "best_metrics": compute_f1_metrics(
+                y_true, y_true, label_names=label_names
+            ),
+            "sweep": [],
+        }
+
+    thresholds = np.arange(start, stop + 1e-9, step)
+    best_threshold = 0.5
+    best_macro = -1.0
+    sweep_rows: list[dict[str, float]] = []
+    for thr in thresholds:
+        y_pred = (y_probs >= thr).astype(int)
+        metrics = compute_f1_metrics(y_true, y_pred, label_names=label_names)
+        macro = float(metrics["macro_f1"])
+        micro = float(metrics["micro_f1"])
+        sweep_rows.append(
+            {"threshold": float(thr), "macro_f1": macro, "micro_f1": micro}
+        )
+        if macro > best_macro:
+            best_macro = macro
+            best_threshold = float(thr)
+
+    best_pred = (y_probs >= best_threshold).astype(int)
+    best_metrics = compute_f1_metrics(
+        y_true, best_pred, label_names=label_names
+    )
+    return {
+        "best_threshold": best_threshold,
+        "best_metrics": best_metrics,
+        "sweep": sweep_rows,
     }

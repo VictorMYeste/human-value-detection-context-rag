@@ -7,14 +7,15 @@ dependencies:
   - python=3.11
   - pip
   - pytorch
-#  - pytorch-cuda=12.2
+  - pytorch-cuda=12.2
   - numpy
   - pandas
   - pyyaml
   - faiss-cpu
   - optuna
-  - ipykernel
-  - jupyterlab
+  - tiktoken
+  - sentencepiece
+  - protobuf
   - pip:
       - transformers
       - sentence-transformers

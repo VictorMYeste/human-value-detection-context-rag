@@ -17,7 +17,7 @@ from value_context_rag.eval.analysis import (
 )
 from value_context_rag.eval.metrics import compute_global_metrics, macro_f1_from_arrays
 from value_context_rag.eval.stats import paired_bootstrap_delta, paired_permutation_test
-from value_context_rag.utils.logging import get_logger
+from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 
 LOGGER = get_logger(__name__)
 
@@ -90,6 +90,8 @@ def main() -> None:
     args = _parse_args()
     if args.debug:
         LOGGER.setLevel("DEBUG")
+
+    silence_transformers_logging()
 
     results_dir = Path(args.results_dir)
     output_dir = Path(args.output_dir)

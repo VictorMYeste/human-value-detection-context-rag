@@ -32,3 +32,9 @@ src/value_context_rag.egg-info/
 
 # Local temp outputs
 .tmp/
+
+# Local sync helper
+sync_to_server.sh
+
+# Environment secrets
+.env

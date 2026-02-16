@@ -111,7 +111,7 @@ class Retriever:
                 continue
             hits.append(chunk)
 
-        LOGGER.info("Retrieved %d chunks for query", len(hits))
+        LOGGER.debug("Retrieved %d chunks for query", len(hits))
         return hits
 
 

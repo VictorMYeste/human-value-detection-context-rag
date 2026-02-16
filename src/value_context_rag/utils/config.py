@@ -37,12 +37,16 @@ DEFAULTS: dict[str, Any] = {
     },
     "training": {
         "batch_size": 16,
-        "num_epochs": 10,
-        "learning_rate": 2e-5,
-        "weight_decay": 0.01,
+        "num_epochs": 20,
+        "learning_rate": 1e-5,
+        "weight_decay": 0.15,
         "max_length": 1024,
         "checkpoint_every_epochs": 1,
         "early_stopping_patience": 3,
+        "max_grad_norm": 1.0,
+        "force_fp32": True,
+        "pred_threshold": 0.2,
+        "save_hf_model": True,
     },
 }
 
