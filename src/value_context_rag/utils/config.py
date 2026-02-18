@@ -25,7 +25,7 @@ DEFAULTS: dict[str, Any] = {
     },
     "rag": {
         "enabled": False,
-        "top_k": 5,
+        "top_k": 2,
     },
     "llm": {
         "temperature": 0.0,
@@ -36,7 +36,7 @@ DEFAULTS: dict[str, Any] = {
         "quantization": "8bit",
     },
     "training": {
-        "batch_size": 16,
+        "batch_size": 8,
         "num_epochs": 20,
         "learning_rate": 1e-5,
         "weight_decay": 0.15,
@@ -45,8 +45,11 @@ DEFAULTS: dict[str, Any] = {
         "early_stopping_patience": 3,
         "max_grad_norm": 1.0,
         "force_fp32": True,
-        "pred_threshold": 0.2,
+        "pred_threshold": 0.18,
         "save_hf_model": True,
+        "grad_accum_steps": 2,
+        "collapse_threshold": 0.05,
+        "collapse_min_epochs": 5,
     },
 }
 

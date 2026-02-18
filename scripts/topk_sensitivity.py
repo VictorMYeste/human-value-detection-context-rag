@@ -1,35 +1,46 @@
-"""Grid search for DeBERTa hyperparameters (sentence, no RAG)."""
+"""Sensitivity check for RAG top_k on sentence baseline."""
 
 from __future__ import annotations
 
 import argparse
 import csv
-from itertools import product
 from pathlib import Path
 
-from value_context_rag.models.training import train_and_eval
+from value_context_rag.models.training import run_eval, train_and_eval
 from value_context_rag.utils.config import load_config
 from value_context_rag.utils.logging import get_logger, silence_transformers_logging
+from value_context_rag.utils.seed import set_seed
 
 LOGGER = get_logger(__name__)
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Grid search for DeBERTa hparams.")
+    parser = argparse.ArgumentParser(description="top_k sensitivity (sentence+RAG).")
     parser.add_argument(
         "--config",
         default="configs/deberta_sentence.yaml",
         help="Base config to use.",
     )
     parser.add_argument(
+        "--top_k_values",
+        default="1,2,3,4,5",
+        help="Comma-separated top_k values.",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for training.",
+    )
+    parser.add_argument(
         "--max_samples",
         type=int,
         default=None,
-        help="Limit samples for quick search.",
+        help="Limit samples for quick check.",
     )
     parser.add_argument(
         "--output",
-        default="results/analysis/grid_deberta_hparams.csv",
+        default="results/analysis/topk_sensitivity.csv",
         help="CSV path to store results.",
     )
     parser.add_argument(
@@ -52,71 +63,58 @@ def main() -> None:
         LOGGER.setLevel("DEBUG")
 
     silence_transformers_logging()
-
     base_config = load_config(args.config)
+    set_seed(args.seed)
 
-    weight_decays = [0.01, 0.1, 0.15]
-    batch_sizes = [8, 16]
-    max_lengths = [512, 1024]
-    learning_rates = [1e-5, 2e-5, 3e-5]
-
+    top_k_values = [int(x) for x in args.top_k_values.split(",") if x.strip()]
     results: list[dict[str, float]] = []
-    grid = list(product(learning_rates, weight_decays, batch_sizes, max_lengths))
-    LOGGER.info("Running grid with %d configurations", len(grid))
 
-    for idx, (lr, wd, batch, max_len) in enumerate(grid, start=1):
+    for top_k in top_k_values:
         config = dict(base_config)
         config["context"] = dict(base_config.get("context", {}))
         config["rag"] = dict(base_config.get("rag", {}))
         config["training"] = dict(base_config.get("training", {}))
+        config["seed"] = int(args.seed)
 
         config["context"]["type"] = "sentence"
-        config["rag"]["enabled"] = False
-
-        config["training"]["learning_rate"] = float(lr)
-        config["training"]["weight_decay"] = float(wd)
-        config["training"]["batch_size"] = int(batch)
-        config["training"]["max_length"] = int(max_len)
-        config["training"]["grad_accum_steps"] = 1
-        config["training"]["num_epochs"] = int(
-            config["training"].get("num_epochs", 10)
-        )
-        config["training"]["early_stopping_patience"] = int(
-            config["training"].get("early_stopping_patience", 3)
-        )
+        config["rag"]["enabled"] = True
+        config["rag"]["top_k"] = int(top_k)
 
         if args.max_samples is not None:
             config["max_samples"] = args.max_samples
 
-        run_name = (
-            f"grid_deberta_sentence_lr{lr}_wd{wd}_b{batch}_ml{max_len}"
-        )
-        LOGGER.info(
-            "[%d/%d] lr=%.1e wd=%.2f batch=%d max_len=%d",
-            idx,
-            len(grid),
-            lr,
-            wd,
-            batch,
-            max_len,
-        )
+        run_name = f"sens_topk_{top_k}_seed{args.seed}"
+        LOGGER.info("Running top_k=%d", top_k)
         attempts = max(args.retry_collapsed, 0) + 1
-        best_macro_f1 = float("-inf")
+        best_macro = float("-inf")
         collapsed = True
         for attempt in range(attempts):
             if attempt > 0:
                 LOGGER.warning("Retrying collapsed run (attempt %d/%d)", attempt + 1, attempts)
-            config["seed"] = int(base_config.get("seed", 42)) + attempt
-            best_macro_f1, collapsed = train_and_eval(config, run_name=run_name, resume_path=None)
+            config["seed"] = int(args.seed) + attempt
+            best_macro, collapsed = train_and_eval(config, run_name=run_name, resume_path=None)
             if not collapsed:
                 break
+
+        results_dir = Path(config.get("results_dir", "results"))
+        ckpt_path = results_dir / "checkpoints" / f"{run_name}.pt"
+        pred_path = results_dir / "predictions" / f"{run_name}_test.jsonl"
+        metrics_path = results_dir / "logs" / f"{run_name}_test_metrics.json"
+        metrics = run_eval(
+            config,
+            checkpoint_path=ckpt_path,
+            split="test",
+            output_pred_path=pred_path,
+            output_metrics_path=metrics_path,
+            debug=args.debug,
+        )
+
         results.append(
             {
-                "weight_decay": float(wd),
-                "batch_size": float(batch),
-                "max_length": float(max_len),
-                "learning_rate": float(lr),
-                "best_macro_f1": float(best_macro_f1),
+                "top_k": float(top_k),
+                "best_val_macro_f1": float(best_macro),
+                "test_macro_f1": float(metrics.get("macro_f1", 0.0)),
+                "test_micro_f1": float(metrics.get("micro_f1", 0.0)),
                 "collapsed": bool(collapsed),
             }
         )
@@ -127,17 +125,16 @@ def main() -> None:
         writer = csv.DictWriter(
             handle,
             fieldnames=[
-                "weight_decay",
-                "batch_size",
-                "max_length",
-                "learning_rate",
-                "best_macro_f1",
+                "top_k",
+                "best_val_macro_f1",
+                "test_macro_f1",
+                "test_micro_f1",
                 "collapsed",
             ],
         )
         writer.writeheader()
         writer.writerows(results)
-    LOGGER.info("Saved grid results to %s", output_path)
+    LOGGER.info("Saved top_k sensitivity results to %s", output_path)
 
 
 if __name__ == "__main__":

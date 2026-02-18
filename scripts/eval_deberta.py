@@ -14,7 +14,11 @@ LOGGER = get_logger(__name__)
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate a DeBERTa checkpoint.")
-    parser.add_argument("--config", required=True, help="Path to YAML config.")
+    parser.add_argument(
+        "--config",
+        required=True,
+        help="Path to YAML config."
+    )
     parser.add_argument(
         "--checkpoint",
         default=None,

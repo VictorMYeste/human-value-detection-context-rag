@@ -8,9 +8,8 @@ from pathlib import Path
 import torch
 
 from value_context_rag.data.dataset import get_label_names, load_split
-from value_context_rag.kb.retriever import init_retriever
 from value_context_rag.models.deberta import build_deberta_model
-from value_context_rag.models.training import run_eval, save_predictions_jsonl, train_and_eval
+from value_context_rag.models.training import run_eval, train_and_eval
 from value_context_rag.utils.config import load_config
 from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 from value_context_rag.utils.seed import set_seed
@@ -53,6 +52,12 @@ def _parse_args() -> argparse.Namespace:
         default=None,
         help="Path to a checkpoint to resume training from.",
     )
+    parser.add_argument(
+        "--retry_collapsed",
+        type=int,
+        default=1,
+        help="Retries for collapsed runs.",
+    )
     return parser.parse_args()
 
 
@@ -76,11 +81,7 @@ def main() -> None:
 
     context_cfg = config.get("context", {})
     rag_cfg = config.get("rag", {})
-    training_cfg = config.get("training", {})
-
     context_type = context_cfg.get("type", "sentence")
-    n_prev = int(context_cfg.get("n_prev", 2))
-    n_next = int(context_cfg.get("n_next", 2))
     use_rag = bool(rag_cfg.get("enabled", False))
     top_k = int(rag_cfg.get("top_k", 5))
     LOGGER.debug(
@@ -128,7 +129,18 @@ def main() -> None:
     else:
         auto_path = results_dir / "checkpoints" / f"{run_name}_last.pt"
         resume_path = auto_path if auto_path.exists() else None
-    train_and_eval(config, run_name=run_name, resume_path=resume_path)
+    attempts = max(args.retry_collapsed, 0) + 1
+    best_macro = float("-inf")
+    collapsed = True
+    for attempt in range(attempts):
+        if attempt > 0:
+            logger.warning("Retrying collapsed run (attempt %d/%d)", attempt + 1, attempts)
+        config["seed"] = seed + attempt
+        best_macro, collapsed = train_and_eval(
+            config, run_name=run_name, resume_path=resume_path if attempt == 0 else None
+        )
+        if not collapsed:
+            break
 
     if args.eval or config.get("eval", False):
         if not config.get("save_checkpoints", True):
@@ -154,16 +166,6 @@ def main() -> None:
         model.load_state_dict(torch.load(ckpt_path, map_location="cpu"))
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)
-
-        retriever = (
-            init_retriever(
-                rag_cfg.get("kb_path", "data/kb/kb_chunks.jsonl"),
-                rag_cfg.get("index_path", "data/kb/kb_index.faiss"),
-                debug=args.debug,
-            )
-            if use_rag
-            else None
-        )
 
         test_df = load_split("test")
         if args.max_samples is not None:

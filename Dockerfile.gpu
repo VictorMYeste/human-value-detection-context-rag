@@ -2,11 +2,19 @@ FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Create non-root user (configurable UID/GID)
+ARG USER_NAME=appuser
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+
 # Install Python 3.11 and tools
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        python3.11 python3.11-venv python3-pip git tmux \
+        python3.11 python3.11-venv python3-pip git tmux nano \
     && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -g ${GROUP_ID} ${USER_NAME} \
+    && useradd -m -u ${USER_ID} -g ${GROUP_ID} -s /bin/bash ${USER_NAME}
 
 # Make "python" point to python3.11
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
@@ -27,6 +35,8 @@ RUN python -m pip install --upgrade pip \
 # Copy the rest of the project and install in editable mode
 COPY . /app
 RUN python -m pip install -e .
+
+USER ${USER_NAME}
 
 # Default: just show Python version (you'll usually override cmd)
 CMD ["python", "-V"]

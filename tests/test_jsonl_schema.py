@@ -2,8 +2,6 @@ import json
 import tempfile
 from pathlib import Path
 
-import numpy as np
-
 from value_context_rag.eval.analysis import kb_values_per_prediction
 
 

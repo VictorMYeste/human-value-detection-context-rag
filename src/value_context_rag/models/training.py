@@ -32,6 +32,8 @@ def _save_hf_bundle(
     tokenizer,
     label_names: list[str],
     output_dir: Path,
+    *,
+    extra_info: dict | None = None,
 ) -> None:
     """Save model + tokenizer artifacts in a HF-friendly folder."""
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -47,6 +49,48 @@ def _save_hf_bundle(
         tokenizer.save_pretrained(output_dir)
     except Exception:
         LOGGER.warning("Tokenizer could not be saved to %s", output_dir)
+
+    # Ensure SentencePiece model and special tokens map exist.
+    spm_path = output_dir / "spm.model"
+    if not spm_path.exists():
+        vocab_files = getattr(tokenizer, "vocab_files_names", {})
+        spm_name = vocab_files.get("vocab_file")
+        spm_source = getattr(tokenizer, "vocab_file", None)
+        if spm_source and Path(spm_source).exists():
+            spm_path.write_bytes(Path(spm_source).read_bytes())
+    stm_path = output_dir / "special_tokens_map.json"
+    if not stm_path.exists():
+        try:
+            stm_path.write_text(
+                json.dumps(tokenizer.special_tokens_map, ensure_ascii=False, indent=2)
+                + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            LOGGER.warning("Could not write special_tokens_map.json to %s", output_dir)
+
+    # Save training args (minimal, for reproducibility).
+    training_args = extra_info or {}
+    torch.save(training_args, output_dir / "training_args.bin")
+
+    # Minimal model card
+    model_name = training_args.get("model_name", "microsoft/deberta-v3-base")
+    task = training_args.get("task", "multi_label_classification")
+    context = training_args.get("context_type", "sentence")
+    rag = training_args.get("use_rag", False)
+    top_k = training_args.get("top_k", None)
+    lines = [
+        "# DeBERTa-v3 Multi-label Model",
+        "",
+        f"- Base model: `{model_name}`",
+        f"- Task: `{task}`",
+        f"- Labels: `{len(label_names)}`",
+        f"- Context: `{context}`",
+        f"- RAG: `{rag}`",
+    ]
+    if top_k is not None:
+        lines.append(f"- RAG top_k: `{top_k}`")
+    (output_dir / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 @dataclass
@@ -173,7 +217,7 @@ def build_contexts(
                 )
             if chunks:
                 kb_text = "\n\n".join(chunk["text"] for chunk in chunks)
-                context = f"KNOWLEDGE:\\n{kb_text}\\n\\nTEXT:\\n{context}"
+                context = f"TEXT:\\n{context}\\n\\nKNOWLEDGE:\\n{kb_text}"
         if debug and len(contexts) < 3:
             LOGGER.debug("Sample context %d length=%d", len(contexts), len(context))
 
@@ -526,7 +570,7 @@ def train_and_eval(
     *,
     run_name: str | None = None,
     resume_path: Path | None = None,
-) -> float:
+) -> tuple[float, bool]:
     """Train DeBERTa and evaluate on validation (and optional test)."""
     set_seed(config.get("seed", 42))
 
@@ -536,8 +580,11 @@ def train_and_eval(
     learning_rate = float(training_cfg.get("learning_rate", 2e-5))
     weight_decay = float(training_cfg.get("weight_decay", 0.01))
     max_length = int(training_cfg.get("max_length", 512))
+    grad_accum_steps = int(training_cfg.get("grad_accum_steps", 1))
     max_grad_norm = float(training_cfg.get("max_grad_norm", 1.0))
     early_patience = int(training_cfg.get("early_stopping_patience", 3))
+    collapse_threshold = float(training_cfg.get("collapse_threshold", 0.01))
+    collapse_min_epochs = int(training_cfg.get("collapse_min_epochs", 3))
 
     context_cfg = config.get("context", {})
     context_type = context_cfg.get("type", "sentence")
@@ -666,11 +713,12 @@ def train_and_eval(
     save_hf_model = bool(training_cfg.get("save_hf_model", True))
     threshold = float(training_cfg.get("pred_threshold", 0.5))
     LOGGER.info(
-        "Training config: batch=%d lr=%g wd=%g max_len=%d save_ckpt=%s",
+        "Training config: batch=%d lr=%g wd=%g max_len=%d accum=%d save_ckpt=%s",
         batch_size,
         learning_rate,
         weight_decay,
         max_length,
+        grad_accum_steps,
         save_checkpoints,
     )
 
@@ -689,13 +737,15 @@ def train_and_eval(
         "train_total": 0,
     }
     val_history: list[dict[str, float]] = []
+    epochs_completed = 0
 
     for epoch in range(start_epoch, num_epochs + 1):
         model.train()
         total_loss = 0.0
         batches_used = 0
         LOGGER.info("Starting epoch %d/%d", epoch, num_epochs)
-        for batch in train_loader:
+        optimizer.zero_grad()
+        for step, batch in enumerate(train_loader, start=1):
             labels = batch.pop("labels").to(device)
             batch = {k: v.to(device) for k, v in batch.items()}
             if "input_ids" in batch:
@@ -725,7 +775,7 @@ def train_and_eval(
             if torch.isnan(labels).any() or torch.isinf(labels).any():
                 LOGGER.warning("NaN/Inf labels detected; skipping batch")
                 continue
-            loss = loss_fn(logits, labels)
+            loss = loss_fn(logits, labels) / max(grad_accum_steps, 1)
             if torch.isnan(loss):
                 LOGGER.warning("NaN loss detected; skipping batch")
                 LOGGER.debug(
@@ -742,11 +792,20 @@ def train_and_eval(
                 )
                 continue
             loss.backward()
+            if step % grad_accum_steps == 0:
+                if max_grad_norm > 0:
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
+                optimizer.step()
+                optimizer.zero_grad()
+            total_loss += loss.item()
+            batches_used += 1
+
+        # Flush gradients if we didn't hit an exact accumulation boundary.
+        if batches_used > 0 and (batches_used % grad_accum_steps != 0):
             if max_grad_norm > 0:
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
             optimizer.step()
-            total_loss += loss.item()
-            batches_used += 1
+            optimizer.zero_grad()
 
         if batches_used == 0:
             LOGGER.warning(
@@ -778,6 +837,7 @@ def train_and_eval(
                 "micro_f1": float(metrics["micro_f1"]),
             }
         )
+        epochs_completed += 1
 
         if metrics["macro_f1"] > best_metric:
             best_metric = metrics["macro_f1"]
@@ -786,7 +846,24 @@ def train_and_eval(
                 LOGGER.info("Saved best checkpoint to %s", best_path)
                 if save_hf_model:
                     hf_dir = results_dir / "hf_models" / suffix
-                    _save_hf_bundle(model, tokenizer, label_names, hf_dir)
+                    hf_meta = {
+                        "model_name": "microsoft/deberta-v3-base",
+                        "task": "multi_label_classification",
+                        "context_type": context_type,
+                        "use_rag": use_rag,
+                        "top_k": top_k,
+                        "seed": config.get("seed", 42),
+                        "batch_size": batch_size,
+                        "learning_rate": learning_rate,
+                        "weight_decay": weight_decay,
+                        "max_length": max_length,
+                        "num_epochs": num_epochs,
+                        "grad_accum_steps": grad_accum_steps,
+                        "pred_threshold": threshold,
+                    }
+                    _save_hf_bundle(
+                        model, tokenizer, label_names, hf_dir, extra_info=hf_meta
+                    )
                     LOGGER.info("Saved HF bundle to %s", hf_dir)
             epochs_no_improve = 0
         else:
@@ -868,4 +945,13 @@ def train_and_eval(
                 row["macro_f1"],
                 row["micro_f1"],
             )
-    return float(best_metric)
+    collapsed = False
+    if epochs_completed >= collapse_min_epochs and best_metric < collapse_threshold:
+        collapsed = True
+        LOGGER.warning(
+            "Run flagged as collapsed (best_macro_f1=%.4f < %.4f after %d epochs)",
+            best_metric,
+            collapse_threshold,
+            epochs_completed,
+        )
+    return float(best_metric), collapsed
