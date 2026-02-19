@@ -5,3 +5,6 @@ context:
   type: window
 rag:
   enabled: True
+training:
+  batch_size: 4
+  grad_accum_steps: 4

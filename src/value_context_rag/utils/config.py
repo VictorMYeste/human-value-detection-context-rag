@@ -25,7 +25,7 @@ DEFAULTS: dict[str, Any] = {
     },
     "rag": {
         "enabled": False,
-        "top_k": 2,
+        "top_k": 5,
     },
     "llm": {
         "temperature": 0.0,
