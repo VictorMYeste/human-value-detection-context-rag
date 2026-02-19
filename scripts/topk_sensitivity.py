@@ -90,9 +90,13 @@ def main() -> None:
         collapsed = True
         for attempt in range(attempts):
             if attempt > 0:
-                LOGGER.warning("Retrying collapsed run (attempt %d/%d)", attempt + 1, attempts)
+                LOGGER.warning(
+                    "Retrying collapsed run (attempt %d/%d)", attempt + 1, attempts
+                )
             config["seed"] = int(args.seed) + attempt
-            best_macro, collapsed = train_and_eval(config, run_name=run_name, resume_path=None)
+            best_macro, collapsed = train_and_eval(
+                config, run_name=run_name, resume_path=None
+            )
             if not collapsed:
                 break
 
