@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 import json
 import math
 from dataclasses import dataclass
@@ -25,6 +26,24 @@ from value_context_rag.utils.logging import get_logger
 from value_context_rag.utils.seed import set_seed
 
 LOGGER = get_logger(__name__)
+
+
+def _resolve_bf16(training_cfg: dict, device: torch.device) -> bool:
+    if not bool(training_cfg.get("bf16", False)):
+        return False
+    if device.type != "cuda":
+        LOGGER.warning("bf16 requested but CUDA is unavailable; falling back to fp32")
+        return False
+    if hasattr(torch.cuda, "is_bf16_supported") and not torch.cuda.is_bf16_supported():
+        LOGGER.warning("bf16 requested but CUDA bf16 is unsupported; falling back to fp32")
+        return False
+    return True
+
+
+def _autocast_context(use_bf16: bool):
+    if not use_bf16:
+        return nullcontext()
+    return torch.autocast(device_type="cuda", dtype=torch.bfloat16)
 
 
 def _save_hf_bundle(
@@ -153,6 +172,61 @@ def _build_document_index(
     return docs, index
 
 
+def _truncate_to_tokens(text: str, tokenizer, max_tokens: int) -> str:
+    if max_tokens <= 0:
+        return ""
+    tokens = tokenizer.encode(text, add_special_tokens=False)
+    if len(tokens) <= max_tokens:
+        return text
+    return tokenizer.decode(tokens[:max_tokens], skip_special_tokens=True)
+
+
+def _build_doc_budget_context(
+    doc_sentences: list[str],
+    target_idx: int,
+    *,
+    tokenizer,
+    max_tokens: int,
+    marker_style: str,
+) -> str:
+    def mark(sentence: str, is_target: bool) -> str:
+        if not is_target:
+            return sentence
+        if marker_style == "deberta":
+            return f"<TGT>{sentence}</TGT>"
+        return f"<<<<TARGET>>>> {sentence} <<<<END>>>>"
+
+    sentence_texts = [
+        mark(sent, idx == target_idx) for idx, sent in enumerate(doc_sentences)
+    ]
+    token_counts = [
+        len(tokenizer.encode(text, add_special_tokens=False))
+        for text in sentence_texts
+    ]
+
+    selected = {target_idx}
+    total_tokens = token_counts[target_idx]
+    offset = 1
+    while True:
+        added = False
+        for cand in (target_idx - offset, target_idx + offset):
+            if cand < 0 or cand >= len(doc_sentences):
+                continue
+            if cand in selected:
+                continue
+            if total_tokens + token_counts[cand] > max_tokens:
+                continue
+            selected.add(cand)
+            total_tokens += token_counts[cand]
+            added = True
+        if not added:
+            break
+        offset += 1
+
+    ordered = [idx for idx in range(len(doc_sentences)) if idx in selected]
+    return " ".join(sentence_texts[idx] for idx in ordered)
+
+
 def build_contexts(
     df,
     *,
@@ -163,6 +237,9 @@ def build_contexts(
     top_k: int,
     retriever,
     debug: bool,
+    tokenizer=None,
+    doc_budget_tokens: int | None = None,
+    kb_budget_tokens: int | None = None,
     collect_kb: bool = False,
 ) -> list[str] | tuple[list[str], list[list[dict]]]:
     docs, idx_map = _build_document_index(df)
@@ -196,12 +273,21 @@ def build_contexts(
                 debug=debug,
             )
         elif context_type == "doc":
-            context = build_doc_context(
-                doc_sentences,
-                target_idx,
-                marker_style="deberta",
-                debug=debug,
-            )
+            if tokenizer is not None and doc_budget_tokens:
+                context = _build_doc_budget_context(
+                    doc_sentences,
+                    target_idx,
+                    tokenizer=tokenizer,
+                    max_tokens=doc_budget_tokens,
+                    marker_style="deberta",
+                )
+            else:
+                context = build_doc_context(
+                    doc_sentences,
+                    target_idx,
+                    marker_style="deberta",
+                    debug=debug,
+                )
         else:
             raise ValueError(f"Unknown context type: {context_type}")
 
@@ -217,6 +303,10 @@ def build_contexts(
                 )
             if chunks:
                 kb_text = "\n\n".join(chunk["text"] for chunk in chunks)
+                if tokenizer is not None and kb_budget_tokens:
+                    kb_text = _truncate_to_tokens(
+                        kb_text, tokenizer, kb_budget_tokens
+                    )
                 context = f"TEXT:\\n{context}\\n\\nKNOWLEDGE:\\n{kb_text}"
         if debug and len(contexts) < 3:
             LOGGER.debug("Sample context %d length=%d", len(contexts), len(context))
@@ -244,11 +334,30 @@ def _build_dataloader(
         for text, label in zip(texts, labels, strict=False)
     ]
 
+    def _overflow_flags(batch_texts: list[str]) -> list[bool]:
+        encoded = tokenizer(
+            batch_texts,
+            truncation=True,
+            max_length=max_length,
+            return_overflowing_tokens=True,
+            return_length=True,
+            padding=False,
+        )
+        mapping = encoded.get("overflow_to_sample_mapping", [])
+        counts = [0 for _ in batch_texts]
+        for idx in mapping:
+            if 0 <= idx < len(counts):
+                counts[idx] += 1
+        return [c > 1 for c in counts]
+
     def collate(batch: list[TextExample]):
         batch_texts = [ex.text for ex in batch]
         batch_labels = torch.stack([ex.labels for ex in batch])
         encoded = encode_batch(tokenizer, batch_texts, max_length=max_length)
         encoded["labels"] = batch_labels
+        encoded["overflowed"] = torch.tensor(
+            _overflow_flags(batch_texts), dtype=torch.bool
+        )
         return encoded
 
     if shuffle:
@@ -278,6 +387,7 @@ def _evaluate(
     *,
     label_names: list[str],
     threshold: float,
+    use_bf16: bool = False,
 ) -> dict[str, float]:
     model.eval()
     all_labels: list[np.ndarray] = []
@@ -286,9 +396,11 @@ def _evaluate(
     with torch.no_grad():
         for batch in dataloader:
             labels = batch.pop("labels").to(device)
+            batch.pop("overflowed", None)
             batch = {k: v.to(device) for k, v in batch.items()}
-            outputs = model(**batch)
-            logits = _get_logits(outputs)
+            with _autocast_context(use_bf16):
+                outputs = model(**batch)
+                logits = _get_logits(outputs)
             probs = torch.sigmoid(logits)
             preds = (probs >= threshold).long()
             all_labels.append(labels.cpu().numpy())
@@ -315,7 +427,10 @@ def save_predictions_jsonl(
     max_length: int,
     batch_size: int,
     threshold: float,
+    doc_budget_tokens: int | None = None,
+    kb_budget_tokens: int | None = None,
     debug: bool,
+    use_bf16: bool = False,
 ) -> None:
     """Run inference and save predictions to JSONL."""
     model.eval()
@@ -332,6 +447,9 @@ def save_predictions_jsonl(
         top_k=top_k,
         retriever=retriever,
         debug=debug,
+        tokenizer=tokenizer,
+        doc_budget_tokens=doc_budget_tokens,
+        kb_budget_tokens=kb_budget_tokens,
         collect_kb=True,
     )
     if isinstance(contexts_result, tuple):
@@ -349,8 +467,9 @@ def save_predictions_jsonl(
             encoded = encode_batch(tokenizer, batch_texts, max_length=max_length)
             encoded = {k: v.to(device) for k, v in encoded.items()}
             with torch.no_grad():
-                outputs = model(**encoded)
-                logits = _get_logits(outputs)
+                with _autocast_context(use_bf16):
+                    outputs = model(**encoded)
+                    logits = _get_logits(outputs)
                 probs = torch.sigmoid(logits).cpu().numpy()
             preds = (probs >= threshold).astype(int)
             if debug and start == 0:
@@ -415,8 +534,11 @@ def run_eval(
 ) -> dict[str, object]:
     """Run evaluation for a given split and save predictions + metrics."""
     label_names = get_label_names()
+    model_name = config.get("model", {}).get("name", "microsoft/deberta-v3-base")
     model, tokenizer = build_deberta_model(
-        num_labels=len(label_names), label_names=label_names
+        num_labels=len(label_names),
+        model_name=model_name,
+        label_names=label_names,
     )
     if not checkpoint_path.exists():
         raise FileNotFoundError(f"Checkpoint not found at {checkpoint_path}")
@@ -430,13 +552,27 @@ def run_eval(
     context_cfg = config.get("context", {})
     rag_cfg = config.get("rag", {})
     training_cfg = config.get("training", {})
-    threshold = float(training_cfg.get("pred_threshold", 0.5))
+    use_bf16 = _resolve_bf16(training_cfg, device)
+    if use_bf16:
+        LOGGER.info("Enabled bf16 autocast for evaluation")
 
     context_type = context_cfg.get("type", "sentence")
     n_prev = int(context_cfg.get("n_prev", 2))
     n_next = int(context_cfg.get("n_next", 2))
     use_rag = bool(rag_cfg.get("enabled", False))
     top_k = int(rag_cfg.get("top_k", 5))
+    max_length = int(training_cfg.get("max_length", 1024))
+    kb_budget_tokens = rag_cfg.get("kb_max_tokens")
+    doc_budget_tokens = context_cfg.get("doc_max_tokens")
+    if doc_budget_tokens is None and kb_budget_tokens is not None:
+        doc_budget_tokens = max_length - int(kb_budget_tokens)
+
+    LOGGER.info(
+        "Context budgets: max_length=%d doc_budget=%s kb_budget=%s",
+        max_length,
+        str(doc_budget_tokens) if context_type == "doc" else "n/a",
+        str(kb_budget_tokens) if use_rag else "n/a",
+    )
 
     retriever = (
         init_retriever(
@@ -460,6 +596,9 @@ def run_eval(
         top_k=top_k,
         retriever=retriever,
         debug=debug,
+        tokenizer=tokenizer,
+        doc_budget_tokens=doc_budget_tokens if context_type == "doc" else None,
+        kb_budget_tokens=kb_budget_tokens if use_rag else None,
         collect_kb=True,
     )
     if isinstance(contexts_result, tuple):
@@ -472,7 +611,6 @@ def run_eval(
     all_preds: list[np.ndarray] = []
     all_probs: list[np.ndarray] = []
     batch_size = int(training_cfg.get("batch_size", 16))
-    max_length = int(training_cfg.get("max_length", 1024))
     threshold = float(training_cfg.get("pred_threshold", 0.5))
 
     output_pred_path.parent.mkdir(parents=True, exist_ok=True)
@@ -483,8 +621,9 @@ def run_eval(
             encoded = encode_batch(tokenizer, batch_texts, max_length=max_length)
             encoded = {k: v.to(device) for k, v in encoded.items()}
             with torch.no_grad():
-                outputs = model(**encoded)
-                logits = _get_logits(outputs)
+                with _autocast_context(use_bf16):
+                    outputs = model(**encoded)
+                    logits = _get_logits(outputs)
                 probs = torch.sigmoid(logits).cpu().numpy()
             preds = (probs >= threshold).astype(int)
             all_probs.append(probs)
@@ -585,15 +724,18 @@ def train_and_eval(
     early_patience = int(training_cfg.get("early_stopping_patience", 3))
     collapse_threshold = float(training_cfg.get("collapse_threshold", 0.01))
     collapse_min_epochs = int(training_cfg.get("collapse_min_epochs", 3))
+    model_name = config.get("model", {}).get("name", "microsoft/deberta-v3-base")
 
     context_cfg = config.get("context", {})
     context_type = context_cfg.get("type", "sentence")
     n_prev = int(context_cfg.get("n_prev", 2))
     n_next = int(context_cfg.get("n_next", 2))
+    doc_budget_tokens = context_cfg.get("doc_max_tokens")
 
     rag_cfg = config.get("rag", {})
     use_rag = bool(rag_cfg.get("enabled", False))
     top_k = int(rag_cfg.get("top_k", 5))
+    kb_budget_tokens = rag_cfg.get("kb_max_tokens")
 
     results_dir = Path(config.get("results_dir", "results"))
     ckpt_dir = results_dir / "checkpoints"
@@ -621,6 +763,37 @@ def train_and_eval(
     train_labels = train_df[label_names].to_numpy(dtype=float)
     val_labels = val_df[label_names].to_numpy(dtype=float)
 
+    model, tokenizer = build_deberta_model(
+        num_labels=len(label_names),
+        model_name=model_name,
+        label_names=label_names,
+    )
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    use_bf16 = _resolve_bf16(training_cfg, device)
+    if training_cfg.get("gradient_checkpointing", False):
+        try:
+            model.gradient_checkpointing_enable()
+            LOGGER.info("Enabled gradient checkpointing")
+        except Exception:
+            LOGGER.warning("Gradient checkpointing not supported by this model")
+    model.to(device)
+    if training_cfg.get("force_fp32", not use_bf16):
+        model = model.float()
+        model.to(device)
+        LOGGER.info("Forced model parameters to fp32")
+    elif use_bf16:
+        LOGGER.info("Enabled bf16 autocast for training/evaluation")
+
+    if doc_budget_tokens is None and kb_budget_tokens is not None:
+        doc_budget_tokens = max_length - int(kb_budget_tokens)
+
+    LOGGER.info(
+        "Context budgets: max_length=%d doc_budget=%s kb_budget=%s",
+        max_length,
+        str(doc_budget_tokens) if context_type == "doc" else "n/a",
+        str(kb_budget_tokens) if use_rag else "n/a",
+    )
+
     LOGGER.info("Building training contexts (%s)", context_type)
     train_texts = build_contexts(
         train_df,
@@ -631,6 +804,9 @@ def train_and_eval(
         top_k=top_k,
         retriever=retriever,
         debug=False,
+        tokenizer=tokenizer,
+        doc_budget_tokens=doc_budget_tokens if context_type == "doc" else None,
+        kb_budget_tokens=kb_budget_tokens if use_rag else None,
     )
     LOGGER.info("Building validation contexts (%s)", context_type)
     val_texts = build_contexts(
@@ -642,17 +818,10 @@ def train_and_eval(
         top_k=top_k,
         retriever=retriever,
         debug=False,
+        tokenizer=tokenizer,
+        doc_budget_tokens=doc_budget_tokens if context_type == "doc" else None,
+        kb_budget_tokens=kb_budget_tokens if use_rag else None,
     )
-
-    model, tokenizer = build_deberta_model(
-        num_labels=len(label_names), label_names=label_names
-    )
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    if training_cfg.get("force_fp32", True):
-        model = model.float()
-        model.to(device)
-        LOGGER.info("Forced model parameters to fp32")
 
     train_loader = _build_dataloader(
         train_texts,
@@ -677,8 +846,9 @@ def train_and_eval(
         first_labels = first_batch.pop("labels").to(device)
         first_batch = {k: v.to(device) for k, v in first_batch.items()}
         with torch.no_grad():
-            first_outputs = model(**first_batch)
-            first_logits = _get_logits(first_outputs)
+            with _autocast_context(use_bf16):
+                first_outputs = model(**first_batch)
+                first_logits = _get_logits(first_outputs)
         if torch.isnan(first_logits).any() or torch.isinf(first_logits).any():
             LOGGER.error("NaN/Inf logits detected in sanity check batch")
             LOGGER.debug(
@@ -747,16 +917,15 @@ def train_and_eval(
         optimizer.zero_grad()
         for step, batch in enumerate(train_loader, start=1):
             labels = batch.pop("labels").to(device)
+            overflowed = batch.pop("overflowed", None)
             batch = {k: v.to(device) for k, v in batch.items()}
-            if "input_ids" in batch:
-                lengths = (batch["input_ids"] != 0).sum(dim=1)
-                token_stats["train_truncated"] += int(
-                    (lengths >= max_length).sum().item()
-                )
-                token_stats["train_total"] += int(lengths.numel())
+            if overflowed is not None and epoch == start_epoch:
+                token_stats["train_truncated"] += int(overflowed.sum().item())
+                token_stats["train_total"] += int(overflowed.numel())
             optimizer.zero_grad()
-            outputs = model(**batch)
-            logits = _get_logits(outputs)
+            with _autocast_context(use_bf16):
+                outputs = model(**batch)
+                logits = _get_logits(outputs)
             if torch.isnan(logits).any() or torch.isinf(logits).any():
                 LOGGER.warning("NaN/Inf logits detected; skipping batch")
                 LOGGER.debug(
@@ -775,7 +944,7 @@ def train_and_eval(
             if torch.isnan(labels).any() or torch.isinf(labels).any():
                 LOGGER.warning("NaN/Inf labels detected; skipping batch")
                 continue
-            loss = loss_fn(logits, labels) / max(grad_accum_steps, 1)
+            loss = loss_fn(logits.float(), labels.float()) / max(grad_accum_steps, 1)
             if torch.isnan(loss):
                 LOGGER.warning("NaN loss detected; skipping batch")
                 LOGGER.debug(
@@ -824,6 +993,7 @@ def train_and_eval(
             device,
             label_names=label_names,
             threshold=threshold,
+            use_bf16=use_bf16,
         )
         LOGGER.info(
             "Validation metrics - macro_f1=%.4f micro_f1=%.4f",
@@ -847,7 +1017,7 @@ def train_and_eval(
                 if save_hf_model:
                     hf_dir = results_dir / "hf_models" / suffix
                     hf_meta = {
-                        "model_name": "microsoft/deberta-v3-base",
+                        "model_name": model_name,
                         "task": "multi_label_classification",
                         "context_type": context_type,
                         "use_rag": use_rag,
@@ -901,6 +1071,9 @@ def train_and_eval(
             top_k=top_k,
             retriever=retriever,
             debug=False,
+            tokenizer=tokenizer,
+            doc_budget_tokens=doc_budget_tokens if context_type == "doc" else None,
+            kb_budget_tokens=kb_budget_tokens if use_rag else None,
         )
         test_loader = _build_dataloader(
             test_texts,
@@ -929,6 +1102,7 @@ def train_and_eval(
         token_stats["train_truncated_rate"] = (
             token_stats["train_truncated"] / token_stats["train_total"]
         )
+    token_stats["truncation_method"] = "overflow_to_sample_mapping"
     stats_path.write_text(
         json.dumps(token_stats, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

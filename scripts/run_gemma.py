@@ -68,7 +68,11 @@ def main() -> None:
     run_inference(config, split=args.split)
 
     if args.eval:
-        from scripts.eval_gemma import evaluate_predictions
+        try:
+            from scripts.eval_gemma import evaluate_predictions
+        except ModuleNotFoundError:
+            # When executed as `python scripts/run_gemma.py`, `scripts` is not a package.
+            from eval_gemma import evaluate_predictions
 
         context_type = config.get("context", {}).get("type", "sentence")
         use_rag = bool(config.get("rag", {}).get("enabled", False))

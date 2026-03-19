@@ -1,7 +1,9 @@
 numpy
 pandas
 pyyaml
-transformers
+transformers>=4.50.0
+accelerate
+bitsandbytes
 sentence-transformers
 faiss-cpu
 optuna

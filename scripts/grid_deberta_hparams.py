@@ -57,7 +57,8 @@ def main() -> None:
 
     weight_decays = [0.01, 0.1, 0.15]
     batch_sizes = [8, 16]
-    max_lengths = [512, 1024]
+    # max_lengths = [512, 1024]
+    max_lengths = [1024]
     learning_rates = [1e-5, 2e-5, 3e-5]
 
     results: list[dict[str, float]] = []

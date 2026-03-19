@@ -3,5 +3,9 @@ model:
   name: google/gemma-3-12b-it
 context:
   type: sentence
+llm:
+  log_prompts: true
+  log_prompts_n: 1
+  log_prompt_max_chars: 12000
 rag:
   enabled: True

@@ -55,7 +55,7 @@ def build_window_context(
     marker_style: MarkerStyle = "deberta",
     debug: bool = False,
 ) -> str:
-    """Return a window of sentences around the target, optionally marked."""
+    """Return a window of sentences around the target."""
     _ensure_index(doc_sentences, target_idx)
 
     start = max(0, target_idx - n_prev)
@@ -71,9 +71,6 @@ def build_window_context(
         )
 
     window = [str(s) for s in doc_sentences[start:end]]
-    target_pos = target_idx - start
-    window[target_pos] = _wrap_target(window[target_pos], marker_style)
-
     context = " ".join(window).strip()
     if debug:
         LOGGER.debug("Window context length=%d", len(context))
@@ -88,7 +85,7 @@ def build_doc_context(
     marker_style: MarkerStyle = "deberta",
     debug: bool = False,
 ) -> str:
-    """Return a full-document context with the target sentence marked."""
+    """Return a full-document context."""
     _ensure_index(doc_sentences, target_idx)
 
     if debug:
@@ -99,18 +96,7 @@ def build_doc_context(
             marker_style,
         )
 
-    if marker_style == "gemma":
-        lines = []
-        for idx, sentence in enumerate(doc_sentences, start=1):
-            line = f"{idx}: {sentence}"
-            if idx - 1 == target_idx:
-                line = _wrap_target(line, marker_style)
-            lines.append(line)
-        context = "\n".join(lines).strip()
-    else:
-        sentences = [str(s) for s in doc_sentences]
-        sentences[target_idx] = _wrap_target(sentences[target_idx], marker_style)
-        context = " ".join(sentences).strip()
+    context = " ".join(str(s) for s in doc_sentences).strip()
 
     if debug:
         LOGGER.debug("Doc context length=%d", len(context))

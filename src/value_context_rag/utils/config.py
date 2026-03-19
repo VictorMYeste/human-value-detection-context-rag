@@ -22,10 +22,12 @@ DEFAULTS: dict[str, Any] = {
         "type": "sentence",
         "n_prev": 2,
         "n_next": 2,
+        "doc_max_tokens": None,
     },
     "rag": {
         "enabled": False,
-        "top_k": 5,
+        "top_k": 2,
+        "kb_max_tokens": 200,
     },
     "llm": {
         "temperature": 0.0,
@@ -50,6 +52,7 @@ DEFAULTS: dict[str, Any] = {
         "grad_accum_steps": 2,
         "collapse_threshold": 0.05,
         "collapse_min_epochs": 5,
+        "gradient_checkpointing": False,
     },
 }
 

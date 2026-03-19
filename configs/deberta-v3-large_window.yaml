@@ -1,0 +1,10 @@
+model:
+  family: deberta
+  name: microsoft/deberta-v3-large
+context:
+  type: window
+rag:
+  enabled: False
+training:
+  bf16: True
+  gradient_checkpointing: True

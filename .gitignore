@@ -15,6 +15,7 @@ data/raw
 data/kb/kb_index.faiss
 data/kb/kb_embeddings.npy
 results/checkpoints/
+notebooks/colab_launcher_custom.ipynb
 
 # Jupyter
 .ipynb_checkpoints/
@@ -33,8 +34,12 @@ src/value_context_rag.egg-info/
 # Local temp outputs
 .tmp/
 
+# Backup files
+*.bk
+
 # Local sync helper
-sync_to_server.sh
+sync_to_server*
+run_local.sh
 
 # Environment secrets
 .env

@@ -1,4 +1,4 @@
-"""DeBERTa-v3-base model utilities."""
+"""DeBERTa model utilities."""
 
 from __future__ import annotations
 
@@ -91,9 +91,10 @@ class DebertaV3ForMultiLabelClassification(torch.nn.Module):
 def build_deberta_model(
     num_labels: int,
     *,
+    model_name: str = "microsoft/deberta-v3-base",
     label_names: list[str] | None = None,
 ) -> tuple[nn.Module, object]:
-    """Load DeBERTa-v3-base and return (model, tokenizer)."""
+    """Load a DeBERTa checkpoint and return (model, tokenizer)."""
     try:
         from transformers import (  # type: ignore
             AutoConfig,
@@ -103,7 +104,6 @@ def build_deberta_model(
     except Exception as exc:  # pragma: no cover - optional dependency
         raise ImportError("transformers is required for DeBERTa") from exc
 
-    model_name = "microsoft/deberta-v3-base"
     LOGGER.info("Loading DeBERTa model %s", model_name)
     LOGGER.debug("Initializing tokenizer for %s", model_name)
     tokenizer = AutoTokenizer.from_pretrained(model_name)

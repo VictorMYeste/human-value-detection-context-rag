@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import re
+import sys
 from pathlib import Path
 
 from value_context_rag.data.context import (
@@ -33,14 +35,32 @@ def parse_labels(raw_output: str, label_names: list[str]) -> list[str]:
         LOGGER.debug("Model returned NONE")
         return []
 
-    candidates = [c.strip() for c in normalized.split(",") if c.strip()]
+    candidates: list[str] = []
+    # Support JSON-like outputs (list or {"labels": [...]}) besides CSV.
+    if normalized.startswith("[") or normalized.startswith("{"):
+        try:
+            parsed_obj = json.loads(normalized)
+            if isinstance(parsed_obj, list):
+                candidates = [str(c).strip() for c in parsed_obj if str(c).strip()]
+            elif isinstance(parsed_obj, dict) and isinstance(parsed_obj.get("labels"), list):
+                candidates = [
+                    str(c).strip() for c in parsed_obj["labels"] if str(c).strip()
+                ]
+        except Exception:
+            candidates = []
+
+    if not candidates:
+        split_like_csv = re.split(r"[,;\n]+", normalized)
+        candidates = [c.strip() for c in split_like_csv if c.strip()]
     if not candidates:
         return []
 
     canonical = {name.lower(): name for name in label_names}
     parsed: list[str] = []
     for cand in candidates:
-        key = cand.lower()
+        cleaned = cand.strip().strip("\"'`*_- ")
+        cleaned = re.sub(r"[.!?]+$", "", cleaned)
+        key = cleaned.lower()
         if key in canonical and canonical[key] not in parsed:
             parsed.append(canonical[key])
         else:
@@ -60,6 +80,9 @@ def run_inference(config: dict, split: str) -> None:
     context_cfg = config.get("context", {})
     rag_cfg = config.get("rag", {})
     llm_cfg = config.get("llm", {})
+    log_prompts = bool(llm_cfg.get("log_prompts", False))
+    log_prompts_n = int(llm_cfg.get("log_prompts_n", 1))
+    log_prompt_max_chars = int(llm_cfg.get("log_prompt_max_chars", 4000))
 
     context_type = context_cfg.get("type", "sentence")
     n_prev = int(context_cfg.get("n_prev", 2))
@@ -122,14 +145,37 @@ def run_inference(config: dict, split: str) -> None:
                 "Resuming inference: %d predictions already exist", len(existing)
             )
 
+    records = df.to_dict(orient="records")
+    already_done = sum(
+        1
+        for row in records
+        if (str(row["text_id"]), str(row["sent_id"])) in existing
+    )
+    pending_total = len(records) - already_done
+    LOGGER.info(
+        "Inference queue: total=%d pending=%d already_done=%d",
+        len(records),
+        pending_total,
+        already_done,
+    )
+
     mode = "a" if output_path.exists() else "w"
     with output_path.open(mode, encoding="utf-8") as handle:
-        for row in df.to_dict(orient="records"):
+        processed = 0
+        for row in records:
             text_id = str(row["text_id"])
             sent_id = str(row["sent_id"])
             if (text_id, sent_id) in existing:
                 continue
+            processed += 1
             target_text = str(row["text"])
+
+            progress_msg = (
+                f"Inference progress {processed}/{pending_total} "
+                f"(text_id={text_id} sent_id={sent_id})"
+            )
+            sys.stderr.write("\r" + progress_msg)
+            sys.stderr.flush()
 
             doc_sentences = df[df["text_id"] == text_id]["text"].tolist()
             target_idx = doc_sentences.index(target_text)
@@ -193,6 +239,21 @@ def run_inference(config: dict, split: str) -> None:
                     token_stats["max_prompt_tokens"],
                 )
 
+            if log_prompts and processed <= log_prompts_n:
+                rendered_prompt = client.preview_model_prompt(prompt)
+                if len(rendered_prompt) > log_prompt_max_chars:
+                    rendered_prompt = (
+                        rendered_prompt[:log_prompt_max_chars] + "\n...[prompt truncated]..."
+                    )
+                LOGGER.info(
+                    "Model prompt %d/%d for text_id=%s sent_id=%s:\n%s",
+                    processed,
+                    pending_total,
+                    text_id,
+                    sent_id,
+                    rendered_prompt,
+                )
+
             raw = client.generate(
                 prompt,
                 max_tokens=int(llm_cfg.get("max_tokens", 256)),
@@ -227,6 +288,18 @@ def run_inference(config: dict, split: str) -> None:
                 "raw_output": raw,
             }
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+            handle.flush()
+            LOGGER.debug(
+                "Finished inference %d/%d for text_id=%s sent_id=%s with %d predicted labels",
+                processed,
+                pending_total,
+                text_id,
+                sent_id,
+                len(pred_labels),
+            )
+        if pending_total > 0:
+            sys.stderr.write("\n")
+            sys.stderr.flush()
 
     LOGGER.info("Saved predictions to %s", output_path)
 

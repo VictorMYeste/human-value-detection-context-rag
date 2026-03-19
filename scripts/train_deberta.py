@@ -150,8 +150,11 @@ def main() -> None:
             logger.info("=" * 80)
             return
         label_names = get_label_names()
+        model_name = config.get("model", {}).get("name", "microsoft/deberta-v3-base")
         model, tokenizer = build_deberta_model(
-            num_labels=len(label_names), label_names=label_names
+            num_labels=len(label_names),
+            model_name=model_name,
+            label_names=label_names,
         )
         ckpt_path = results_dir / "checkpoints" / f"{run_name}.pt"
         if not ckpt_path.exists():

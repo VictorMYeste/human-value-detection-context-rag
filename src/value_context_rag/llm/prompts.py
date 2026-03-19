@@ -57,6 +57,7 @@ VALUE_DEFINITIONS = {
 
 
 TASK_DESCRIPTION = (
+    "TASK:\n"
     "You are a classifier for human values in sentences. "
     "Given a TARGET SENTENCE and its context, identify which Schwartz values are present."
 )
@@ -73,7 +74,7 @@ def _format_knowledge(kb_snippets: Iterable[str] | None) -> str:
 
 
 def _format_values() -> str:
-    lines = ["Schwartz value definitions:"]
+    lines = ["SCHWARTZ VALUE DEFINITIONS:"]
     for name in VALUE_NAMES:
         definition = VALUE_DEFINITIONS.get(name, "")
         if definition:
@@ -85,7 +86,7 @@ def _format_values() -> str:
 
 def _format_instructions() -> str:
     return (
-        "Instructions:\n"
+        "INSTRUCTIONS:\n"
         "- Output a comma-separated list of value names from the definitions above.\n"
         "- If no values are present, output: NONE\n"
         "- Output only the list (or NONE), no extra text."
@@ -94,10 +95,10 @@ def _format_instructions() -> str:
 
 def _build_prompt(body: str, kb_snippets: Iterable[str] | None) -> str:
     prompt = (
-        f"{_format_knowledge(kb_snippets)}"
         f"{TASK_DESCRIPTION}\n\n"
         f"{_format_values()}\n\n"
         f"{_format_instructions()}\n\n"
+        f"{_format_knowledge(kb_snippets)}"
         f"{body}"
     )
     LOGGER.debug("Built prompt with length %d", len(prompt))
@@ -117,7 +118,10 @@ def build_prompt_window(
     kb_snippets: Iterable[str] | None = None,
 ) -> str:
     body = (
-        "CONTEXT WINDOW:\n" f"{context_text}\n\n" "TARGET SENTENCE:\n" f"{target_text}"
+        "CONTEXT WINDOW:\n"
+        f"{context_text}\n\n"
+        "TARGET SENTENCE:\n"
+        f"{target_text}"
     )
     return _build_prompt(body, kb_snippets)
 

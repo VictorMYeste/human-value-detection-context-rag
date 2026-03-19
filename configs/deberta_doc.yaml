@@ -5,3 +5,5 @@ context:
   type: doc
 rag:
   enabled: False
+training:
+  gradient_checkpointing: True
