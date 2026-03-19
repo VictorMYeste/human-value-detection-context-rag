@@ -177,9 +177,7 @@ def sweep_thresholds(
     if y_true.size == 0:
         return {
             "best_threshold": 0.5,
-            "best_metrics": compute_f1_metrics(
-                y_true, y_true, label_names=label_names
-            ),
+            "best_metrics": compute_f1_metrics(y_true, y_true, label_names=label_names),
             "sweep": [],
         }
 
@@ -200,9 +198,7 @@ def sweep_thresholds(
             best_threshold = float(thr)
 
     best_pred = (y_probs >= best_threshold).astype(int)
-    best_metrics = compute_f1_metrics(
-        y_true, best_pred, label_names=label_names
-    )
+    best_metrics = compute_f1_metrics(y_true, best_pred, label_names=label_names)
     return {
         "best_threshold": best_threshold,
         "best_metrics": best_metrics,

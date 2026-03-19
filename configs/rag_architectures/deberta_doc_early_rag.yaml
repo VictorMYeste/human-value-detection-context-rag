@@ -1,0 +1,9 @@
+model:
+  family: deberta
+  name: microsoft/deberta-v3-base
+context:
+  type: doc
+rag:
+  enabled: True
+  mode: early
+results_dir: results/rag_architectures

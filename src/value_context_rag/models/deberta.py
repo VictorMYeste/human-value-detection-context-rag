@@ -71,6 +71,7 @@ class DebertaV3ForMultiLabelClassification(torch.nn.Module):
 
     def save_pretrained(self, output_dir: str) -> None:
         import os
+
         os.makedirs(output_dir, exist_ok=True)
         # Save config
         self.config.save_pretrained(output_dir)
@@ -82,8 +83,13 @@ class DebertaV3ForMultiLabelClassification(torch.nn.Module):
         cls, output_dir: str, model_name: str, label_names: list[str]
     ) -> DebertaV3ForMultiLabelClassification:
         import os
-        instance = cls(model_name=model_name, num_labels=len(label_names), label_names=label_names)
-        state_dict = torch.load(os.path.join(output_dir, "pytorch_model.bin"), map_location="cpu")
+
+        instance = cls(
+            model_name=model_name, num_labels=len(label_names), label_names=label_names
+        )
+        state_dict = torch.load(
+            os.path.join(output_dir, "pytorch_model.bin"), map_location="cpu"
+        )
         instance.load_state_dict(state_dict)
         return instance
 

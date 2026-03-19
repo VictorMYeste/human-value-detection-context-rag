@@ -79,9 +79,7 @@ def main() -> None:
         config["training"]["batch_size"] = int(batch)
         config["training"]["max_length"] = int(max_len)
         config["training"]["grad_accum_steps"] = 1
-        config["training"]["num_epochs"] = int(
-            config["training"].get("num_epochs", 10)
-        )
+        config["training"]["num_epochs"] = int(config["training"].get("num_epochs", 10))
         config["training"]["early_stopping_patience"] = int(
             config["training"].get("early_stopping_patience", 3)
         )
@@ -89,9 +87,7 @@ def main() -> None:
         if args.max_samples is not None:
             config["max_samples"] = args.max_samples
 
-        run_name = (
-            f"grid_deberta_sentence_lr{lr}_wd{wd}_b{batch}_ml{max_len}"
-        )
+        run_name = f"grid_deberta_sentence_lr{lr}_wd{wd}_b{batch}_ml{max_len}"
         LOGGER.info(
             "[%d/%d] lr=%.1e wd=%.2f batch=%d max_len=%d",
             idx,
@@ -106,9 +102,13 @@ def main() -> None:
         collapsed = True
         for attempt in range(attempts):
             if attempt > 0:
-                LOGGER.warning("Retrying collapsed run (attempt %d/%d)", attempt + 1, attempts)
+                LOGGER.warning(
+                    "Retrying collapsed run (attempt %d/%d)", attempt + 1, attempts
+                )
             config["seed"] = int(base_config.get("seed", 42)) + attempt
-            best_macro_f1, collapsed = train_and_eval(config, run_name=run_name, resume_path=None)
+            best_macro_f1, collapsed = train_and_eval(
+                config, run_name=run_name, resume_path=None
+            )
             if not collapsed:
                 break
         results.append(

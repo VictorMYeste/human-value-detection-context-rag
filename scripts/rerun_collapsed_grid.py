@@ -107,7 +107,9 @@ def main() -> None:
         run_name = f"rerun_lr{lr}_wd{wd}_b{batch}_ml{max_len}"
         for attempt in range(attempts):
             if attempt > 0:
-                LOGGER.warning("Retrying collapsed run (attempt %d/%d)", attempt + 1, attempts)
+                LOGGER.warning(
+                    "Retrying collapsed run (attempt %d/%d)", attempt + 1, attempts
+                )
             config["seed"] = int(base_config.get("seed", 42)) + attempt
             new_best, collapsed = train_and_eval(
                 config, run_name=run_name, resume_path=None

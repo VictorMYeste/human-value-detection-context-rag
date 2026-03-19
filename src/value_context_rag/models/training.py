@@ -72,8 +72,6 @@ def _save_hf_bundle(
     # Ensure SentencePiece model and special tokens map exist.
     spm_path = output_dir / "spm.model"
     if not spm_path.exists():
-        vocab_files = getattr(tokenizer, "vocab_files_names", {})
-        spm_name = vocab_files.get("vocab_file")
         spm_source = getattr(tokenizer, "vocab_file", None)
         if spm_source and Path(spm_source).exists():
             spm_path.write_bytes(Path(spm_source).read_bytes())
@@ -473,9 +471,7 @@ def save_predictions_jsonl(
                 probs = torch.sigmoid(logits).cpu().numpy()
             preds = (probs >= threshold).astype(int)
             if debug and start == 0:
-                gold_rate = (
-                    float(batch_labels.mean()) if batch_labels.size else 0.0
-                )
+                gold_rate = float(batch_labels.mean()) if batch_labels.size else 0.0
                 pred_rate = float(preds.mean()) if preds.size else 0.0
                 LOGGER.debug(
                     "Batch0 stats: gold_rate=%.4f pred_rate=%.4f "
@@ -672,6 +668,15 @@ def run_eval(
 
     y_pred = np.vstack(all_preds) if all_preds else np.zeros_like(labels)
     metrics = compute_f1_metrics(labels, y_pred, label_names=label_names)
+    metrics["meta"] = {
+        "model_name": config.get("model", {}).get("name", "microsoft/deberta-v3-base"),
+        "context_type": context_type,
+        "rag_mode": rag_cfg.get("mode", "none") if use_rag else "none",
+        "use_rag": use_rag,
+        "top_k": top_k,
+        "seed": config.get("seed", 42),
+        "split": split,
+    }
     if tune_threshold:
         y_probs = np.vstack(all_probs) if all_probs else np.zeros_like(labels)
         sweep = sweep_thresholds(
@@ -1046,7 +1051,11 @@ def train_and_eval(
                 )
                 break
 
-        if save_checkpoints and checkpoint_every > 0 and (epoch % checkpoint_every == 0):
+        if (
+            save_checkpoints
+            and checkpoint_every > 0
+            and (epoch % checkpoint_every == 0)
+        ):
             torch.save(
                 {
                     "model_state": model.state_dict(),
