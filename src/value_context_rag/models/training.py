@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from contextlib import nullcontext
+import inspect
 import json
 import math
+from contextlib import nullcontext
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -38,6 +39,35 @@ def _resolve_bf16(training_cfg: dict, device: torch.device) -> bool:
         LOGGER.warning("bf16 requested but CUDA bf16 is unsupported; falling back to fp32")
         return False
     return True
+
+
+def _build_adamw(
+    params,
+    *,
+    learning_rate: float,
+    weight_decay: float,
+    training_cfg: dict,
+):
+    """Build AdamW with conservative defaults to avoid CUDA foreach instability."""
+    kwargs: dict[str, object] = {
+        "lr": learning_rate,
+        "weight_decay": weight_decay,
+    }
+
+    adamw_sig = inspect.signature(torch.optim.AdamW)
+    if "foreach" in adamw_sig.parameters:
+        kwargs["foreach"] = bool(training_cfg.get("adamw_foreach", False))
+    if "fused" in adamw_sig.parameters:
+        kwargs["fused"] = bool(training_cfg.get("adamw_fused", False))
+
+    LOGGER.info(
+        "AdamW settings: lr=%g wd=%g foreach=%s fused=%s",
+        learning_rate,
+        weight_decay,
+        str(kwargs.get("foreach", "n/a")),
+        str(kwargs.get("fused", "n/a")),
+    )
+    return torch.optim.AdamW(params, **kwargs)
 
 
 def _autocast_context(use_bf16: bool):
@@ -468,7 +498,7 @@ def save_predictions_jsonl(
                 with _autocast_context(use_bf16):
                     outputs = model(**encoded)
                     logits = _get_logits(outputs)
-                probs = torch.sigmoid(logits).cpu().numpy()
+                probs = torch.sigmoid(logits.float()).cpu().numpy()
             preds = (probs >= threshold).astype(int)
             if debug and start == 0:
                 gold_rate = float(batch_labels.mean()) if batch_labels.size else 0.0
@@ -620,7 +650,7 @@ def run_eval(
                 with _autocast_context(use_bf16):
                     outputs = model(**encoded)
                     logits = _get_logits(outputs)
-                probs = torch.sigmoid(logits).cpu().numpy()
+                probs = torch.sigmoid(logits.float()).cpu().numpy()
             preds = (probs >= threshold).astype(int)
             all_probs.append(probs)
             if debug and start == 0:
@@ -668,10 +698,19 @@ def run_eval(
 
     y_pred = np.vstack(all_preds) if all_preds else np.zeros_like(labels)
     metrics = compute_f1_metrics(labels, y_pred, label_names=label_names)
+    configured_mode = rag_cfg.get("mode")
+    if not use_rag:
+        rag_mode = "none"
+    elif configured_mode in {"early", "late", "cross_attention"}:
+        rag_mode = str(configured_mode)
+    else:
+        # Backward compatibility: legacy *_rag configs imply early fusion.
+        rag_mode = "early"
+
     metrics["meta"] = {
         "model_name": config.get("model", {}).get("name", "microsoft/deberta-v3-base"),
         "context_type": context_type,
-        "rag_mode": rag_cfg.get("mode", "none") if use_rag else "none",
+        "rag_mode": rag_mode,
         "use_rag": use_rag,
         "top_k": top_k,
         "seed": config.get("seed", 42),
@@ -782,7 +821,7 @@ def train_and_eval(
         except Exception:
             LOGGER.warning("Gradient checkpointing not supported by this model")
     model.to(device)
-    if training_cfg.get("force_fp32", not use_bf16):
+    if not use_bf16:
         model = model.float()
         model.to(device)
         LOGGER.info("Forced model parameters to fp32")
@@ -873,8 +912,11 @@ def train_and_eval(
         LOGGER.warning("Training dataloader is empty; skipping training")
         return float("-inf")
 
-    optimizer = torch.optim.AdamW(
-        model.parameters(), lr=learning_rate, weight_decay=weight_decay
+    optimizer = _build_adamw(
+        model.parameters(),
+        learning_rate=learning_rate,
+        weight_decay=weight_decay,
+        training_cfg=training_cfg,
     )
     loss_fn = nn.BCEWithLogitsLoss()
 
@@ -927,7 +969,6 @@ def train_and_eval(
             if overflowed is not None and epoch == start_epoch:
                 token_stats["train_truncated"] += int(overflowed.sum().item())
                 token_stats["train_total"] += int(overflowed.numel())
-            optimizer.zero_grad()
             with _autocast_context(use_bf16):
                 outputs = model(**batch)
                 logits = _get_logits(outputs)

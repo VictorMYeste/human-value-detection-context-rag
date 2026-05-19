@@ -1,0 +1,742 @@
+model_family,model_variant,value,delta_type,contrast,delta_f1
+deberta,microsoft/deberta-v3-base,Achievement,context_gain_no_rag,window_none - sentence_none,0.039138679797840636
+deberta,microsoft/deberta-v3-base,Achievement,context_gain_no_rag,doc_none - sentence_none,0.04176405053340637
+deberta,microsoft/deberta-v3-base,Achievement,context_gain_rag,window_early - sentence_early,0.04380792526473998
+deberta,microsoft/deberta-v3-base,Achievement,context_gain_rag,doc_early - sentence_early,0.06159899488120141
+deberta,microsoft/deberta-v3-base,Achievement,rag_gain,sentence_early - sentence_none,0.01810147334870338
+deberta,microsoft/deberta-v3-base,Achievement,rag_gain,window_early - window_none,0.02277071881560272
+deberta,microsoft/deberta-v3-base,Achievement,rag_gain,doc_early - doc_none,0.037936417696498415
+deberta,microsoft/deberta-v3-base,Achievement,architecture_gain,doc_late - doc_early,-0.02213381622418814
+deberta,microsoft/deberta-v3-base,Achievement,architecture_gain,doc_cross_attention - doc_early,-0.003202204884497961
+deberta,microsoft/deberta-v3-base,Benevolence: caring,context_gain_no_rag,window_none - sentence_none,0.050570903098870024
+deberta,microsoft/deberta-v3-base,Benevolence: caring,context_gain_no_rag,doc_none - sentence_none,0.0456952355799044
+deberta,microsoft/deberta-v3-base,Benevolence: caring,context_gain_rag,window_early - sentence_early,0.04407538609985906
+deberta,microsoft/deberta-v3-base,Benevolence: caring,context_gain_rag,doc_early - sentence_early,0.06697440136955118
+deberta,microsoft/deberta-v3-base,Benevolence: caring,rag_gain,sentence_early - sentence_none,0.04262915807118964
+deberta,microsoft/deberta-v3-base,Benevolence: caring,rag_gain,window_early - window_none,0.036133641072178674
+deberta,microsoft/deberta-v3-base,Benevolence: caring,rag_gain,doc_early - doc_none,0.06390832386083642
+deberta,microsoft/deberta-v3-base,Benevolence: caring,architecture_gain,doc_late - doc_early,-0.045009180259055453
+deberta,microsoft/deberta-v3-base,Benevolence: caring,architecture_gain,doc_cross_attention - doc_early,-0.05179056037927174
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,context_gain_no_rag,window_none - sentence_none,0.07494936210991729
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,context_gain_no_rag,doc_none - sentence_none,0.07973064797947052
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,context_gain_rag,window_early - sentence_early,0.017927427572573762
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,context_gain_rag,doc_early - sentence_early,0.038055332819997456
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,rag_gain,sentence_early - sentence_none,0.063349443499048
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,rag_gain,window_early - window_none,0.0063275089617044755
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,rag_gain,doc_early - doc_none,0.02167412833957494
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,architecture_gain,doc_late - doc_early,-0.0285012048196287
+deberta,microsoft/deberta-v3-base,Benevolence: dependability,architecture_gain,doc_cross_attention - doc_early,-0.03709751734513092
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,context_gain_no_rag,window_none - sentence_none,0.04841082270533718
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,context_gain_no_rag,doc_none - sentence_none,0.04264721099344521
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,context_gain_rag,window_early - sentence_early,0.010768025662918665
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,context_gain_rag,doc_early - sentence_early,0.04500608259140916
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,rag_gain,sentence_early - sentence_none,0.035172028981536464
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,rag_gain,window_early - window_none,-0.0024707680608820476
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,rag_gain,doc_early - doc_none,0.03753090057950041
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,architecture_gain,doc_late - doc_early,-0.020626968368716664
+deberta,microsoft/deberta-v3-base,Conformity: interpersonal,architecture_gain,doc_cross_attention - doc_early,-0.01712554206849068
+deberta,microsoft/deberta-v3-base,Conformity: rules,context_gain_no_rag,window_none - sentence_none,0.02634473632823192
+deberta,microsoft/deberta-v3-base,Conformity: rules,context_gain_no_rag,doc_none - sentence_none,0.03273093983162273
+deberta,microsoft/deberta-v3-base,Conformity: rules,context_gain_rag,window_early - sentence_early,0.020811532985792136
+deberta,microsoft/deberta-v3-base,Conformity: rules,context_gain_rag,doc_early - sentence_early,0.018187235251314104
+deberta,microsoft/deberta-v3-base,Conformity: rules,rag_gain,sentence_early - sentence_none,0.0196624615112575
+deberta,microsoft/deberta-v3-base,Conformity: rules,rag_gain,window_early - window_none,0.014129258168817715
+deberta,microsoft/deberta-v3-base,Conformity: rules,rag_gain,doc_early - doc_none,0.005118756930948876
+deberta,microsoft/deberta-v3-base,Conformity: rules,architecture_gain,doc_late - doc_early,-0.01261942084804668
+deberta,microsoft/deberta-v3-base,Conformity: rules,architecture_gain,doc_cross_attention - doc_early,0.006946157546998011
+deberta,microsoft/deberta-v3-base,Face,context_gain_no_rag,window_none - sentence_none,0.0949448952009403
+deberta,microsoft/deberta-v3-base,Face,context_gain_no_rag,doc_none - sentence_none,0.08852060201663212
+deberta,microsoft/deberta-v3-base,Face,context_gain_rag,window_early - sentence_early,0.013957690201558015
+deberta,microsoft/deberta-v3-base,Face,context_gain_rag,doc_early - sentence_early,0.055295649041350786
+deberta,microsoft/deberta-v3-base,Face,rag_gain,sentence_early - sentence_none,0.0930463478304184
+deberta,microsoft/deberta-v3-base,Face,rag_gain,window_early - window_none,0.012059142831036124
+deberta,microsoft/deberta-v3-base,Face,rag_gain,doc_early - doc_none,0.05982139485513707
+deberta,microsoft/deberta-v3-base,Face,architecture_gain,doc_late - doc_early,-0.05122692276013882
+deberta,microsoft/deberta-v3-base,Face,architecture_gain,doc_cross_attention - doc_early,-0.03041534849864172
+deberta,microsoft/deberta-v3-base,Hedonism,context_gain_no_rag,window_none - sentence_none,0.09539428277131909
+deberta,microsoft/deberta-v3-base,Hedonism,context_gain_no_rag,doc_none - sentence_none,0.09987992756568667
+deberta,microsoft/deberta-v3-base,Hedonism,context_gain_rag,window_early - sentence_early,0.04819239350867946
+deberta,microsoft/deberta-v3-base,Hedonism,context_gain_rag,doc_early - sentence_early,0.06531152842586599
+deberta,microsoft/deberta-v3-base,Hedonism,rag_gain,sentence_early - sentence_none,0.06873149645973758
+deberta,microsoft/deberta-v3-base,Hedonism,rag_gain,window_early - window_none,0.021529607197097955
+deberta,microsoft/deberta-v3-base,Hedonism,rag_gain,doc_early - doc_none,0.0341630973199169
+deberta,microsoft/deberta-v3-base,Hedonism,architecture_gain,doc_late - doc_early,-0.02814323678359526
+deberta,microsoft/deberta-v3-base,Hedonism,architecture_gain,doc_cross_attention - doc_early,0.01684299207451917
+deberta,microsoft/deberta-v3-base,Humility,context_gain_no_rag,window_none - sentence_none,0.0
+deberta,microsoft/deberta-v3-base,Humility,context_gain_no_rag,doc_none - sentence_none,0.01904761904761905
+deberta,microsoft/deberta-v3-base,Humility,context_gain_rag,window_early - sentence_early,0.0
+deberta,microsoft/deberta-v3-base,Humility,context_gain_rag,doc_early - sentence_early,0.014184397163120567
+deberta,microsoft/deberta-v3-base,Humility,rag_gain,sentence_early - sentence_none,0.0
+deberta,microsoft/deberta-v3-base,Humility,rag_gain,window_early - window_none,0.0
+deberta,microsoft/deberta-v3-base,Humility,rag_gain,doc_early - doc_none,-0.004863221884498482
+deberta,microsoft/deberta-v3-base,Humility,architecture_gain,doc_late - doc_early,0.0043341213553979505
+deberta,microsoft/deberta-v3-base,Humility,architecture_gain,doc_cross_attention - doc_early,-0.014184397163120567
+deberta,microsoft/deberta-v3-base,Power: dominance,context_gain_no_rag,window_none - sentence_none,0.0334227683857235
+deberta,microsoft/deberta-v3-base,Power: dominance,context_gain_no_rag,doc_none - sentence_none,0.05377253780287339
+deberta,microsoft/deberta-v3-base,Power: dominance,context_gain_rag,window_early - sentence_early,0.018208014815174756
+deberta,microsoft/deberta-v3-base,Power: dominance,context_gain_rag,doc_early - sentence_early,0.01757598420470724
+deberta,microsoft/deberta-v3-base,Power: dominance,rag_gain,sentence_early - sentence_none,0.039991127206462196
+deberta,microsoft/deberta-v3-base,Power: dominance,rag_gain,window_early - window_none,0.02477637363591345
+deberta,microsoft/deberta-v3-base,Power: dominance,rag_gain,doc_early - doc_none,0.003794573608296048
+deberta,microsoft/deberta-v3-base,Power: dominance,architecture_gain,doc_late - doc_early,-0.01840966458327503
+deberta,microsoft/deberta-v3-base,Power: dominance,architecture_gain,doc_cross_attention - doc_early,0.0008461075929191431
+deberta,microsoft/deberta-v3-base,Power: resources,context_gain_no_rag,window_none - sentence_none,0.028619265990145193
+deberta,microsoft/deberta-v3-base,Power: resources,context_gain_no_rag,doc_none - sentence_none,0.0380544670373405
+deberta,microsoft/deberta-v3-base,Power: resources,context_gain_rag,window_early - sentence_early,0.022765626820387963
+deberta,microsoft/deberta-v3-base,Power: resources,context_gain_rag,doc_early - sentence_early,0.04053593444340958
+deberta,microsoft/deberta-v3-base,Power: resources,rag_gain,sentence_early - sentence_none,0.0211427477788797
+deberta,microsoft/deberta-v3-base,Power: resources,rag_gain,window_early - window_none,0.01528910860912247
+deberta,microsoft/deberta-v3-base,Power: resources,rag_gain,doc_early - doc_none,0.023624215184948782
+deberta,microsoft/deberta-v3-base,Power: resources,architecture_gain,doc_late - doc_early,-0.029255558862362807
+deberta,microsoft/deberta-v3-base,Power: resources,architecture_gain,doc_cross_attention - doc_early,-0.004365995634158404
+deberta,microsoft/deberta-v3-base,Security: personal,context_gain_no_rag,window_none - sentence_none,0.02640911629685322
+deberta,microsoft/deberta-v3-base,Security: personal,context_gain_no_rag,doc_none - sentence_none,0.047759186202815884
+deberta,microsoft/deberta-v3-base,Security: personal,context_gain_rag,window_early - sentence_early,0.0489253774633438
+deberta,microsoft/deberta-v3-base,Security: personal,context_gain_rag,doc_early - sentence_early,0.03465815299824715
+deberta,microsoft/deberta-v3-base,Security: personal,rag_gain,sentence_early - sentence_none,0.060342800254331086
+deberta,microsoft/deberta-v3-base,Security: personal,rag_gain,window_early - window_none,0.08285906142082167
+deberta,microsoft/deberta-v3-base,Security: personal,rag_gain,doc_early - doc_none,0.04724176704976235
+deberta,microsoft/deberta-v3-base,Security: personal,architecture_gain,doc_late - doc_early,-0.024513549559688486
+deberta,microsoft/deberta-v3-base,Security: personal,architecture_gain,doc_cross_attention - doc_early,0.001227872553460685
+deberta,microsoft/deberta-v3-base,Security: societal,context_gain_no_rag,window_none - sentence_none,0.04161676539419884
+deberta,microsoft/deberta-v3-base,Security: societal,context_gain_no_rag,doc_none - sentence_none,0.03074988968706882
+deberta,microsoft/deberta-v3-base,Security: societal,context_gain_rag,window_early - sentence_early,0.02259529618736955
+deberta,microsoft/deberta-v3-base,Security: societal,context_gain_rag,doc_early - sentence_early,0.03651641692291535
+deberta,microsoft/deberta-v3-base,Security: societal,rag_gain,sentence_early - sentence_none,0.02071492920111101
+deberta,microsoft/deberta-v3-base,Security: societal,rag_gain,window_early - window_none,0.0016934599942817208
+deberta,microsoft/deberta-v3-base,Security: societal,rag_gain,doc_early - doc_none,0.02648145643695754
+deberta,microsoft/deberta-v3-base,Security: societal,architecture_gain,doc_late - doc_early,-0.012840624580524873
+deberta,microsoft/deberta-v3-base,Security: societal,architecture_gain,doc_cross_attention - doc_early,0.0019883467256425758
+deberta,microsoft/deberta-v3-base,Self-direction: action,context_gain_no_rag,window_none - sentence_none,0.0532854575029026
+deberta,microsoft/deberta-v3-base,Self-direction: action,context_gain_no_rag,doc_none - sentence_none,0.07261121442124234
+deberta,microsoft/deberta-v3-base,Self-direction: action,context_gain_rag,window_early - sentence_early,0.007036752528520929
+deberta,microsoft/deberta-v3-base,Self-direction: action,context_gain_rag,doc_early - sentence_early,0.04054766410673594
+deberta,microsoft/deberta-v3-base,Self-direction: action,rag_gain,sentence_early - sentence_none,0.06466294923428519
+deberta,microsoft/deberta-v3-base,Self-direction: action,rag_gain,window_early - window_none,0.01841424425990351
+deberta,microsoft/deberta-v3-base,Self-direction: action,rag_gain,doc_early - doc_none,0.03259939891977878
+deberta,microsoft/deberta-v3-base,Self-direction: action,architecture_gain,doc_late - doc_early,-0.01599178101265808
+deberta,microsoft/deberta-v3-base,Self-direction: action,architecture_gain,doc_cross_attention - doc_early,-0.03097158488022131
+deberta,microsoft/deberta-v3-base,Self-direction: thought,context_gain_no_rag,window_none - sentence_none,0.013225901399607227
+deberta,microsoft/deberta-v3-base,Self-direction: thought,context_gain_no_rag,doc_none - sentence_none,-0.002711475465359353
+deberta,microsoft/deberta-v3-base,Self-direction: thought,context_gain_rag,window_early - sentence_early,0.03383485716840061
+deberta,microsoft/deberta-v3-base,Self-direction: thought,context_gain_rag,doc_early - sentence_early,0.05456200603098865
+deberta,microsoft/deberta-v3-base,Self-direction: thought,rag_gain,sentence_early - sentence_none,-0.028845578096965353
+deberta,microsoft/deberta-v3-base,Self-direction: thought,rag_gain,window_early - window_none,-0.008236622328171968
+deberta,microsoft/deberta-v3-base,Self-direction: thought,rag_gain,doc_early - doc_none,0.02842790339938265
+deberta,microsoft/deberta-v3-base,Self-direction: thought,architecture_gain,doc_late - doc_early,0.033114265081119726
+deberta,microsoft/deberta-v3-base,Self-direction: thought,architecture_gain,doc_cross_attention - doc_early,-0.010386053331531891
+deberta,microsoft/deberta-v3-base,Stimulation,context_gain_no_rag,window_none - sentence_none,0.021447694351467983
+deberta,microsoft/deberta-v3-base,Stimulation,context_gain_no_rag,doc_none - sentence_none,0.01848631555695221
+deberta,microsoft/deberta-v3-base,Stimulation,context_gain_rag,window_early - sentence_early,0.028908209953750624
+deberta,microsoft/deberta-v3-base,Stimulation,context_gain_rag,doc_early - sentence_early,0.0447940334516235
+deberta,microsoft/deberta-v3-base,Stimulation,rag_gain,sentence_early - sentence_none,0.035809488048065746
+deberta,microsoft/deberta-v3-base,Stimulation,rag_gain,window_early - window_none,0.04327000365034839
+deberta,microsoft/deberta-v3-base,Stimulation,rag_gain,doc_early - doc_none,0.062117205942737036
+deberta,microsoft/deberta-v3-base,Stimulation,architecture_gain,doc_late - doc_early,-0.039224288620746284
+deberta,microsoft/deberta-v3-base,Stimulation,architecture_gain,doc_cross_attention - doc_early,-0.016044994966192605
+deberta,microsoft/deberta-v3-base,Tradition,context_gain_no_rag,window_none - sentence_none,0.062387803904989714
+deberta,microsoft/deberta-v3-base,Tradition,context_gain_no_rag,doc_none - sentence_none,0.0855002809694011
+deberta,microsoft/deberta-v3-base,Tradition,context_gain_rag,window_early - sentence_early,0.04346482722947803
+deberta,microsoft/deberta-v3-base,Tradition,context_gain_rag,doc_early - sentence_early,0.015819825152430023
+deberta,microsoft/deberta-v3-base,Tradition,rag_gain,sentence_early - sentence_none,0.07064341510084593
+deberta,microsoft/deberta-v3-base,Tradition,rag_gain,window_early - window_none,0.05172043842533425
+deberta,microsoft/deberta-v3-base,Tradition,rag_gain,doc_early - doc_none,0.0009629592838748535
+deberta,microsoft/deberta-v3-base,Tradition,architecture_gain,doc_late - doc_early,0.00085910263333
+deberta,microsoft/deberta-v3-base,Tradition,architecture_gain,doc_cross_attention - doc_early,0.009182044668262668
+deberta,microsoft/deberta-v3-base,Universalism: concern,context_gain_no_rag,window_none - sentence_none,0.024088456129489233
+deberta,microsoft/deberta-v3-base,Universalism: concern,context_gain_no_rag,doc_none - sentence_none,0.02144364645862301
+deberta,microsoft/deberta-v3-base,Universalism: concern,context_gain_rag,window_early - sentence_early,0.04976711553624391
+deberta,microsoft/deberta-v3-base,Universalism: concern,context_gain_rag,doc_early - sentence_early,0.033367452484476756
+deberta,microsoft/deberta-v3-base,Universalism: concern,rag_gain,sentence_early - sentence_none,0.009924484636119946
+deberta,microsoft/deberta-v3-base,Universalism: concern,rag_gain,window_early - window_none,0.035603144042874624
+deberta,microsoft/deberta-v3-base,Universalism: concern,rag_gain,doc_early - doc_none,0.02184829066197369
+deberta,microsoft/deberta-v3-base,Universalism: concern,architecture_gain,doc_late - doc_early,-0.019268287079936053
+deberta,microsoft/deberta-v3-base,Universalism: concern,architecture_gain,doc_cross_attention - doc_early,0.009015571873422001
+deberta,microsoft/deberta-v3-base,Universalism: nature,context_gain_no_rag,window_none - sentence_none,0.007686619914211379
+deberta,microsoft/deberta-v3-base,Universalism: nature,context_gain_no_rag,doc_none - sentence_none,0.016682771260101648
+deberta,microsoft/deberta-v3-base,Universalism: nature,context_gain_rag,window_early - sentence_early,0.022912143781089078
+deberta,microsoft/deberta-v3-base,Universalism: nature,context_gain_rag,doc_early - sentence_early,0.04143346256910496
+deberta,microsoft/deberta-v3-base,Universalism: nature,rag_gain,sentence_early - sentence_none,-0.00620632126851528
+deberta,microsoft/deberta-v3-base,Universalism: nature,rag_gain,window_early - window_none,0.009019202598362419
+deberta,microsoft/deberta-v3-base,Universalism: nature,rag_gain,doc_early - doc_none,0.018544370040488034
+deberta,microsoft/deberta-v3-base,Universalism: nature,architecture_gain,doc_late - doc_early,-0.04095270622280822
+deberta,microsoft/deberta-v3-base,Universalism: nature,architecture_gain,doc_cross_attention - doc_early,-0.01327071230150334
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,context_gain_no_rag,window_none - sentence_none,0.07919525379337994
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,context_gain_no_rag,doc_none - sentence_none,0.07179270238275959
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,context_gain_rag,window_early - sentence_early,0.039260116574265896
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,context_gain_rag,doc_early - sentence_early,0.0650538502525835
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,rag_gain,sentence_early - sentence_none,0.05008744413101435
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,rag_gain,window_early - window_none,0.010152306911900305
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,rag_gain,doc_early - doc_none,0.043348592000838265
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,architecture_gain,doc_late - doc_early,-0.018358792507318644
+deberta,microsoft/deberta-v3-base,Universalism: tolerance,architecture_gain,doc_cross_attention - doc_early,-0.06673180602004367
+deberta,microsoft/deberta-v3-large,Achievement,context_gain_no_rag,window_none - sentence_none,-0.022926506381035883
+deberta,microsoft/deberta-v3-large,Achievement,context_gain_no_rag,doc_none - sentence_none,0.06121745482180402
+deberta,microsoft/deberta-v3-large,Achievement,context_gain_rag,window_early - sentence_early,-0.017381120122971327
+deberta,microsoft/deberta-v3-large,Achievement,context_gain_rag,doc_early - sentence_early,0.04735071418335263
+deberta,microsoft/deberta-v3-large,Achievement,rag_gain,sentence_early - sentence_none,0.026262221054440704
+deberta,microsoft/deberta-v3-large,Achievement,rag_gain,window_early - window_none,0.03180760731250526
+deberta,microsoft/deberta-v3-large,Achievement,rag_gain,doc_early - doc_none,0.012395480415989313
+deberta,microsoft/deberta-v3-large,Achievement,architecture_gain,doc_late - doc_early,-0.022414578717088796
+deberta,microsoft/deberta-v3-large,Achievement,architecture_gain,doc_cross_attention - doc_early,-0.012528455020424378
+deberta,microsoft/deberta-v3-large,Benevolence: caring,context_gain_no_rag,window_none - sentence_none,-0.03370883635810071
+deberta,microsoft/deberta-v3-large,Benevolence: caring,context_gain_no_rag,doc_none - sentence_none,0.05054027280038911
+deberta,microsoft/deberta-v3-large,Benevolence: caring,context_gain_rag,window_early - sentence_early,-0.02755398696118913
+deberta,microsoft/deberta-v3-large,Benevolence: caring,context_gain_rag,doc_early - sentence_early,0.041791756520184825
+deberta,microsoft/deberta-v3-large,Benevolence: caring,rag_gain,sentence_early - sentence_none,0.02551254764929889
+deberta,microsoft/deberta-v3-large,Benevolence: caring,rag_gain,window_early - window_none,0.031667397046210466
+deberta,microsoft/deberta-v3-large,Benevolence: caring,rag_gain,doc_early - doc_none,0.0167640313690946
+deberta,microsoft/deberta-v3-large,Benevolence: caring,architecture_gain,doc_late - doc_early,-0.010640127527314663
+deberta,microsoft/deberta-v3-large,Benevolence: caring,architecture_gain,doc_cross_attention - doc_early,-0.00412111800601711
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,context_gain_no_rag,window_none - sentence_none,-0.08506362327793471
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,context_gain_no_rag,doc_none - sentence_none,0.025044827314815388
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,context_gain_rag,window_early - sentence_early,-0.030526022853834378
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,context_gain_rag,doc_early - sentence_early,0.03589624272215916
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,rag_gain,sentence_early - sentence_none,0.021159266011649108
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,rag_gain,window_early - window_none,0.07569686643574944
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,rag_gain,doc_early - doc_none,0.03201068141899288
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,architecture_gain,doc_late - doc_early,-0.03575906740183407
+deberta,microsoft/deberta-v3-large,Benevolence: dependability,architecture_gain,doc_cross_attention - doc_early,-0.007748356211592422
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,context_gain_no_rag,window_none - sentence_none,-0.016136841931819405
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,context_gain_no_rag,doc_none - sentence_none,0.04469881782647722
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,context_gain_rag,window_early - sentence_early,0.02597619855174877
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,context_gain_rag,doc_early - sentence_early,0.07946475917202739
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,rag_gain,sentence_early - sentence_none,-0.022575033403123147
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,rag_gain,window_early - window_none,0.01953800708044503
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,rag_gain,doc_early - doc_none,0.012190907942427012
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,architecture_gain,doc_late - doc_early,-0.007457033505821289
+deberta,microsoft/deberta-v3-large,Conformity: interpersonal,architecture_gain,doc_cross_attention - doc_early,0.012998026101567944
+deberta,microsoft/deberta-v3-large,Conformity: rules,context_gain_no_rag,window_none - sentence_none,-0.0563814099784557
+deberta,microsoft/deberta-v3-large,Conformity: rules,context_gain_no_rag,doc_none - sentence_none,0.02010247514111696
+deberta,microsoft/deberta-v3-large,Conformity: rules,context_gain_rag,window_early - sentence_early,-0.02859077272263416
+deberta,microsoft/deberta-v3-large,Conformity: rules,context_gain_rag,doc_early - sentence_early,0.038329848401746025
+deberta,microsoft/deberta-v3-large,Conformity: rules,rag_gain,sentence_early - sentence_none,0.0007228371485356044
+deberta,microsoft/deberta-v3-large,Conformity: rules,rag_gain,window_early - window_none,0.028513474404357142
+deberta,microsoft/deberta-v3-large,Conformity: rules,rag_gain,doc_early - doc_none,0.01895021040916467
+deberta,microsoft/deberta-v3-large,Conformity: rules,architecture_gain,doc_late - doc_early,-0.00814054984083934
+deberta,microsoft/deberta-v3-large,Conformity: rules,architecture_gain,doc_cross_attention - doc_early,-0.00987249183672867
+deberta,microsoft/deberta-v3-large,Face,context_gain_no_rag,window_none - sentence_none,0.008469473369630734
+deberta,microsoft/deberta-v3-large,Face,context_gain_no_rag,doc_none - sentence_none,0.057482673659339636
+deberta,microsoft/deberta-v3-large,Face,context_gain_rag,window_early - sentence_early,0.003440109198064367
+deberta,microsoft/deberta-v3-large,Face,context_gain_rag,doc_early - sentence_early,0.035881436232274466
+deberta,microsoft/deberta-v3-large,Face,rag_gain,sentence_early - sentence_none,0.020987986456862243
+deberta,microsoft/deberta-v3-large,Face,rag_gain,window_early - window_none,0.015958622285295876
+deberta,microsoft/deberta-v3-large,Face,rag_gain,doc_early - doc_none,-0.0006132509702029276
+deberta,microsoft/deberta-v3-large,Face,architecture_gain,doc_late - doc_early,0.0004532349926620882
+deberta,microsoft/deberta-v3-large,Face,architecture_gain,doc_cross_attention - doc_early,-0.057085093796688066
+deberta,microsoft/deberta-v3-large,Hedonism,context_gain_no_rag,window_none - sentence_none,-0.05099233819682032
+deberta,microsoft/deberta-v3-large,Hedonism,context_gain_no_rag,doc_none - sentence_none,0.06900424602844901
+deberta,microsoft/deberta-v3-large,Hedonism,context_gain_rag,window_early - sentence_early,-0.08974070344472142
+deberta,microsoft/deberta-v3-large,Hedonism,context_gain_rag,doc_early - sentence_early,0.0380183824176715
+deberta,microsoft/deberta-v3-large,Hedonism,rag_gain,sentence_early - sentence_none,0.0515686791324918
+deberta,microsoft/deberta-v3-large,Hedonism,rag_gain,window_early - window_none,0.012820313884590706
+deberta,microsoft/deberta-v3-large,Hedonism,rag_gain,doc_early - doc_none,0.020582815521714287
+deberta,microsoft/deberta-v3-large,Hedonism,architecture_gain,doc_late - doc_early,-0.03523117402384432
+deberta,microsoft/deberta-v3-large,Hedonism,architecture_gain,doc_cross_attention - doc_early,-0.0523758566357275
+deberta,microsoft/deberta-v3-large,Humility,context_gain_no_rag,window_none - sentence_none,0.0
+deberta,microsoft/deberta-v3-large,Humility,context_gain_no_rag,doc_none - sentence_none,0.0
+deberta,microsoft/deberta-v3-large,Humility,context_gain_rag,window_early - sentence_early,0.0
+deberta,microsoft/deberta-v3-large,Humility,context_gain_rag,doc_early - sentence_early,0.0
+deberta,microsoft/deberta-v3-large,Humility,rag_gain,sentence_early - sentence_none,0.0
+deberta,microsoft/deberta-v3-large,Humility,rag_gain,window_early - window_none,0.0
+deberta,microsoft/deberta-v3-large,Humility,rag_gain,doc_early - doc_none,0.0
+deberta,microsoft/deberta-v3-large,Humility,architecture_gain,doc_late - doc_early,0.0
+deberta,microsoft/deberta-v3-large,Humility,architecture_gain,doc_cross_attention - doc_early,0.0
+deberta,microsoft/deberta-v3-large,Power: dominance,context_gain_no_rag,window_none - sentence_none,-0.026879878444737104
+deberta,microsoft/deberta-v3-large,Power: dominance,context_gain_no_rag,doc_none - sentence_none,0.030732333155387315
+deberta,microsoft/deberta-v3-large,Power: dominance,context_gain_rag,window_early - sentence_early,-0.01678398653639024
+deberta,microsoft/deberta-v3-large,Power: dominance,context_gain_rag,doc_early - sentence_early,0.017992892429726404
+deberta,microsoft/deberta-v3-large,Power: dominance,rag_gain,sentence_early - sentence_none,0.013798576455352485
+deberta,microsoft/deberta-v3-large,Power: dominance,rag_gain,window_early - window_none,0.02389446836369935
+deberta,microsoft/deberta-v3-large,Power: dominance,rag_gain,doc_early - doc_none,0.0010591357296915738
+deberta,microsoft/deberta-v3-large,Power: dominance,architecture_gain,doc_late - doc_early,-0.03461437225825076
+deberta,microsoft/deberta-v3-large,Power: dominance,architecture_gain,doc_cross_attention - doc_early,-0.012852057830429975
+deberta,microsoft/deberta-v3-large,Power: resources,context_gain_no_rag,window_none - sentence_none,-0.014874907491636558
+deberta,microsoft/deberta-v3-large,Power: resources,context_gain_no_rag,doc_none - sentence_none,0.03609932062624166
+deberta,microsoft/deberta-v3-large,Power: resources,context_gain_rag,window_early - sentence_early,-0.01743678295356338
+deberta,microsoft/deberta-v3-large,Power: resources,context_gain_rag,doc_early - sentence_early,0.017550057721443357
+deberta,microsoft/deberta-v3-large,Power: resources,rag_gain,sentence_early - sentence_none,0.01552459537738482
+deberta,microsoft/deberta-v3-large,Power: resources,rag_gain,window_early - window_none,0.012962719915457999
+deberta,microsoft/deberta-v3-large,Power: resources,rag_gain,doc_early - doc_none,-0.0030246675274134827
+deberta,microsoft/deberta-v3-large,Power: resources,architecture_gain,doc_late - doc_early,-0.003966919697903526
+deberta,microsoft/deberta-v3-large,Power: resources,architecture_gain,doc_cross_attention - doc_early,0.0065295680631459185
+deberta,microsoft/deberta-v3-large,Security: personal,context_gain_no_rag,window_none - sentence_none,-0.040732207855409014
+deberta,microsoft/deberta-v3-large,Security: personal,context_gain_no_rag,doc_none - sentence_none,0.04093478067499834
+deberta,microsoft/deberta-v3-large,Security: personal,context_gain_rag,window_early - sentence_early,-0.03209452394872098
+deberta,microsoft/deberta-v3-large,Security: personal,context_gain_rag,doc_early - sentence_early,0.03864272744807051
+deberta,microsoft/deberta-v3-large,Security: personal,rag_gain,sentence_early - sentence_none,0.043649963165764416
+deberta,microsoft/deberta-v3-large,Security: personal,rag_gain,window_early - window_none,0.05228764707245245
+deberta,microsoft/deberta-v3-large,Security: personal,rag_gain,doc_early - doc_none,0.04135790993883659
+deberta,microsoft/deberta-v3-large,Security: personal,architecture_gain,doc_late - doc_early,-0.004328076288987792
+deberta,microsoft/deberta-v3-large,Security: personal,architecture_gain,doc_cross_attention - doc_early,-0.029509923589705278
+deberta,microsoft/deberta-v3-large,Security: societal,context_gain_no_rag,window_none - sentence_none,-0.066459637008699
+deberta,microsoft/deberta-v3-large,Security: societal,context_gain_no_rag,doc_none - sentence_none,0.046508781956708656
+deberta,microsoft/deberta-v3-large,Security: societal,context_gain_rag,window_early - sentence_early,-0.07479234382792388
+deberta,microsoft/deberta-v3-large,Security: societal,context_gain_rag,doc_early - sentence_early,0.02315270433497224
+deberta,microsoft/deberta-v3-large,Security: societal,rag_gain,sentence_early - sentence_none,0.03137172026579571
+deberta,microsoft/deberta-v3-large,Security: societal,rag_gain,window_early - window_none,0.023039013446570833
+deberta,microsoft/deberta-v3-large,Security: societal,rag_gain,doc_early - doc_none,0.008015642644059295
+deberta,microsoft/deberta-v3-large,Security: societal,architecture_gain,doc_late - doc_early,-0.004744915870169175
+deberta,microsoft/deberta-v3-large,Security: societal,architecture_gain,doc_cross_attention - doc_early,-0.006405061292595771
+deberta,microsoft/deberta-v3-large,Self-direction: action,context_gain_no_rag,window_none - sentence_none,-0.04169670064259025
+deberta,microsoft/deberta-v3-large,Self-direction: action,context_gain_no_rag,doc_none - sentence_none,0.03481338174145873
+deberta,microsoft/deberta-v3-large,Self-direction: action,context_gain_rag,window_early - sentence_early,0.005566431927350318
+deberta,microsoft/deberta-v3-large,Self-direction: action,context_gain_rag,doc_early - sentence_early,0.04823410859816507
+deberta,microsoft/deberta-v3-large,Self-direction: action,rag_gain,sentence_early - sentence_none,0.007726093828400421
+deberta,microsoft/deberta-v3-large,Self-direction: action,rag_gain,window_early - window_none,0.05498922639834099
+deberta,microsoft/deberta-v3-large,Self-direction: action,rag_gain,doc_early - doc_none,0.02114682068510676
+deberta,microsoft/deberta-v3-large,Self-direction: action,architecture_gain,doc_late - doc_early,-0.017786420282617454
+deberta,microsoft/deberta-v3-large,Self-direction: action,architecture_gain,doc_cross_attention - doc_early,-0.015673675405672438
+deberta,microsoft/deberta-v3-large,Self-direction: thought,context_gain_no_rag,window_none - sentence_none,0.006133909158908751
+deberta,microsoft/deberta-v3-large,Self-direction: thought,context_gain_no_rag,doc_none - sentence_none,0.053348824457452
+deberta,microsoft/deberta-v3-large,Self-direction: thought,context_gain_rag,window_early - sentence_early,-0.020348584606571764
+deberta,microsoft/deberta-v3-large,Self-direction: thought,context_gain_rag,doc_early - sentence_early,0.057432081432765826
+deberta,microsoft/deberta-v3-large,Self-direction: thought,rag_gain,sentence_early - sentence_none,0.029631855058757525
+deberta,microsoft/deberta-v3-large,Self-direction: thought,rag_gain,window_early - window_none,0.00314936129327701
+deberta,microsoft/deberta-v3-large,Self-direction: thought,rag_gain,doc_early - doc_none,0.03371511203407135
+deberta,microsoft/deberta-v3-large,Self-direction: thought,architecture_gain,doc_late - doc_early,-0.02670153546559581
+deberta,microsoft/deberta-v3-large,Self-direction: thought,architecture_gain,doc_cross_attention - doc_early,-0.026457043155959134
+deberta,microsoft/deberta-v3-large,Stimulation,context_gain_no_rag,window_none - sentence_none,-0.02871087592119248
+deberta,microsoft/deberta-v3-large,Stimulation,context_gain_no_rag,doc_none - sentence_none,0.049307955073390725
+deberta,microsoft/deberta-v3-large,Stimulation,context_gain_rag,window_early - sentence_early,-0.06346975250328427
+deberta,microsoft/deberta-v3-large,Stimulation,context_gain_rag,doc_early - sentence_early,0.013193567664549322
+deberta,microsoft/deberta-v3-large,Stimulation,rag_gain,sentence_early - sentence_none,0.04016046861083469
+deberta,microsoft/deberta-v3-large,Stimulation,rag_gain,window_early - window_none,0.0054015920287429076
+deberta,microsoft/deberta-v3-large,Stimulation,rag_gain,doc_early - doc_none,0.00404608120199329
+deberta,microsoft/deberta-v3-large,Stimulation,architecture_gain,doc_late - doc_early,-0.0001092179050853348
+deberta,microsoft/deberta-v3-large,Stimulation,architecture_gain,doc_cross_attention - doc_early,-0.004947896174299082
+deberta,microsoft/deberta-v3-large,Tradition,context_gain_no_rag,window_none - sentence_none,-0.0746992236183352
+deberta,microsoft/deberta-v3-large,Tradition,context_gain_no_rag,doc_none - sentence_none,0.010522000723970582
+deberta,microsoft/deberta-v3-large,Tradition,context_gain_rag,window_early - sentence_early,-0.05618911774510227
+deberta,microsoft/deberta-v3-large,Tradition,context_gain_rag,doc_early - sentence_early,0.015790765223309855
+deberta,microsoft/deberta-v3-large,Tradition,rag_gain,sentence_early - sentence_none,0.0004763544512759732
+deberta,microsoft/deberta-v3-large,Tradition,rag_gain,window_early - window_none,0.018986460324508903
+deberta,microsoft/deberta-v3-large,Tradition,rag_gain,doc_early - doc_none,0.005745118950615247
+deberta,microsoft/deberta-v3-large,Tradition,architecture_gain,doc_late - doc_early,0.0007652218895748963
+deberta,microsoft/deberta-v3-large,Tradition,architecture_gain,doc_cross_attention - doc_early,0.00355786720942991
+deberta,microsoft/deberta-v3-large,Universalism: concern,context_gain_no_rag,window_none - sentence_none,-0.02368901094030207
+deberta,microsoft/deberta-v3-large,Universalism: concern,context_gain_no_rag,doc_none - sentence_none,0.03849654262119573
+deberta,microsoft/deberta-v3-large,Universalism: concern,context_gain_rag,window_early - sentence_early,-0.04484888502411016
+deberta,microsoft/deberta-v3-large,Universalism: concern,context_gain_rag,doc_early - sentence_early,0.03780860664106017
+deberta,microsoft/deberta-v3-large,Universalism: concern,rag_gain,sentence_early - sentence_none,0.017276626965139874
+deberta,microsoft/deberta-v3-large,Universalism: concern,rag_gain,window_early - window_none,-0.0038832471186682205
+deberta,microsoft/deberta-v3-large,Universalism: concern,rag_gain,doc_early - doc_none,0.016588690985004317
+deberta,microsoft/deberta-v3-large,Universalism: concern,architecture_gain,doc_late - doc_early,-0.010114586838414041
+deberta,microsoft/deberta-v3-large,Universalism: concern,architecture_gain,doc_cross_attention - doc_early,-0.0022767534007090418
+deberta,microsoft/deberta-v3-large,Universalism: nature,context_gain_no_rag,window_none - sentence_none,-0.05628792786331166
+deberta,microsoft/deberta-v3-large,Universalism: nature,context_gain_no_rag,doc_none - sentence_none,0.028608632323037564
+deberta,microsoft/deberta-v3-large,Universalism: nature,context_gain_rag,window_early - sentence_early,-0.02719807750984715
+deberta,microsoft/deberta-v3-large,Universalism: nature,context_gain_rag,doc_early - sentence_early,0.05998021414461363
+deberta,microsoft/deberta-v3-large,Universalism: nature,rag_gain,sentence_early - sentence_none,-0.009082115160789828
+deberta,microsoft/deberta-v3-large,Universalism: nature,rag_gain,window_early - window_none,0.02000773519267468
+deberta,microsoft/deberta-v3-large,Universalism: nature,rag_gain,doc_early - doc_none,0.02228946666078624
+deberta,microsoft/deberta-v3-large,Universalism: nature,architecture_gain,doc_late - doc_early,-0.01738278322059761
+deberta,microsoft/deberta-v3-large,Universalism: nature,architecture_gain,doc_cross_attention - doc_early,-0.012735842334205105
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,context_gain_no_rag,window_none - sentence_none,-0.03441712059698285
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,context_gain_no_rag,doc_none - sentence_none,0.022165996284977313
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,context_gain_rag,window_early - sentence_early,-0.00871252909924286
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,context_gain_rag,doc_early - sentence_early,0.02553933070506592
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,rag_gain,sentence_early - sentence_none,-0.00047593221999364665
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,rag_gain,window_early - window_none,0.02522865927774634
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,rag_gain,doc_early - doc_none,0.0028974022000949617
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,architecture_gain,doc_late - doc_early,-0.01695442920633153
+deberta,microsoft/deberta-v3-large,Universalism: tolerance,architecture_gain,doc_cross_attention - doc_early,-0.023809509284933528
+gemma,google/gemma-3-12b-it,Achievement,context_gain_no_rag,window_none - sentence_none,-0.003899421598872743
+gemma,google/gemma-3-12b-it,Achievement,context_gain_no_rag,doc_none - sentence_none,-0.01104014505942097
+gemma,google/gemma-3-12b-it,Achievement,context_gain_rag,window_early - sentence_early,-0.010497294998296602
+gemma,google/gemma-3-12b-it,Achievement,context_gain_rag,doc_early - sentence_early,-0.012076772560825566
+gemma,google/gemma-3-12b-it,Achievement,rag_gain,sentence_early - sentence_none,0.0247606733262824
+gemma,google/gemma-3-12b-it,Achievement,rag_gain,window_early - window_none,0.01816279992685854
+gemma,google/gemma-3-12b-it,Achievement,rag_gain,doc_early - doc_none,0.023724045824877804
+gemma,google/gemma-3-12b-it,Benevolence: caring,context_gain_no_rag,window_none - sentence_none,-0.013570236107798728
+gemma,google/gemma-3-12b-it,Benevolence: caring,context_gain_no_rag,doc_none - sentence_none,-0.025644386194844937
+gemma,google/gemma-3-12b-it,Benevolence: caring,context_gain_rag,window_early - sentence_early,-0.015672336826780014
+gemma,google/gemma-3-12b-it,Benevolence: caring,context_gain_rag,doc_early - sentence_early,-0.02508212889447059
+gemma,google/gemma-3-12b-it,Benevolence: caring,rag_gain,sentence_early - sentence_none,0.014110965487112243
+gemma,google/gemma-3-12b-it,Benevolence: caring,rag_gain,window_early - window_none,0.012008864768130956
+gemma,google/gemma-3-12b-it,Benevolence: caring,rag_gain,doc_early - doc_none,0.01467322278748659
+gemma,google/gemma-3-12b-it,Benevolence: dependability,context_gain_no_rag,window_none - sentence_none,-0.006467680226329292
+gemma,google/gemma-3-12b-it,Benevolence: dependability,context_gain_no_rag,doc_none - sentence_none,-0.032090787610442956
+gemma,google/gemma-3-12b-it,Benevolence: dependability,context_gain_rag,window_early - sentence_early,-0.004643956301132485
+gemma,google/gemma-3-12b-it,Benevolence: dependability,context_gain_rag,doc_early - sentence_early,-0.0027633799062184577
+gemma,google/gemma-3-12b-it,Benevolence: dependability,rag_gain,sentence_early - sentence_none,-0.006681847186090856
+gemma,google/gemma-3-12b-it,Benevolence: dependability,rag_gain,window_early - window_none,-0.004858123260894048
+gemma,google/gemma-3-12b-it,Benevolence: dependability,rag_gain,doc_early - doc_none,0.022645560518133642
+gemma,google/gemma-3-12b-it,Conformity: interpersonal,context_gain_no_rag,window_none - sentence_none,-0.004453586517981001
+gemma,google/gemma-3-12b-it,Conformity: interpersonal,context_gain_no_rag,doc_none - sentence_none,-0.011885584974909214
+gemma,google/gemma-3-12b-it,Conformity: interpersonal,context_gain_rag,window_early - sentence_early,-0.008413163109327049
+gemma,google/gemma-3-12b-it,Conformity: interpersonal,context_gain_rag,doc_early - sentence_early,-0.017192429190241484
+gemma,google/gemma-3-12b-it,Conformity: interpersonal,rag_gain,sentence_early - sentence_none,0.005969135791776589
+gemma,google/gemma-3-12b-it,Conformity: interpersonal,rag_gain,window_early - window_none,0.0020095592004305413
+gemma,google/gemma-3-12b-it,Conformity: interpersonal,rag_gain,doc_early - doc_none,0.0006622915764443182
+gemma,google/gemma-3-12b-it,Conformity: rules,context_gain_no_rag,window_none - sentence_none,-0.022968772398028525
+gemma,google/gemma-3-12b-it,Conformity: rules,context_gain_no_rag,doc_none - sentence_none,-0.01810411676145507
+gemma,google/gemma-3-12b-it,Conformity: rules,context_gain_rag,window_early - sentence_early,-0.0028874922287846494
+gemma,google/gemma-3-12b-it,Conformity: rules,context_gain_rag,doc_early - sentence_early,-0.006939136149380243
+gemma,google/gemma-3-12b-it,Conformity: rules,rag_gain,sentence_early - sentence_none,0.021397606336668484
+gemma,google/gemma-3-12b-it,Conformity: rules,rag_gain,window_early - window_none,0.04147888650591236
+gemma,google/gemma-3-12b-it,Conformity: rules,rag_gain,doc_early - doc_none,0.03256258694874331
+gemma,google/gemma-3-12b-it,Face,context_gain_no_rag,window_none - sentence_none,-0.009299153867337706
+gemma,google/gemma-3-12b-it,Face,context_gain_no_rag,doc_none - sentence_none,-0.00615683384348889
+gemma,google/gemma-3-12b-it,Face,context_gain_rag,window_early - sentence_early,-0.009959398779274542
+gemma,google/gemma-3-12b-it,Face,context_gain_rag,doc_early - sentence_early,-0.02628592939151947
+gemma,google/gemma-3-12b-it,Face,rag_gain,sentence_early - sentence_none,0.01111146005781552
+gemma,google/gemma-3-12b-it,Face,rag_gain,window_early - window_none,0.010451215145878684
+gemma,google/gemma-3-12b-it,Face,rag_gain,doc_early - doc_none,-0.009017635490215059
+gemma,google/gemma-3-12b-it,Hedonism,context_gain_no_rag,window_none - sentence_none,0.014943672071988656
+gemma,google/gemma-3-12b-it,Hedonism,context_gain_no_rag,doc_none - sentence_none,-0.009190212309867551
+gemma,google/gemma-3-12b-it,Hedonism,context_gain_rag,window_early - sentence_early,0.003267045454545481
+gemma,google/gemma-3-12b-it,Hedonism,context_gain_rag,doc_early - sentence_early,-0.01781076066790349
+gemma,google/gemma-3-12b-it,Hedonism,rag_gain,sentence_early - sentence_none,0.0680502776965799
+gemma,google/gemma-3-12b-it,Hedonism,rag_gain,window_early - window_none,0.05637365107913672
+gemma,google/gemma-3-12b-it,Hedonism,rag_gain,doc_early - doc_none,0.05942972933854396
+gemma,google/gemma-3-12b-it,Humility,context_gain_no_rag,window_none - sentence_none,0.008762886597938148
+gemma,google/gemma-3-12b-it,Humility,context_gain_no_rag,doc_none - sentence_none,-0.004778780068728512
+gemma,google/gemma-3-12b-it,Humility,context_gain_rag,window_early - sentence_early,0.03182866066780694
+gemma,google/gemma-3-12b-it,Humility,context_gain_rag,doc_early - sentence_early,-0.0064964959844493325
+gemma,google/gemma-3-12b-it,Humility,rag_gain,sentence_early - sentence_none,-0.00583888331356628
+gemma,google/gemma-3-12b-it,Humility,rag_gain,window_early - window_none,0.017226890756302515
+gemma,google/gemma-3-12b-it,Humility,rag_gain,doc_early - doc_none,-0.0075565992292871
+gemma,google/gemma-3-12b-it,Power: dominance,context_gain_no_rag,window_none - sentence_none,-0.014207549062733943
+gemma,google/gemma-3-12b-it,Power: dominance,context_gain_no_rag,doc_none - sentence_none,-0.06421753196159413
+gemma,google/gemma-3-12b-it,Power: dominance,context_gain_rag,window_early - sentence_early,-0.008262471781785102
+gemma,google/gemma-3-12b-it,Power: dominance,context_gain_rag,doc_early - sentence_early,-0.07011907011907012
+gemma,google/gemma-3-12b-it,Power: dominance,rag_gain,sentence_early - sentence_none,0.018466696377468977
+gemma,google/gemma-3-12b-it,Power: dominance,rag_gain,window_early - window_none,0.024411773658417818
+gemma,google/gemma-3-12b-it,Power: dominance,rag_gain,doc_early - doc_none,0.012565158219992989
+gemma,google/gemma-3-12b-it,Power: resources,context_gain_no_rag,window_none - sentence_none,-0.009474576890147635
+gemma,google/gemma-3-12b-it,Power: resources,context_gain_no_rag,doc_none - sentence_none,-0.017471842782150387
+gemma,google/gemma-3-12b-it,Power: resources,context_gain_rag,window_early - sentence_early,0.013247955930512478
+gemma,google/gemma-3-12b-it,Power: resources,context_gain_rag,doc_early - sentence_early,-0.0076509640849880545
+gemma,google/gemma-3-12b-it,Power: resources,rag_gain,sentence_early - sentence_none,0.08596043922156019
+gemma,google/gemma-3-12b-it,Power: resources,rag_gain,window_early - window_none,0.1086829720422203
+gemma,google/gemma-3-12b-it,Power: resources,rag_gain,doc_early - doc_none,0.09578131791872252
+gemma,google/gemma-3-12b-it,Security: personal,context_gain_no_rag,window_none - sentence_none,-0.008932122696279104
+gemma,google/gemma-3-12b-it,Security: personal,context_gain_no_rag,doc_none - sentence_none,-0.004066816910984511
+gemma,google/gemma-3-12b-it,Security: personal,context_gain_rag,window_early - sentence_early,-0.0005885681946802557
+gemma,google/gemma-3-12b-it,Security: personal,context_gain_rag,doc_early - sentence_early,-0.0016442193708133823
+gemma,google/gemma-3-12b-it,Security: personal,rag_gain,sentence_early - sentence_none,-0.010260765830574892
+gemma,google/gemma-3-12b-it,Security: personal,rag_gain,window_early - window_none,-0.0019172113289760429
+gemma,google/gemma-3-12b-it,Security: personal,rag_gain,doc_early - doc_none,-0.007838168290403763
+gemma,google/gemma-3-12b-it,Security: societal,context_gain_no_rag,window_none - sentence_none,-0.009408603730239301
+gemma,google/gemma-3-12b-it,Security: societal,context_gain_no_rag,doc_none - sentence_none,0.012420078338286566
+gemma,google/gemma-3-12b-it,Security: societal,context_gain_rag,window_early - sentence_early,-0.017280516210858354
+gemma,google/gemma-3-12b-it,Security: societal,context_gain_rag,doc_early - sentence_early,0.0021459560064570893
+gemma,google/gemma-3-12b-it,Security: societal,rag_gain,sentence_early - sentence_none,0.0275648740603886
+gemma,google/gemma-3-12b-it,Security: societal,rag_gain,window_early - window_none,0.019692961579769547
+gemma,google/gemma-3-12b-it,Security: societal,rag_gain,doc_early - doc_none,0.017290751728559123
+gemma,google/gemma-3-12b-it,Self-direction: action,context_gain_no_rag,window_none - sentence_none,0.012916628572009065
+gemma,google/gemma-3-12b-it,Self-direction: action,context_gain_no_rag,doc_none - sentence_none,0.01546638127201505
+gemma,google/gemma-3-12b-it,Self-direction: action,context_gain_rag,window_early - sentence_early,-0.008431042728277188
+gemma,google/gemma-3-12b-it,Self-direction: action,context_gain_rag,doc_early - sentence_early,-0.013783398499273472
+gemma,google/gemma-3-12b-it,Self-direction: action,rag_gain,sentence_early - sentence_none,0.03326814646940025
+gemma,google/gemma-3-12b-it,Self-direction: action,rag_gain,window_early - window_none,0.011920475169114
+gemma,google/gemma-3-12b-it,Self-direction: action,rag_gain,doc_early - doc_none,0.0040183666981117305
+gemma,google/gemma-3-12b-it,Self-direction: thought,context_gain_no_rag,window_none - sentence_none,-0.0059011164274322125
+gemma,google/gemma-3-12b-it,Self-direction: thought,context_gain_no_rag,doc_none - sentence_none,-0.0475182932204884
+gemma,google/gemma-3-12b-it,Self-direction: thought,context_gain_rag,window_early - sentence_early,-0.004824743585647176
+gemma,google/gemma-3-12b-it,Self-direction: thought,context_gain_rag,doc_early - sentence_early,-0.040673945651794746
+gemma,google/gemma-3-12b-it,Self-direction: thought,rag_gain,sentence_early - sentence_none,0.026349142819024743
+gemma,google/gemma-3-12b-it,Self-direction: thought,rag_gain,window_early - window_none,0.02742551566080978
+gemma,google/gemma-3-12b-it,Self-direction: thought,rag_gain,doc_early - doc_none,0.0331934903877184
+gemma,google/gemma-3-12b-it,Stimulation,context_gain_no_rag,window_none - sentence_none,-0.011252694307087613
+gemma,google/gemma-3-12b-it,Stimulation,context_gain_no_rag,doc_none - sentence_none,-0.0025691699604742935
+gemma,google/gemma-3-12b-it,Stimulation,context_gain_rag,window_early - sentence_early,-0.011176403199611856
+gemma,google/gemma-3-12b-it,Stimulation,context_gain_rag,doc_early - sentence_early,-0.0046531124188061435
+gemma,google/gemma-3-12b-it,Stimulation,rag_gain,sentence_early - sentence_none,0.0023317995274219905
+gemma,google/gemma-3-12b-it,Stimulation,rag_gain,window_early - window_none,0.002408090634897747
+gemma,google/gemma-3-12b-it,Stimulation,rag_gain,doc_early - doc_none,0.0002478570690901405
+gemma,google/gemma-3-12b-it,Tradition,context_gain_no_rag,window_none - sentence_none,0.018654823536732673
+gemma,google/gemma-3-12b-it,Tradition,context_gain_no_rag,doc_none - sentence_none,-0.002704734946351456
+gemma,google/gemma-3-12b-it,Tradition,context_gain_rag,window_early - sentence_early,-0.022710612017178528
+gemma,google/gemma-3-12b-it,Tradition,context_gain_rag,doc_early - sentence_early,-0.014592138483212724
+gemma,google/gemma-3-12b-it,Tradition,rag_gain,sentence_early - sentence_none,0.01838775014625213
+gemma,google/gemma-3-12b-it,Tradition,rag_gain,window_early - window_none,-0.02297768540765907
+gemma,google/gemma-3-12b-it,Tradition,rag_gain,doc_early - doc_none,0.006500346609390861
+gemma,google/gemma-3-12b-it,Universalism: concern,context_gain_no_rag,window_none - sentence_none,-0.018974570135623148
+gemma,google/gemma-3-12b-it,Universalism: concern,context_gain_no_rag,doc_none - sentence_none,-0.02702010789567627
+gemma,google/gemma-3-12b-it,Universalism: concern,context_gain_rag,window_early - sentence_early,0.0007918621491698197
+gemma,google/gemma-3-12b-it,Universalism: concern,context_gain_rag,doc_early - sentence_early,-0.027469177618208995
+gemma,google/gemma-3-12b-it,Universalism: concern,rag_gain,sentence_early - sentence_none,0.015941554852453133
+gemma,google/gemma-3-12b-it,Universalism: concern,rag_gain,window_early - window_none,0.0357079871372461
+gemma,google/gemma-3-12b-it,Universalism: concern,rag_gain,doc_early - doc_none,0.015492485129920408
+gemma,google/gemma-3-12b-it,Universalism: nature,context_gain_no_rag,window_none - sentence_none,-0.012063022454191441
+gemma,google/gemma-3-12b-it,Universalism: nature,context_gain_no_rag,doc_none - sentence_none,-0.050665541447696416
+gemma,google/gemma-3-12b-it,Universalism: nature,context_gain_rag,window_early - sentence_early,0.023188943081895785
+gemma,google/gemma-3-12b-it,Universalism: nature,context_gain_rag,doc_early - sentence_early,-0.0060180951321960885
+gemma,google/gemma-3-12b-it,Universalism: nature,rag_gain,sentence_early - sentence_none,0.023232453922064522
+gemma,google/gemma-3-12b-it,Universalism: nature,rag_gain,window_early - window_none,0.05848441945815175
+gemma,google/gemma-3-12b-it,Universalism: nature,rag_gain,doc_early - doc_none,0.06787990023756485
+gemma,google/gemma-3-12b-it,Universalism: tolerance,context_gain_no_rag,window_none - sentence_none,0.011896140513503878
+gemma,google/gemma-3-12b-it,Universalism: tolerance,context_gain_no_rag,doc_none - sentence_none,-0.018561868955569744
+gemma,google/gemma-3-12b-it,Universalism: tolerance,context_gain_rag,window_early - sentence_early,0.01659127706097377
+gemma,google/gemma-3-12b-it,Universalism: tolerance,context_gain_rag,doc_early - sentence_early,-0.024839061903390247
+gemma,google/gemma-3-12b-it,Universalism: tolerance,rag_gain,sentence_early - sentence_none,0.02518530615207354
+gemma,google/gemma-3-12b-it,Universalism: tolerance,rag_gain,window_early - window_none,0.02988044269954343
+gemma,google/gemma-3-12b-it,Universalism: tolerance,rag_gain,doc_early - doc_none,0.018908113204253035
+mistral,mistralai/Mistral-Large-Instruct-2407,Achievement,context_gain_no_rag,window_none - sentence_none,-0.008688888507953907
+mistral,mistralai/Mistral-Large-Instruct-2407,Achievement,context_gain_no_rag,doc_none - sentence_none,-0.003957339918256142
+mistral,mistralai/Mistral-Large-Instruct-2407,Achievement,context_gain_rag,window_early - sentence_early,0.006475781029572636
+mistral,mistralai/Mistral-Large-Instruct-2407,Achievement,context_gain_rag,doc_early - sentence_early,0.001063191201456981
+mistral,mistralai/Mistral-Large-Instruct-2407,Achievement,rag_gain,sentence_early - sentence_none,0.002737614013266998
+mistral,mistralai/Mistral-Large-Instruct-2407,Achievement,rag_gain,window_early - window_none,0.01790228355079354
+mistral,mistralai/Mistral-Large-Instruct-2407,Achievement,rag_gain,doc_early - doc_none,0.007758145132980121
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: caring,context_gain_no_rag,window_none - sentence_none,-0.023913218711417245
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: caring,context_gain_no_rag,doc_none - sentence_none,-0.03682554215844702
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: caring,context_gain_rag,window_early - sentence_early,-0.014839398764393136
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: caring,context_gain_rag,doc_early - sentence_early,-0.02830697198615048
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: caring,rag_gain,sentence_early - sentence_none,0.0011206549075488126
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: caring,rag_gain,window_early - window_none,0.010194474854572921
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: caring,rag_gain,doc_early - doc_none,0.009639225079845354
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: dependability,context_gain_no_rag,window_none - sentence_none,-0.026113002739305183
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: dependability,context_gain_no_rag,doc_none - sentence_none,-0.030073130311830065
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: dependability,context_gain_rag,window_early - sentence_early,0.01312205478742684
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: dependability,context_gain_rag,doc_early - sentence_early,-0.015933488104450666
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: dependability,rag_gain,sentence_early - sentence_none,0.008292272563393849
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: dependability,rag_gain,window_early - window_none,0.04752733009012587
+mistral,mistralai/Mistral-Large-Instruct-2407,Benevolence: dependability,rag_gain,doc_early - doc_none,0.022431914770773248
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: interpersonal,context_gain_no_rag,window_none - sentence_none,0.002649165213617008
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: interpersonal,context_gain_no_rag,doc_none - sentence_none,0.005775184567754221
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: interpersonal,context_gain_rag,window_early - sentence_early,-0.02516629711751664
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: interpersonal,context_gain_rag,doc_early - sentence_early,0.004187388104237133
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: interpersonal,rag_gain,sentence_early - sentence_none,0.025561280824438717
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: interpersonal,rag_gain,window_early - window_none,-0.00225418150669493
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: interpersonal,rag_gain,doc_early - doc_none,0.02397348436092163
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: rules,context_gain_no_rag,window_none - sentence_none,-0.004283972564197935
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: rules,context_gain_no_rag,doc_none - sentence_none,-0.03807680124497931
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: rules,context_gain_rag,window_early - sentence_early,0.005637975462886025
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: rules,context_gain_rag,doc_early - sentence_early,-0.03808509376115404
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: rules,rag_gain,sentence_early - sentence_none,0.03797401607283807
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: rules,rag_gain,window_early - window_none,0.04789596409992203
+mistral,mistralai/Mistral-Large-Instruct-2407,Conformity: rules,rag_gain,doc_early - doc_none,0.03796572355666333
+mistral,mistralai/Mistral-Large-Instruct-2407,Face,context_gain_no_rag,window_none - sentence_none,0.004151463412520262
+mistral,mistralai/Mistral-Large-Instruct-2407,Face,context_gain_no_rag,doc_none - sentence_none,-0.003938510012430951
+mistral,mistralai/Mistral-Large-Instruct-2407,Face,context_gain_rag,window_early - sentence_early,0.018499865699704493
+mistral,mistralai/Mistral-Large-Instruct-2407,Face,context_gain_rag,doc_early - sentence_early,-0.005903373856987748
+mistral,mistralai/Mistral-Large-Instruct-2407,Face,rag_gain,sentence_early - sentence_none,-0.019920245172248274
+mistral,mistralai/Mistral-Large-Instruct-2407,Face,rag_gain,window_early - window_none,-0.005571842885064043
+mistral,mistralai/Mistral-Large-Instruct-2407,Face,rag_gain,doc_early - doc_none,-0.02188510901680507
+mistral,mistralai/Mistral-Large-Instruct-2407,Hedonism,context_gain_no_rag,window_none - sentence_none,0.06423569186186912
+mistral,mistralai/Mistral-Large-Instruct-2407,Hedonism,context_gain_no_rag,doc_none - sentence_none,-0.009669194344183618
+mistral,mistralai/Mistral-Large-Instruct-2407,Hedonism,context_gain_rag,window_early - sentence_early,0.05297604523990629
+mistral,mistralai/Mistral-Large-Instruct-2407,Hedonism,context_gain_rag,doc_early - sentence_early,0.002651324795951926
+mistral,mistralai/Mistral-Large-Instruct-2407,Hedonism,rag_gain,sentence_early - sentence_none,0.0077463704919715215
+mistral,mistralai/Mistral-Large-Instruct-2407,Hedonism,rag_gain,window_early - window_none,-0.003513276129991305
+mistral,mistralai/Mistral-Large-Instruct-2407,Hedonism,rag_gain,doc_early - doc_none,0.020066889632107066
+mistral,mistralai/Mistral-Large-Instruct-2407,Humility,context_gain_no_rag,window_none - sentence_none,0.02816901408450704
+mistral,mistralai/Mistral-Large-Instruct-2407,Humility,context_gain_no_rag,doc_none - sentence_none,0.05994104159842777
+mistral,mistralai/Mistral-Large-Instruct-2407,Humility,context_gain_rag,window_early - sentence_early,0.0092661230541142
+mistral,mistralai/Mistral-Large-Instruct-2407,Humility,context_gain_rag,doc_early - sentence_early,-0.0017088174982911597
+mistral,mistralai/Mistral-Large-Instruct-2407,Humility,rag_gain,sentence_early - sentence_none,0.07524091919940692
+mistral,mistralai/Mistral-Large-Instruct-2407,Humility,rag_gain,window_early - window_none,0.05633802816901409
+mistral,mistralai/Mistral-Large-Instruct-2407,Humility,rag_gain,doc_early - doc_none,0.013591060102687999
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: dominance,context_gain_no_rag,window_none - sentence_none,0.011990444952250656
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: dominance,context_gain_no_rag,doc_none - sentence_none,-0.004347618853072915
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: dominance,context_gain_rag,window_early - sentence_early,-0.014025827303444899
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: dominance,context_gain_rag,doc_early - sentence_early,-0.006786249608802308
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: dominance,rag_gain,sentence_early - sentence_none,0.014525903276525476
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: dominance,rag_gain,window_early - window_none,-0.01149036897917008
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: dominance,rag_gain,doc_early - doc_none,0.012087272520796083
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: resources,context_gain_no_rag,window_none - sentence_none,-0.021656499488229286
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: resources,context_gain_no_rag,doc_none - sentence_none,-0.026837906647807636
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: resources,context_gain_rag,window_early - sentence_early,-0.00921283045447635
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: resources,context_gain_rag,doc_early - sentence_early,-0.020021245469603155
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: resources,rag_gain,sentence_early - sentence_none,0.10498069087688217
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: resources,rag_gain,window_early - window_none,0.1174243599106351
+mistral,mistralai/Mistral-Large-Instruct-2407,Power: resources,rag_gain,doc_early - doc_none,0.11179735205508665
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: personal,context_gain_no_rag,window_none - sentence_none,-0.018637749915282942
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: personal,context_gain_no_rag,doc_none - sentence_none,-0.05882510789597262
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: personal,context_gain_rag,window_early - sentence_early,-0.0242394892965678
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: personal,context_gain_rag,doc_early - sentence_early,-0.05363191579985657
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: personal,rag_gain,sentence_early - sentence_none,0.0009593543502202928
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: personal,rag_gain,window_early - window_none,-0.0046423850310645665
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: personal,rag_gain,doc_early - doc_none,0.006152546446336338
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: societal,context_gain_no_rag,window_none - sentence_none,-0.020071865278373402
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: societal,context_gain_no_rag,doc_none - sentence_none,-0.039966890325772664
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: societal,context_gain_rag,window_early - sentence_early,-0.031713192537916046
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: societal,context_gain_rag,doc_early - sentence_early,-0.05818761226588437
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: societal,rag_gain,sentence_early - sentence_none,0.033420365603193614
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: societal,rag_gain,window_early - window_none,0.02177903834365097
+mistral,mistralai/Mistral-Large-Instruct-2407,Security: societal,rag_gain,doc_early - doc_none,0.015199643663081908
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: action,context_gain_no_rag,window_none - sentence_none,0.07076306971422347
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: action,context_gain_no_rag,doc_none - sentence_none,0.05736534016348732
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: action,context_gain_rag,window_early - sentence_early,0.03234723681203361
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: action,context_gain_rag,doc_early - sentence_early,0.028289755500251812
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: action,rag_gain,sentence_early - sentence_none,0.019651270715100533
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: action,rag_gain,window_early - window_none,-0.01876456218708933
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: action,rag_gain,doc_early - doc_none,-0.009424313948134977
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: thought,context_gain_no_rag,window_none - sentence_none,0.04877772462928928
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: thought,context_gain_no_rag,doc_none - sentence_none,0.04118315477966569
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: thought,context_gain_rag,window_early - sentence_early,0.028936817395656733
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: thought,context_gain_rag,doc_early - sentence_early,0.02510303484451107
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: thought,rag_gain,sentence_early - sentence_none,0.01409973453728644
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: thought,rag_gain,window_early - window_none,-0.0057411726963461085
+mistral,mistralai/Mistral-Large-Instruct-2407,Self-direction: thought,rag_gain,doc_early - doc_none,-0.001980385397868184
+mistral,mistralai/Mistral-Large-Instruct-2407,Stimulation,context_gain_no_rag,window_none - sentence_none,-0.004167275846744201
+mistral,mistralai/Mistral-Large-Instruct-2407,Stimulation,context_gain_no_rag,doc_none - sentence_none,-0.017734038255805218
+mistral,mistralai/Mistral-Large-Instruct-2407,Stimulation,context_gain_rag,window_early - sentence_early,0.02669186646887492
+mistral,mistralai/Mistral-Large-Instruct-2407,Stimulation,context_gain_rag,doc_early - sentence_early,-0.009688400104739453
+mistral,mistralai/Mistral-Large-Instruct-2407,Stimulation,rag_gain,sentence_early - sentence_none,-0.0003790530438151085
+mistral,mistralai/Mistral-Large-Instruct-2407,Stimulation,rag_gain,window_early - window_none,0.03048008927180401
+mistral,mistralai/Mistral-Large-Instruct-2407,Stimulation,rag_gain,doc_early - doc_none,0.007666585107250656
+mistral,mistralai/Mistral-Large-Instruct-2407,Tradition,context_gain_no_rag,window_none - sentence_none,0.023281164983979197
+mistral,mistralai/Mistral-Large-Instruct-2407,Tradition,context_gain_no_rag,doc_none - sentence_none,0.015831734349046334
+mistral,mistralai/Mistral-Large-Instruct-2407,Tradition,context_gain_rag,window_early - sentence_early,0.021949296840512056
+mistral,mistralai/Mistral-Large-Instruct-2407,Tradition,context_gain_rag,doc_early - sentence_early,-0.00040294727147127674
+mistral,mistralai/Mistral-Large-Instruct-2407,Tradition,rag_gain,sentence_early - sentence_none,0.04781231799650554
+mistral,mistralai/Mistral-Large-Instruct-2407,Tradition,rag_gain,window_early - window_none,0.0464804498530384
+mistral,mistralai/Mistral-Large-Instruct-2407,Tradition,rag_gain,doc_early - doc_none,0.03157763637598793
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: concern,context_gain_no_rag,window_none - sentence_none,-0.002009454308770864
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: concern,context_gain_no_rag,doc_none - sentence_none,-0.02615928157821243
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: concern,context_gain_rag,window_early - sentence_early,-0.0205449277156885
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: concern,context_gain_rag,doc_early - sentence_early,-0.055366392781107915
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: concern,rag_gain,sentence_early - sentence_none,0.06899919964271348
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: concern,rag_gain,window_early - window_none,0.05046372623579584
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: concern,rag_gain,doc_early - doc_none,0.03979208843981799
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: nature,context_gain_no_rag,window_none - sentence_none,0.014387131971208778
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: nature,context_gain_no_rag,doc_none - sentence_none,-0.0014609592605278054
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: nature,context_gain_rag,window_early - sentence_early,-0.006957560247387529
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: nature,context_gain_rag,doc_early - sentence_early,-0.043215214467429264
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: nature,rag_gain,sentence_early - sentence_none,0.04146762366067669
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: nature,rag_gain,window_early - window_none,0.020122931442080383
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: nature,rag_gain,doc_early - doc_none,-0.0002866315462247693
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: tolerance,context_gain_no_rag,window_none - sentence_none,0.004765504648198027
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: tolerance,context_gain_no_rag,doc_none - sentence_none,-0.006611916039502008
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: tolerance,context_gain_rag,window_early - sentence_early,0.014220637750049503
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: tolerance,context_gain_rag,doc_early - sentence_early,-0.03993322786960021
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: tolerance,rag_gain,sentence_early - sentence_none,0.047435459392456136
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: tolerance,rag_gain,window_early - window_none,0.05689059249430761
+mistral,mistralai/Mistral-Large-Instruct-2407,Universalism: tolerance,rag_gain,doc_early - doc_none,0.014114147562357932
+qwen,Qwen/Qwen2.5-72B-Instruct,Achievement,context_gain_no_rag,window_none - sentence_none,-0.029802678472151234
+qwen,Qwen/Qwen2.5-72B-Instruct,Achievement,context_gain_no_rag,doc_none - sentence_none,-0.03059174493672359
+qwen,Qwen/Qwen2.5-72B-Instruct,Achievement,context_gain_rag,window_early - sentence_early,-0.019136424146795727
+qwen,Qwen/Qwen2.5-72B-Instruct,Achievement,context_gain_rag,doc_early - sentence_early,-0.018089485598410948
+qwen,Qwen/Qwen2.5-72B-Instruct,Achievement,rag_gain,sentence_early - sentence_none,0.015333148357436654
+qwen,Qwen/Qwen2.5-72B-Instruct,Achievement,rag_gain,window_early - window_none,0.02599940268279216
+qwen,Qwen/Qwen2.5-72B-Instruct,Achievement,rag_gain,doc_early - doc_none,0.027835407695749298
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: caring,context_gain_no_rag,window_none - sentence_none,-0.03489047903651346
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: caring,context_gain_no_rag,doc_none - sentence_none,-0.05699817733468793
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: caring,context_gain_rag,window_early - sentence_early,-0.03920266894667132
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: caring,context_gain_rag,doc_early - sentence_early,-0.05783010250685067
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: caring,rag_gain,sentence_early - sentence_none,0.022232811985082646
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: caring,rag_gain,window_early - window_none,0.017920622074924786
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: caring,rag_gain,doc_early - doc_none,0.021400886812919906
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: dependability,context_gain_no_rag,window_none - sentence_none,-0.00929694851458529
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: dependability,context_gain_no_rag,doc_none - sentence_none,-0.04254374970988256
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: dependability,context_gain_rag,window_early - sentence_early,-0.025491996496900038
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: dependability,context_gain_rag,doc_early - sentence_early,-0.04505256333967089
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: dependability,rag_gain,sentence_early - sentence_none,0.029658995059645726
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: dependability,rag_gain,window_early - window_none,0.013463947077330979
+qwen,Qwen/Qwen2.5-72B-Instruct,Benevolence: dependability,rag_gain,doc_early - doc_none,0.027150181429857395
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: interpersonal,context_gain_no_rag,window_none - sentence_none,-0.00503539379202058
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: interpersonal,context_gain_no_rag,doc_none - sentence_none,-0.013012018072471335
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: interpersonal,context_gain_rag,window_early - sentence_early,-0.02031446402187577
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: interpersonal,context_gain_rag,doc_early - sentence_early,-0.03157013030362192
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: interpersonal,rag_gain,sentence_early - sentence_none,0.04345334560682475
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: interpersonal,rag_gain,window_early - window_none,0.02817427537696956
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: interpersonal,rag_gain,doc_early - doc_none,0.02489523337567416
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: rules,context_gain_no_rag,window_none - sentence_none,-0.026185034679332975
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: rules,context_gain_no_rag,doc_none - sentence_none,-0.035785113813861236
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: rules,context_gain_rag,window_early - sentence_early,-0.02250015142962286
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: rules,context_gain_rag,doc_early - sentence_early,-0.02958444972684604
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: rules,rag_gain,sentence_early - sentence_none,0.028674997477695696
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: rules,rag_gain,window_early - window_none,0.03235988072740581
+qwen,Qwen/Qwen2.5-72B-Instruct,Conformity: rules,rag_gain,doc_early - doc_none,0.03487566156471089
+qwen,Qwen/Qwen2.5-72B-Instruct,Face,context_gain_no_rag,window_none - sentence_none,-0.0004719207173194684
+qwen,Qwen/Qwen2.5-72B-Instruct,Face,context_gain_no_rag,doc_none - sentence_none,-0.027320071715188243
+qwen,Qwen/Qwen2.5-72B-Instruct,Face,context_gain_rag,window_early - sentence_early,0.007605758398816803
+qwen,Qwen/Qwen2.5-72B-Instruct,Face,context_gain_rag,doc_early - sentence_early,0.0009349979344902559
+qwen,Qwen/Qwen2.5-72B-Instruct,Face,rag_gain,sentence_early - sentence_none,0.01568174314955431
+qwen,Qwen/Qwen2.5-72B-Instruct,Face,rag_gain,window_early - window_none,0.023759422265690583
+qwen,Qwen/Qwen2.5-72B-Instruct,Face,rag_gain,doc_early - doc_none,0.04393681279923281
+qwen,Qwen/Qwen2.5-72B-Instruct,Hedonism,context_gain_no_rag,window_none - sentence_none,-0.018775032056863372
+qwen,Qwen/Qwen2.5-72B-Instruct,Hedonism,context_gain_no_rag,doc_none - sentence_none,-0.050504104629022745
+qwen,Qwen/Qwen2.5-72B-Instruct,Hedonism,context_gain_rag,window_early - sentence_early,0.006759959966990359
+qwen,Qwen/Qwen2.5-72B-Instruct,Hedonism,context_gain_rag,doc_early - sentence_early,-0.06924574938206876
+qwen,Qwen/Qwen2.5-72B-Instruct,Hedonism,rag_gain,sentence_early - sentence_none,0.012913138709993721
+qwen,Qwen/Qwen2.5-72B-Instruct,Hedonism,rag_gain,window_early - window_none,0.03844813073384745
+qwen,Qwen/Qwen2.5-72B-Instruct,Hedonism,rag_gain,doc_early - doc_none,-0.005828506043052295
+qwen,Qwen/Qwen2.5-72B-Instruct,Humility,context_gain_no_rag,window_none - sentence_none,0.031100478468899503
+qwen,Qwen/Qwen2.5-72B-Instruct,Humility,context_gain_no_rag,doc_none - sentence_none,-0.05344968639214618
+qwen,Qwen/Qwen2.5-72B-Instruct,Humility,context_gain_rag,window_early - sentence_early,-0.06428571428571425
+qwen,Qwen/Qwen2.5-72B-Instruct,Humility,context_gain_rag,doc_early - sentence_early,-0.09792626728110597
+qwen,Qwen/Qwen2.5-72B-Instruct,Humility,rag_gain,sentence_early - sentence_none,0.0733082706766917
+qwen,Qwen/Qwen2.5-72B-Instruct,Humility,rag_gain,window_early - window_none,-0.022077922077922058
+qwen,Qwen/Qwen2.5-72B-Instruct,Humility,rag_gain,doc_early - doc_none,0.028831689787731908
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: dominance,context_gain_no_rag,window_none - sentence_none,-0.027307101289146457
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: dominance,context_gain_no_rag,doc_none - sentence_none,-0.04085325832161282
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: dominance,context_gain_rag,window_early - sentence_early,-0.00984711392397064
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: dominance,context_gain_rag,doc_early - sentence_early,-0.016989787306504744
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: dominance,rag_gain,sentence_early - sentence_none,-0.0014205814976316344
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: dominance,rag_gain,window_early - window_none,0.016039405867544182
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: dominance,rag_gain,doc_early - doc_none,0.022442889517476444
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: resources,context_gain_no_rag,window_none - sentence_none,-0.006989490459577058
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: resources,context_gain_no_rag,doc_none - sentence_none,-0.021896658679525366
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: resources,context_gain_rag,window_early - sentence_early,-0.005898587889753393
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: resources,context_gain_rag,doc_early - sentence_early,-0.020207034721832606
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: resources,rag_gain,sentence_early - sentence_none,0.04747118325099978
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: resources,rag_gain,window_early - window_none,0.04856208582082344
+qwen,Qwen/Qwen2.5-72B-Instruct,Power: resources,rag_gain,doc_early - doc_none,0.049160807208692536
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: personal,context_gain_no_rag,window_none - sentence_none,-0.04652624745387193
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: personal,context_gain_no_rag,doc_none - sentence_none,-0.061145415046364046
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: personal,context_gain_rag,window_early - sentence_early,-0.03476204469445729
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: personal,context_gain_rag,doc_early - sentence_early,-0.05825488861240874
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: personal,rag_gain,sentence_early - sentence_none,0.014985011581959362
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: personal,rag_gain,window_early - window_none,0.026749214341374006
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: personal,rag_gain,doc_early - doc_none,0.01787553801591467
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: societal,context_gain_no_rag,window_none - sentence_none,-0.049393330918259815
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: societal,context_gain_no_rag,doc_none - sentence_none,-0.05802648557610257
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: societal,context_gain_rag,window_early - sentence_early,-0.04516582959822618
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: societal,context_gain_rag,doc_early - sentence_early,-0.059967428563677094
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: societal,rag_gain,sentence_early - sentence_none,0.031473465623487795
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: societal,rag_gain,window_early - window_none,0.03570096694352143
+qwen,Qwen/Qwen2.5-72B-Instruct,Security: societal,rag_gain,doc_early - doc_none,0.029532522635913272
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: action,context_gain_no_rag,window_none - sentence_none,0.008066569882967417
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: action,context_gain_no_rag,doc_none - sentence_none,-0.006541278620124907
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: action,context_gain_rag,window_early - sentence_early,0.004246123952955649
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: action,context_gain_rag,doc_early - sentence_early,-0.005260813304766548
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: action,rag_gain,sentence_early - sentence_none,0.006680645012949349
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: action,rag_gain,window_early - window_none,0.002860199082937581
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: action,rag_gain,doc_early - doc_none,0.007961110328307708
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: thought,context_gain_no_rag,window_none - sentence_none,-0.03317491380113691
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: thought,context_gain_no_rag,doc_none - sentence_none,-0.051199427139276776
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: thought,context_gain_rag,window_early - sentence_early,0.012545706720463998
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: thought,context_gain_rag,doc_early - sentence_early,-0.009090909090909094
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: thought,rag_gain,sentence_early - sentence_none,-0.03308596165739024
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: thought,rag_gain,window_early - window_none,0.012634658864210668
+qwen,Qwen/Qwen2.5-72B-Instruct,Self-direction: thought,rag_gain,doc_early - doc_none,0.009022556390977446
+qwen,Qwen/Qwen2.5-72B-Instruct,Stimulation,context_gain_no_rag,window_none - sentence_none,-0.012876782453494329
+qwen,Qwen/Qwen2.5-72B-Instruct,Stimulation,context_gain_no_rag,doc_none - sentence_none,-0.03576598454346262
+qwen,Qwen/Qwen2.5-72B-Instruct,Stimulation,context_gain_rag,window_early - sentence_early,-0.015206082432973167
+qwen,Qwen/Qwen2.5-72B-Instruct,Stimulation,context_gain_rag,doc_early - sentence_early,-0.060163395501741324
+qwen,Qwen/Qwen2.5-72B-Instruct,Stimulation,rag_gain,sentence_early - sentence_none,0.029234626479389625
+qwen,Qwen/Qwen2.5-72B-Instruct,Stimulation,rag_gain,window_early - window_none,0.026905326499910787
+qwen,Qwen/Qwen2.5-72B-Instruct,Stimulation,rag_gain,doc_early - doc_none,0.004837215521110924
+qwen,Qwen/Qwen2.5-72B-Instruct,Tradition,context_gain_no_rag,window_none - sentence_none,-0.01786634498266665
+qwen,Qwen/Qwen2.5-72B-Instruct,Tradition,context_gain_no_rag,doc_none - sentence_none,-0.031968280723260856
+qwen,Qwen/Qwen2.5-72B-Instruct,Tradition,context_gain_rag,window_early - sentence_early,-0.03459537685297448
+qwen,Qwen/Qwen2.5-72B-Instruct,Tradition,context_gain_rag,doc_early - sentence_early,-0.05439063839859476
+qwen,Qwen/Qwen2.5-72B-Instruct,Tradition,rag_gain,sentence_early - sentence_none,0.015494545252142833
+qwen,Qwen/Qwen2.5-72B-Instruct,Tradition,rag_gain,window_early - window_none,-0.0012344866181649983
+qwen,Qwen/Qwen2.5-72B-Instruct,Tradition,rag_gain,doc_early - doc_none,-0.006927812423191071
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: concern,context_gain_no_rag,window_none - sentence_none,-0.03586744231638403
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: concern,context_gain_no_rag,doc_none - sentence_none,-0.07398044916455482
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: concern,context_gain_rag,window_early - sentence_early,-0.052751395547582014
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: concern,context_gain_rag,doc_early - sentence_early,-0.10457881341273573
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: concern,rag_gain,sentence_early - sentence_none,0.0717616408796892
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: concern,rag_gain,window_early - window_none,0.054877687648491214
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: concern,rag_gain,doc_early - doc_none,0.04116327663150829
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: nature,context_gain_no_rag,window_none - sentence_none,-0.08074527709724189
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: nature,context_gain_no_rag,doc_none - sentence_none,-0.1124406751948091
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: nature,context_gain_rag,window_early - sentence_early,-0.07291366588076248
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: nature,context_gain_rag,doc_early - sentence_early,-0.12036404832688319
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: nature,rag_gain,sentence_early - sentence_none,0.030729112837187933
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: nature,rag_gain,window_early - window_none,0.03856072405366734
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: nature,rag_gain,doc_early - doc_none,0.022805739705113848
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: tolerance,context_gain_no_rag,window_none - sentence_none,-0.019307631738884404
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: tolerance,context_gain_no_rag,doc_none - sentence_none,-0.03923557173811948
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: tolerance,context_gain_rag,window_early - sentence_early,-0.007591631288271311
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: tolerance,context_gain_rag,doc_early - sentence_early,-0.044592474058637116
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: tolerance,rag_gain,sentence_early - sentence_none,0.03945196551406571
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: tolerance,rag_gain,window_early - window_none,0.051167965964678805
+qwen,Qwen/Qwen2.5-72B-Instruct,Universalism: tolerance,rag_gain,doc_early - doc_none,0.034095063193548075

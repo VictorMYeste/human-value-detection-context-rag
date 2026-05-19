@@ -9,33 +9,49 @@ from collections import defaultdict
 from pathlib import Path
 
 
+def _infer_mode_from_name(name: str) -> str:
+    lower = name.lower()
+    if "cross_attention" in lower or "crossattn" in lower:
+        return "cross_attention"
+    if "_late_" in lower or lower.endswith("_late.json") or "_late_rag" in lower:
+        return "late"
+    if "_early_" in lower or "_early_rag" in lower:
+        return "early"
+    if re.search(r"(?:^|_)no_rag(?:_|\.|$)", lower):
+        return "none"
+    if re.search(r"(?:^|_)rag(?:_|\.|$)", lower):
+        # Backward-compatible convention: plain "_rag" means early fusion.
+        return "early"
+    return "none"
+
+
 def _parse_key(path: Path) -> dict:
     name = path.name
-    # Examples: deberta_doc_rag_seed42_test_metrics.json
-    #           deberta_doc_no_rag_seed42_test_metrics.json
+    # Examples:
+    #   deberta_doc_rag_seed42_test_metrics.json
+    #   deberta_doc_no_rag_seed42_test_metrics.json
+    #   deberta_doc_early_rag_seed42_test_metrics.json
     m = re.match(
-        r"(?P<model>[^_]+)_(?P<context>[^_]+)_(?P<rag>rag|no_rag)_seed(?P<seed>\d+)",
+        r"(?P<model>[^_]+)_(?P<context>[^_]+)_(?P<tag>.+?)_seed(?P<seed>\d+)",
         name,
     )
     info = {
         "model": None,
         "context": None,
-        "rag": None,
+        "rag": None,  # bool | None
         "seed": None,
         "mode": None,
     }
     if m:
-        info.update(m.groupdict())
-    # Try to infer mode from filename if present.
-    for mode in ("early", "late", "cross_attention"):
-        if mode in name:
-            info["mode"] = mode
-            break
-    if info["mode"] is None:
-        if info.get("rag") == "no_rag":
-            info["mode"] = "none"
-        elif info.get("rag") == "rag":
-            info["mode"] = "rag"
+        info["model"] = m.group("model")
+        info["context"] = m.group("context")
+        info["seed"] = m.group("seed")
+        tag = m.group("tag").lower()
+        info["mode"] = _infer_mode_from_name(f"_{tag}_")
+        info["rag"] = info["mode"] != "none"
+    else:
+        info["mode"] = _infer_mode_from_name(name)
+        info["rag"] = info["mode"] != "none"
     return info
 
 
@@ -50,6 +66,17 @@ def load_metrics(pattern: str) -> dict[str, dict]:
         except Exception:
             continue
         key_info = _parse_key(path)
+        metrics_meta = data.get("meta", {}) if isinstance(data, dict) else {}
+        if isinstance(metrics_meta, dict):
+            if metrics_meta.get("rag_mode"):
+                key_info["mode"] = str(metrics_meta["rag_mode"])
+                key_info["rag"] = key_info["mode"] != "none"
+            if metrics_meta.get("context_type"):
+                key_info["context"] = str(metrics_meta["context_type"])
+            if metrics_meta.get("seed") is not None:
+                key_info["seed"] = str(metrics_meta["seed"])
+            if metrics_meta.get("model_name"):
+                key_info["model"] = str(metrics_meta["model_name"])
         key = "|".join(
             [
                 str(key_info.get("mode")),

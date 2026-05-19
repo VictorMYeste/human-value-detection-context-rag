@@ -1,4 +1,4 @@
-"""Gemma inference and output parsing."""
+"""LLM inference and output parsing."""
 
 from __future__ import annotations
 
@@ -23,6 +23,14 @@ from value_context_rag.llm.prompts import (
 from value_context_rag.utils.logging import get_logger
 
 LOGGER = get_logger(__name__)
+
+
+def _model_slug(model_name: str) -> str:
+    """Normalize model id for safe artifact filenames."""
+    raw = (model_name or "").strip().rstrip("/")
+    tail = raw.split("/")[-1] if raw else "model"
+    slug = re.sub(r"[^a-zA-Z0-9._-]+", "-", tail).strip("-")
+    return slug or "model"
 
 
 def parse_labels(raw_output: str, label_names: list[str]) -> list[str]:
@@ -69,7 +77,7 @@ def parse_labels(raw_output: str, label_names: list[str]) -> list[str]:
 
 
 def run_inference(config: dict, split: str) -> None:
-    """Run Gemma inference on a split and save predictions."""
+    """Run LLM inference on a split and save predictions."""
     label_names = get_label_names()
     df = load_split(split)
     max_samples = config.get("max_samples")
@@ -89,12 +97,18 @@ def run_inference(config: dict, split: str) -> None:
     n_next = int(context_cfg.get("n_next", 2))
     use_rag = bool(rag_cfg.get("enabled", False))
     top_k = int(rag_cfg.get("top_k", 5))
+    model_family = str(config.get("model", {}).get("family", "gemma")).strip().lower()
+    model_name = config.get("model", {}).get("name", "google/gemma-3-12b-it")
+    model_slug = _model_slug(model_name)
 
     client = GemmaClient(
         GemmaConfig(
-            model_name=config.get("model", {}).get("name", "google/gemma-3-12b-it"),
+            model_name=model_name,
             device=llm_cfg.get("device"),
             quantization=llm_cfg.get("quantization", "8bit"),
+            int8_fp32_cpu_offload=bool(
+                llm_cfg.get("int8_fp32_cpu_offload", False)
+            ),
             max_new_tokens=int(llm_cfg.get("max_tokens", 256)),
             temperature=float(llm_cfg.get("temperature", 0.0)),
             top_p=float(llm_cfg.get("top_p", 1.0)),
@@ -121,11 +135,15 @@ def run_inference(config: dict, split: str) -> None:
     predictions_dir = results_dir / "predictions"
     predictions_dir.mkdir(parents=True, exist_ok=True)
     rag_suffix = "rag" if use_rag else "no_rag"
-    output_path = predictions_dir / f"gemma_{context_type}_{rag_suffix}_{split}.jsonl"
+    output_path = (
+        predictions_dir
+        / f"{model_family}_{context_type}_{rag_suffix}_{model_slug}_{split}.jsonl"
+    )
 
-    LOGGER.info("Running Gemma inference for %s split", split)
+    LOGGER.info("Running %s inference for %s split", model_family, split)
     LOGGER.debug(
-        "Inference config: context=%s rag=%s top_k=%d output=%s",
+        "Inference config: model=%s context=%s rag=%s top_k=%d output=%s",
+        model_name,
         context_type,
         use_rag,
         top_k,
@@ -306,7 +324,7 @@ def run_inference(config: dict, split: str) -> None:
     stats_path = (
         results_dir
         / "logs"
-        / f"gemma_token_stats_{context_type}_{rag_suffix}_{split}.json"
+        / f"{model_family}_token_stats_{context_type}_{rag_suffix}_{model_slug}_{split}.json"
     )
     stats_path.parent.mkdir(parents=True, exist_ok=True)
     if token_stats["prompt_total"] > 0:

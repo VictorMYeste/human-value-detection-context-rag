@@ -1,0 +1,35 @@
+2026-04-24 23:25:13 | INFO | __main__ | ================================================================================
+2026-04-24 23:25:13 | INFO | __main__ | Starting RAG architecture training with config /home/vicyesmo@upvnet.upv.es/human-value-detection-context-rag/configs/deberta-v3-large_doc_late_rag.yaml
+2026-04-24 23:25:13 | INFO | __main__ | Run: model=deberta variant=microsoft/deberta-v3-large context=doc rag_mode=late seed=1701 eval=True dry_run=False
+2026-04-25 14:10:14 | INFO | __main__ | Best macro_f1=0.2874
+2026-04-25 14:18:02 | INFO | __main__ | Test metrics - macro_f1=0.2805 micro_f1=0.3450
+2026-04-25 14:18:02 | INFO | __main__ | ================================================================================
+026-04-24 23:25:40 | INFO | value_context_rag.models.rag_training | Enabled gradient checkpointing on: doc_encoder, kb_encoder
+2026-04-24 23:31:53 | INFO | value_context_rag.models.rag_training | train KB coverage: zero-valid-KB 0/44758 (0.00%)
+2026-04-24 23:34:01 | INFO | value_context_rag.models.rag_training | validation KB coverage: zero-valid-KB 0/14904 (0.00%)
+2026-04-24 23:34:01 | INFO | value_context_rag.models.rag_training | AdamW settings: lr=3e-06 wd=0.1 foreach=False fused=False
+2026-04-25 00:53:08 | INFO | value_context_rag.models.rag_training | Epoch 1/20 loss=0.1351 macro_f1=0.0905
+2026-04-25 00:54:04 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 02:12:59 | INFO | value_context_rag.models.rag_training | Epoch 2/20 loss=0.1123 macro_f1=0.1756
+2026-04-25 02:13:54 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 03:32:59 | INFO | value_context_rag.models.rag_training | Epoch 3/20 loss=0.1009 macro_f1=0.2280
+2026-04-25 03:33:37 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 04:52:41 | INFO | value_context_rag.models.rag_training | Epoch 4/20 loss=0.0933 macro_f1=0.2504
+2026-04-25 04:53:17 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 06:12:20 | INFO | value_context_rag.models.rag_training | Epoch 5/20 loss=0.0873 macro_f1=0.2663
+2026-04-25 06:12:58 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 07:32:02 | INFO | value_context_rag.models.rag_training | Epoch 6/20 loss=0.0815 macro_f1=0.2766
+2026-04-25 07:32:44 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 08:51:47 | INFO | value_context_rag.models.rag_training | Epoch 7/20 loss=0.0763 macro_f1=0.2814
+2026-04-25 08:52:23 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 10:11:27 | INFO | value_context_rag.models.rag_training | Epoch 8/20 loss=0.0708 macro_f1=0.2874
+2026-04-25 10:12:05 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 11:31:10 | INFO | value_context_rag.models.rag_training | Epoch 9/20 loss=0.0655 macro_f1=0.2786
+2026-04-25 11:31:36 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 12:50:40 | INFO | value_context_rag.models.rag_training | Epoch 10/20 loss=0.0602 macro_f1=0.2754
+2026-04-25 12:51:10 | INFO | value_context_rag.models.rag_training | Saved last checkpoint to results/rag_architectures/checkpoints/deberta_doc_late_rag_seed1701_deberta-v3-large_last.pt
+2026-04-25 14:10:14 | INFO | value_context_rag.models.rag_training | Epoch 11/20 loss=0.0553 macro_f1=0.2778
+2026-04-25 14:10:14 | INFO | value_context_rag.models.rag_training | Early stopping after 3 epochs without improvement
+2026-04-25 14:10:14 | INFO | value_context_rag.data.dataset | Loading label names from raw data
+2026-04-25 14:10:31 | INFO | value_context_rag.data.dataset | Loading split test
+2026-04-25 14:12:26 | INFO | value_context_rag.models.rag_training | test KB coverage: zero-valid-KB 0/14569 (0.00%)

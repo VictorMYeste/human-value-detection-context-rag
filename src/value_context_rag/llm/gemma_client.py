@@ -1,4 +1,4 @@
-"""Gemma 3 12B client wrapper."""
+"""Decoder-only LLM client wrapper."""
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ class GemmaConfig:
     model_name: str = "google/gemma-3-12b-it"
     device: str | None = None
     quantization: str | None = None  # "8bit" or "4bit"
+    int8_fp32_cpu_offload: bool = False
     max_new_tokens: int = 64
     temperature: float = 0.0
     top_p: float = 1.0
@@ -50,12 +51,13 @@ class GemmaClient:
             raise ImportError("transformers is required for Gemma") from exc
 
         LOGGER.debug(
-            "Initializing Gemma client (model=%s, device=%s, quantization=%s)",
+            "Initializing LLM client (model=%s, device=%s, quantization=%s, int8_cpu_offload=%s)",
             self.config.model_name,
             self.device,
             self.config.quantization,
+            self.config.int8_fp32_cpu_offload,
         )
-        LOGGER.info("Loading Gemma model %s", self.config.model_name)
+        LOGGER.info("Loading model %s", self.config.model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(self.config.model_name)
         try:
             self.processor = AutoProcessor.from_pretrained(self.config.model_name)
@@ -94,7 +96,10 @@ class GemmaClient:
                 ),
                 category=UserWarning,
             )
-            model_kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
+            model_kwargs["quantization_config"] = BitsAndBytesConfig(
+                load_in_8bit=True,
+                llm_int8_enable_fp32_cpu_offload=self.config.int8_fp32_cpu_offload,
+            )
         elif self.config.quantization == "4bit":
             model_kwargs["quantization_config"] = BitsAndBytesConfig(load_in_4bit=True)
         elif self.config.quantization not in (None, "none"):
@@ -112,12 +117,21 @@ class GemmaClient:
             self.model.to(self.device)
         LOGGER.debug("Gemma model loaded")
 
+    @staticmethod
+    def _text_messages(prompt: str) -> list[dict[str, str]]:
+        return [{"role": "user", "content": prompt}]
+
+    @staticmethod
+    def _rich_text_messages(prompt: str) -> list[dict[str, object]]:
+        return [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+
     def preview_model_prompt(self, prompt: str) -> str:
         """Return the text prompt as rendered for the model (chat template if available)."""
         if not self._use_chat_template:
             return prompt
 
-        messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+        messages = self._text_messages(prompt)
+        rich_messages = self._rich_text_messages(prompt)
         if self.processor is not None and hasattr(self.processor, "apply_chat_template"):
             try:
                 rendered = self.processor.apply_chat_template(
@@ -127,7 +141,15 @@ class GemmaClient:
                 )
                 return str(rendered)
             except Exception:
-                pass
+                try:
+                    rendered = self.processor.apply_chat_template(
+                        rich_messages,
+                        add_generation_prompt=True,
+                        tokenize=False,
+                    )
+                    return str(rendered)
+                except Exception:
+                    pass
 
         if hasattr(self.tokenizer, "apply_chat_template"):
             try:
@@ -140,7 +162,7 @@ class GemmaClient:
             except Exception:
                 try:
                     rendered = self.tokenizer.apply_chat_template(
-                        [{"role": "user", "content": prompt}],
+                        rich_messages,
                         add_generation_prompt=True,
                         tokenize=False,
                     )
@@ -172,7 +194,8 @@ class GemmaClient:
             len(prompt),
         )
         if self._use_chat_template:
-            messages = [{"role": "user", "content": [{"type": "text", "text": prompt}]}]
+            messages = self._text_messages(prompt)
+            rich_messages = self._rich_text_messages(prompt)
             if self.processor is not None and hasattr(self.processor, "apply_chat_template"):
                 try:
                     inputs = self.processor.apply_chat_template(
@@ -183,12 +206,28 @@ class GemmaClient:
                         return_tensors="pt",
                     )
                 except Exception:
-                    prompt_text = self.processor.apply_chat_template(
-                        messages,
-                        add_generation_prompt=True,
-                        tokenize=False,
-                    )
-                    inputs = self.tokenizer(prompt_text, return_tensors="pt")
+                    try:
+                        inputs = self.processor.apply_chat_template(
+                            rich_messages,
+                            add_generation_prompt=True,
+                            tokenize=True,
+                            return_dict=True,
+                            return_tensors="pt",
+                        )
+                    except Exception:
+                        try:
+                            prompt_text = self.processor.apply_chat_template(
+                                messages,
+                                add_generation_prompt=True,
+                                tokenize=False,
+                            )
+                        except Exception:
+                            prompt_text = self.processor.apply_chat_template(
+                                rich_messages,
+                                add_generation_prompt=True,
+                                tokenize=False,
+                            )
+                        inputs = self.tokenizer(prompt_text, return_tensors="pt")
             else:
                 try:
                     inputs = self.tokenizer.apply_chat_template(
@@ -200,7 +239,7 @@ class GemmaClient:
                     )
                 except Exception:
                     inputs = self.tokenizer.apply_chat_template(
-                        [{"role": "user", "content": prompt}],
+                        rich_messages,
                         add_generation_prompt=True,
                         tokenize=True,
                         return_dict=True,

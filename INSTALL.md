@@ -1,139 +1,75 @@
-# Installation & Usage
+# Installation
 
-## Installation
+This file only covers environment setup.
+For experiment execution and final analysis workflow, see `README.md`.
 
-### Conda
+## 1) Prerequisites
 
-```bash
-conda env create -f environment.yml
-conda activate value-context-rag
-python -m ipykernel install --user --name value-context-rag
-pip install -e .
-```
+- Python `>= 3.11`
+- `pip`
+- Optional: Conda/Miniforge
+- Optional (GPU local runs): NVIDIA driver + CUDA-compatible PyTorch wheel
 
-### venv + pip
+## 2) Local install (recommended: venv)
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
-pip install -e .
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -r requirements.txt
+python -m pip install -e .
 ```
 
-For GPU PyTorch (CUDA 12.2), install the CUDA wheel:
+If you need GPU PyTorch locally, reinstall `torch` from the proper CUDA index for your machine.
+Example (CUDA 12.8):
 
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cu122
+python -m pip install --upgrade --force-reinstall torch --index-url https://download.pytorch.org/whl/cu128
 ```
 
-If you see SentencePiece errors when loading DeBERTa, install:
+## 3) Local install (Conda alternative)
 
 ```bash
-pip install sentencepiece protobuf
+conda env create -f environment.yml
+conda activate value-context-rag
+python -m pip install -e .
 ```
 
-### Hugging Face Token (optional)
+## 4) Sirius cluster install
 
-Set `HF_TOKEN` to avoid rate limits and speed up model downloads:
+Use the bootstrap job (this creates/recreates `.venv` on cluster filesystem):
+
+```bash
+sbatch --export=ALL,FORCE_REBUILD=1,BASE_PYTHON=$HOME/miniforge3/envs/py311/bin/python scripts/bootstrap_slurm_venv.sh
+```
+
+Successful bootstrap creates:
+
+```text
+.venv/.bootstrap_complete
+```
+
+## 5) Hugging Face token (optional, recommended)
+
+Option A:
 
 ```bash
 export HF_TOKEN=your_token_here
 ```
 
-## Docker (artifact reproducibility)
-
-### CPU image
+Option B:
 
 ```bash
-docker build -t value-context-rag-cpu -f Dockerfile.cpu .
-docker run --rm -it value-context-rag-cpu python -V
+mkdir -p ~/.config/huggingface
+printf '%s' "your_token_here" > ~/.config/huggingface/token
+chmod 600 ~/.config/huggingface/token
 ```
 
-### GPU image
+## 6) Verify installation
 
 ```bash
-docker build -t value-context-rag-gpu -f Dockerfile.gpu .
-docker run --rm -it --gpus all --env-file .env value-context-rag-gpu python -c "import torch; print(torch.cuda.is_available())"
-```
-
-If you update dependencies (e.g., `tiktoken`), rebuild the image after updating `requirements.txt` or `environment.yml`:
-
-```bash
-docker build -t value-context-rag-gpu -f Dockerfile.gpu .
-```
-
-### Quick interactive shell
-
-```bash
-docker run --rm -it --gpus all --env-file .env -v "$PWD:/app" value-context-rag-gpu bash
-# inside:
-python scripts/train_deberta.py --config configs/deberta_sentence.yaml
-```
-
-### Fire-and-forget
-
-```bash
-docker run --rm --gpus all --env-file .env -v "$PWD:/app" value-context-rag-gpu python scripts/train_deberta.py --config configs/deberta_doc_rag.yaml
-```
-
-## Knowledge Base (build FAISS index)
-
-```bash
-python scripts/build_kb.py --kb_output_dir data/kb --overwrite
-```
-
-## Training / Inference
-
-### Dry-run (smoke test, all configs)
-
-```bash
-./scripts/run_smoke.sh
-```
-
-### DeBERTa (all contexts, RAG/no RAG, seeds 42/7/1701)
-
-```bash
-./scripts/run_deberta_all.sh
-```
-
-### Gemma (all contexts, RAG/no RAG)
-
-```bash
-./scripts/run_gemma_all.sh
-```
-
-## Analysis
-
-Aggregate metrics, per-value tables, deltas, and significance tests:
-
-```bash
-python scripts/analyze_results.py
-```
-
-Select a canonical DeBERTa seed automatically (best validation macro-F1) or specify it explicitly:
-
-```bash
-python scripts/analyze_results.py --canonical_seed 42
-```
-
-## Utilities
-
-### KB value → predicted label summary
-
-```bash
-python scripts/kb_value_summary.py --predictions results/predictions/deberta_doc_rag_seed42.jsonl
-```
-
-### Optuna learning-rate search (DeBERTa, sentence, no RAG)
-
-```bash
-python scripts/optuna_deberta_lr.py --trials 10 --max_samples 200
-```
-
-## Quality checks
-
-```bash
-make format
-make lint
-make test
+source .venv/bin/activate
+python -V
+python -c "import torch; print('torch', torch.__version__)"
+python -c "import transformers; print('transformers', transformers.__version__)"
 ```

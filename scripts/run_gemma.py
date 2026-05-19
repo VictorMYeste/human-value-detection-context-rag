@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 from value_context_rag.llm.inference import run_inference
@@ -10,6 +11,13 @@ from value_context_rag.utils.config import load_config
 from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 
 LOGGER = get_logger(__name__)
+
+
+def _model_slug(model_name: str) -> str:
+    raw = (model_name or "").strip().rstrip("/")
+    tail = raw.split("/")[-1] if raw else "model"
+    slug = re.sub(r"[^a-zA-Z0-9._-]+", "-", tail).strip("-")
+    return slug or "model"
 
 
 def _parse_args() -> argparse.Namespace:
@@ -55,9 +63,12 @@ def main() -> None:
 
     context_type = config.get("context", {}).get("type", "sentence")
     use_rag = bool(config.get("rag", {}).get("enabled", False))
+    model_name = config.get("model", {}).get("name", "google/gemma-3-12b-it")
+    model_slug = _model_slug(model_name)
     LOGGER.info("=" * 80)
     LOGGER.info(
-        "Run: model=gemma context=%s rag=%s split=%s eval=%s dry_run=%s",
+        "Run: model=gemma variant=%s context=%s rag=%s split=%s eval=%s dry_run=%s",
+        model_name,
         context_type,
         use_rag,
         args.split,
@@ -82,7 +93,7 @@ def main() -> None:
         pred_path = (
             Path(results_dir)
             / "predictions"
-            / f"gemma_{context_type}_{rag_suffix}_{args.split}.jsonl"
+            / f"gemma_{context_type}_{rag_suffix}_{model_slug}_{args.split}.jsonl"
         )
         evaluate_predictions(pred_path, debug=args.debug)
     LOGGER.info("=" * 80)

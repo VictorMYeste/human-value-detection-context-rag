@@ -63,14 +63,33 @@ class LateFusionRAGModel(nn.Module):
             flat_mask = attention_mask
             top_k = max(1, flat_ids.size(0) // batch_size)
 
-        outputs = self.kb_encoder(input_ids=flat_ids, attention_mask=flat_mask)
-        kb_cls = outputs.last_hidden_state[:, 0]
-        kb_cls = kb_cls.view(batch_size, top_k, -1)
-        return kb_cls
+        valid_rows = flat_mask.sum(dim=1) > 0
+        if valid_rows.any():
+            outputs = self.kb_encoder(
+                input_ids=flat_ids[valid_rows],
+                attention_mask=flat_mask[valid_rows],
+            )
+            valid_kb_cls = outputs.last_hidden_state[:, 0]
+            kb_cls = valid_kb_cls.new_zeros((flat_ids.size(0), valid_kb_cls.size(-1)))
+            kb_cls[valid_rows] = valid_kb_cls
+        else:
+            hidden = int(getattr(self.kb_encoder.config, "hidden_size", 768))
+            kb_cls = torch.zeros(
+                flat_ids.size(0), hidden, device=flat_ids.device, dtype=torch.float32
+            )
 
-    def _aggregate_kb(self, kb_cls: torch.Tensor) -> torch.Tensor:
-        # Simple mean pooling over retrieved chunks.
-        return kb_cls.mean(dim=1)
+        kb_cls = kb_cls.view(batch_size, top_k, -1)
+        kb_valid = flat_mask.view(batch_size, top_k, seq_len).sum(dim=-1) > 0
+        return kb_cls, kb_valid
+
+    def _aggregate_kb(
+        self, kb_cls: torch.Tensor, kb_valid: torch.Tensor | None = None
+    ) -> torch.Tensor:
+        if kb_valid is None:
+            return kb_cls.mean(dim=1)
+        weights = kb_valid.to(kb_cls.dtype).unsqueeze(-1)
+        denom = kb_valid.sum(dim=1, keepdim=True).clamp(min=1).to(kb_cls.dtype)
+        return (kb_cls * weights).sum(dim=1) / denom
 
     def _fuse(self, h_doc: torch.Tensor, h_kb: torch.Tensor) -> torch.Tensor:
         if self.fusion_method == "concat":
@@ -98,8 +117,10 @@ class LateFusionRAGModel(nn.Module):
           logits: [batch, num_labels]
         """
         h_doc = self._encode_doc(doc_input_ids, doc_attention_mask)
-        kb_cls = self._encode_kb(kb_input_ids, kb_attention_mask, h_doc.size(0))
-        h_kb = self._aggregate_kb(kb_cls)
+        kb_cls, kb_valid = self._encode_kb(
+            kb_input_ids, kb_attention_mask, h_doc.size(0)
+        )
+        h_kb = self._aggregate_kb(kb_cls, kb_valid)
         fused = self._fuse(h_doc, h_kb)
         fused = self.dropout(fused)
         return self.classifier(fused)

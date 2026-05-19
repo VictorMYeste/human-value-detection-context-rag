@@ -1,0 +1,13 @@
+model:
+  family: qwen
+  name: Qwen/Qwen2.5-72B-Instruct
+context:
+  type: sentence
+llm:
+  int8_fp32_cpu_offload: true
+  log_prompts: true
+  log_prompts_n: 1
+  log_prompt_max_chars: 12000
+  quantization: 8bit
+rag:
+  enabled: False

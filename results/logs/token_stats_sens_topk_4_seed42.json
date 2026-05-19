@@ -1,0 +1,6 @@
+{
+  "max_length": 1024,
+  "train_truncated": 0,
+  "train_total": 447580,
+  "train_truncated_rate": 0.0
+}

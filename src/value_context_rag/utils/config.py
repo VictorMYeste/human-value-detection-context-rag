@@ -36,6 +36,7 @@ DEFAULTS: dict[str, Any] = {
         "max_prompt_tokens": 3072,
         "device": "cuda",
         "quantization": "8bit",
+        "int8_fp32_cpu_offload": False,
     },
     "training": {
         "batch_size": 8,
@@ -46,7 +47,7 @@ DEFAULTS: dict[str, Any] = {
         "checkpoint_every_epochs": 1,
         "early_stopping_patience": 3,
         "max_grad_norm": 1.0,
-        "force_fp32": True,
+        "bf16": False,
         "pred_threshold": 0.18,
         "save_hf_model": True,
         "grad_accum_steps": 2,

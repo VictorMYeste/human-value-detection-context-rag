@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 from value_context_rag.models.training import run_eval
@@ -10,6 +11,12 @@ from value_context_rag.utils.config import load_config
 from value_context_rag.utils.logging import get_logger, silence_transformers_logging
 
 LOGGER = get_logger(__name__)
+
+
+def _model_slug(model_name: str) -> str:
+    base = model_name.split("/")[-1] if model_name else "deberta"
+    slug = re.sub(r"[^A-Za-z0-9.-]+", "-", base).strip("-").lower()
+    return slug or "deberta"
 
 
 def _parse_args() -> argparse.Namespace:
@@ -68,6 +75,8 @@ def main() -> None:
     LOGGER.debug("Loaded config keys: %s", list(config.keys()))
     context_cfg = config.get("context", {})
     rag_cfg = config.get("rag", {})
+    model_name = config.get("model", {}).get("name", "microsoft/deberta-v3-base")
+    model_slug = _model_slug(model_name)
     seed = int(config.get("seed", 42))
 
     context_type = context_cfg.get("type", "sentence")
@@ -82,7 +91,10 @@ def main() -> None:
     )
 
     results_dir = Path(config.get("results_dir", "results"))
-    run_name = f"deberta_{context_type}_{rag_suffix}_seed{seed}_best"
+    artifact_prefix = (
+        f"deberta_{context_type}_{rag_suffix}_seed{seed}_{model_slug}"
+    )
+    run_name = f"{artifact_prefix}_best"
     ckpt_path = (
         Path(args.checkpoint)
         if args.checkpoint
@@ -94,16 +106,17 @@ def main() -> None:
     logs_dir = results_dir / "logs"
     pred_path = (
         predictions_dir
-        / f"deberta_{context_type}_{rag_suffix}_seed{seed}_{args.split}.jsonl"
+        / f"{artifact_prefix}_{args.split}.jsonl"
     )
     metrics_path = (
         logs_dir
-        / f"deberta_{context_type}_{rag_suffix}_seed{seed}_{args.split}_metrics.json"
+        / f"{artifact_prefix}_{args.split}_metrics.json"
     )
 
     LOGGER.info("=" * 80)
     LOGGER.info(
-        "Run: eval model=deberta context=%s rag=%s seed=%d split=%s",
+        "Run: eval model=deberta variant=%s context=%s rag=%s seed=%d split=%s",
+        model_name,
         context_type,
         use_rag,
         seed,

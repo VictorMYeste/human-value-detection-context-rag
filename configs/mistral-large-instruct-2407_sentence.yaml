@@ -1,0 +1,13 @@
+model:
+  family: mistral
+  name: mistralai/Mistral-Large-Instruct-2407
+context:
+  type: sentence
+llm:
+  int8_fp32_cpu_offload: true
+  log_prompts: true
+  log_prompts_n: 1
+  log_prompt_max_chars: 12000
+  quantization: 8bit
+rag:
+  enabled: False

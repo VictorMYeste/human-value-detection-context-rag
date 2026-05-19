@@ -1,0 +1,141 @@
+{
+  "micro_f1": 0.22364448738075113,
+  "macro_f1": 0.19834936957188515,
+  "per_label_f1": {
+    "Self-direction: thought": 0.08771929824561403,
+    "Self-direction: action": 0.09872611464968152,
+    "Stimulation": 0.1590909090909091,
+    "Hedonism": 0.18649517684887462,
+    "Achievement": 0.26074498567335247,
+    "Power: dominance": 0.191512513601741,
+    "Power: resources": 0.18240690771721532,
+    "Face": 0.18388195232690124,
+    "Security: personal": 0.2241826673585885,
+    "Security: societal": 0.21730790928579488,
+    "Tradition": 0.24067022086824066,
+    "Conformity: rules": 0.31742738589211617,
+    "Conformity: interpersonal": 0.08113590263691683,
+    "Humility": 0.041237113402061855,
+    "Benevolence: caring": 0.15714285714285717,
+    "Benevolence: dependability": 0.1308562197092084,
+    "Universalism: concern": 0.3269546200109349,
+    "Universalism: nature": 0.5129770992366411,
+    "Universalism: tolerance": 0.16816816816816815
+  },
+  "per_label_support": {
+    "Self-direction: thought": {
+      "gold": 171.0,
+      "pred": 57.0,
+      "gold_rate": 0.011737250326034732,
+      "pred_rate": 0.003912416775344911
+    },
+    "Self-direction: action": {
+      "gold": 512.0,
+      "pred": 116.0,
+      "gold_rate": 0.03514311208730867,
+      "pred_rate": 0.00796211133228087
+    },
+    "Stimulation": {
+      "gold": 371.0,
+      "pred": 333.0,
+      "gold_rate": 0.02546502848513968,
+      "pred_rate": 0.02285675063490974
+    },
+    "Hedonism": {
+      "gold": 125.0,
+      "pred": 186.0,
+      "gold_rate": 0.008579861349440594,
+      "pred_rate": 0.012766833687967603
+    },
+    "Achievement": {
+      "gold": 911.0,
+      "pred": 2579.0,
+      "gold_rate": 0.06253002951472304,
+      "pred_rate": 0.17701969936165832
+    },
+    "Power: dominance": {
+      "gold": 631.0,
+      "pred": 288.0,
+      "gold_rate": 0.04331114009197611,
+      "pred_rate": 0.019768000549111125
+    },
+    "Power: resources": {
+      "gold": 805.0,
+      "pred": 1048.0,
+      "gold_rate": 0.05525430709039742,
+      "pred_rate": 0.07193355755370993
+    },
+    "Face": {
+      "gold": 267.0,
+      "pred": 614.0,
+      "gold_rate": 0.018326583842405108,
+      "pred_rate": 0.04214427894845219
+    },
+    "Security: personal": {
+      "gold": 352.0,
+      "pred": 1575.0,
+      "gold_rate": 0.02416088956002471,
+      "pred_rate": 0.10810625300295147
+    },
+    "Security: societal": {
+      "gold": 1151.0,
+      "pred": 7712.0,
+      "gold_rate": 0.07900336330564899,
+      "pred_rate": 0.5293431258150868
+    },
+    "Tradition": {
+      "gold": 196.0,
+      "pred": 1117.0,
+      "gold_rate": 0.01345322259592285,
+      "pred_rate": 0.07666964101860115
+    },
+    "Conformity: rules": {
+      "gold": 911.0,
+      "pred": 2945.0,
+      "gold_rate": 0.06253002951472304,
+      "pred_rate": 0.20214153339282037
+    },
+    "Conformity: interpersonal": {
+      "gold": 195.0,
+      "pred": 1284.0,
+      "gold_rate": 0.013384583705127325,
+      "pred_rate": 0.08813233578145377
+    },
+    "Humility": {
+      "gold": 30.0,
+      "pred": 67.0,
+      "gold_rate": 0.0020591667238657424,
+      "pred_rate": 0.004598805683300158
+    },
+    "Benevolence: caring": {
+      "gold": 324.0,
+      "pred": 2196.0,
+      "gold_rate": 0.022239000617750016,
+      "pred_rate": 0.15073100418697233
+    },
+    "Benevolence: dependability": {
+      "gold": 288.0,
+      "pred": 950.0,
+      "gold_rate": 0.019768000549111125,
+      "pred_rate": 0.06520694625574851
+    },
+    "Universalism: concern": {
+      "gold": 735.0,
+      "pred": 1094.0,
+      "gold_rate": 0.05044958473471069,
+      "pred_rate": 0.07509094653030407
+    },
+    "Universalism: nature": {
+      "gold": 293.0,
+      "pred": 362.0,
+      "gold_rate": 0.02011119500308875,
+      "pred_rate": 0.024847278467979957
+    },
+    "Universalism: tolerance": {
+      "gold": 171.0,
+      "pred": 162.0,
+      "gold_rate": 0.011737250326034732,
+      "pred_rate": 0.011119500308875008
+    }
+  }
+}

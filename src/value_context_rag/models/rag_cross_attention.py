@@ -103,9 +103,26 @@ class CrossAttentionRAGModel(nn.Module):
             top_k = max(1, flat_ids.size(0) // batch_size)
             seq_len = flat_ids.size(1)
 
-        outputs = self.kb_encoder(input_ids=flat_ids, attention_mask=flat_mask)
-        kb_hidden = outputs.last_hidden_state
-        kb_hidden = kb_hidden.view(batch_size, top_k, seq_len, -1)
+        valid_rows = flat_mask.sum(dim=1) > 0
+        if valid_rows.any():
+            outputs = self.kb_encoder(
+                input_ids=flat_ids[valid_rows],
+                attention_mask=flat_mask[valid_rows],
+            )
+            valid_hidden = outputs.last_hidden_state
+            flat_hidden = valid_hidden.new_zeros(
+                (flat_ids.size(0), seq_len, valid_hidden.size(-1))
+            )
+            flat_hidden[valid_rows] = valid_hidden
+        else:
+            hidden = int(getattr(self.kb_encoder.config, "hidden_size", 768))
+            flat_hidden = torch.zeros(
+                (flat_ids.size(0), seq_len, hidden),
+                device=flat_ids.device,
+                dtype=torch.float32,
+            )
+
+        kb_hidden = flat_hidden.view(batch_size, top_k, seq_len, -1)
         kb_hidden = kb_hidden.reshape(batch_size, top_k * seq_len, -1)
         kb_mask = flat_mask.view(batch_size, top_k * seq_len)
         return kb_hidden, kb_mask
@@ -139,6 +156,11 @@ class CrossAttentionRAGModel(nn.Module):
         kb_key_padding_mask = None
         if kb_mask is not None:
             kb_key_padding_mask = kb_mask.eq(0)
+            # MultiheadAttention returns NaNs when all keys are masked for a sample.
+            all_masked = kb_key_padding_mask.all(dim=1)
+            if all_masked.any():
+                kb_key_padding_mask = kb_key_padding_mask.clone()
+                kb_key_padding_mask[all_masked, 0] = False
 
         for layer in self.cross_layers:
             h_doc = layer(h_doc, kb_hidden, doc_key_padding_mask, kb_key_padding_mask)

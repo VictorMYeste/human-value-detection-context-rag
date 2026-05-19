@@ -1,0 +1,35 @@
+{
+  "max_length": 824,
+  "samples": 74231,
+  "truncated": 1,
+  "truncated_rate": 1.3471460710484838e-05,
+  "length_mean": 131.66495130066954,
+  "length_p95": 221.0,
+  "length_p99": 281.0,
+  "by_split": {
+    "training": {
+      "samples": 44758,
+      "truncated": 0,
+      "truncated_rate": 0.0,
+      "length_mean": 131.63331694892534,
+      "length_p95": 219.0,
+      "length_p99": 278.0
+    },
+    "validation": {
+      "samples": 14904,
+      "truncated": 0,
+      "truncated_rate": 0.0,
+      "length_mean": 131.27502683843264,
+      "length_p95": 222.0,
+      "length_p99": 280.0
+    },
+    "test": {
+      "samples": 14569,
+      "truncated": 1,
+      "truncated_rate": 6.863889079552475e-05,
+      "length_mean": 132.1610268378063,
+      "length_p95": 225.0,
+      "length_p99": 286.3199999999997
+    }
+  }
+}

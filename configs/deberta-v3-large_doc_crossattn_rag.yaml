@@ -1,0 +1,16 @@
+model:
+  family: deberta
+  name: microsoft/deberta-v3-large
+context:
+  type: doc
+rag:
+  enabled: True
+  mode: cross_attention
+  num_cross_layers: 1
+training:
+  bf16: false
+  batch_size: 16
+  gradient_checkpointing: True
+  learning_rate: 3e-6
+  weight_decay: 0.1
+results_dir: results/rag_architectures

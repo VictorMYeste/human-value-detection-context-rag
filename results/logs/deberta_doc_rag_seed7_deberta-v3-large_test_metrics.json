@@ -1,0 +1,150 @@
+{
+  "micro_f1": 0.33910295712870825,
+  "macro_f1": 0.2830742952230758,
+  "per_label_f1": {
+    "Self-direction: thought": 0.10614525139664803,
+    "Self-direction: action": 0.1706484641638225,
+    "Stimulation": 0.25219298245614036,
+    "Hedonism": 0.20967741935483872,
+    "Achievement": 0.3818565400843882,
+    "Power: dominance": 0.3065355696934644,
+    "Power: resources": 0.4025821596244132,
+    "Face": 0.1577608142493639,
+    "Security: personal": 0.32944228274967574,
+    "Security: societal": 0.42437499999999995,
+    "Tradition": 0.44389027431421446,
+    "Conformity: rules": 0.41758241758241765,
+    "Conformity: interpersonal": 0.13270142180094785,
+    "Humility": 0.0,
+    "Benevolence: caring": 0.26215644820295986,
+    "Benevolence: dependability": 0.25029239766081873,
+    "Universalism: concern": 0.40899581589958156,
+    "Universalism: nature": 0.5447470817120623,
+    "Universalism: tolerance": 0.1768292682926829
+  },
+  "per_label_support": {
+    "Self-direction: thought": {
+      "gold": 171.0,
+      "pred": 187.0,
+      "gold_rate": 0.011737250326034732,
+      "pred_rate": 0.012835472578763127
+    },
+    "Self-direction: action": {
+      "gold": 512.0,
+      "pred": 1539.0,
+      "gold_rate": 0.03514311208730867,
+      "pred_rate": 0.10563525293431258
+    },
+    "Stimulation": {
+      "gold": 371.0,
+      "pred": 541.0,
+      "gold_rate": 0.02546502848513968,
+      "pred_rate": 0.03713363992037889
+    },
+    "Hedonism": {
+      "gold": 125.0,
+      "pred": 123.0,
+      "gold_rate": 0.008579861349440594,
+      "pred_rate": 0.008442583567849543
+    },
+    "Achievement": {
+      "gold": 911.0,
+      "pred": 985.0,
+      "gold_rate": 0.06253002951472304,
+      "pred_rate": 0.06760930743359188
+    },
+    "Power: dominance": {
+      "gold": 631.0,
+      "pred": 1098.0,
+      "gold_rate": 0.04331114009197611,
+      "pred_rate": 0.07536550209348616
+    },
+    "Power: resources": {
+      "gold": 805.0,
+      "pred": 899.0,
+      "gold_rate": 0.05525430709039742,
+      "pred_rate": 0.06170636282517675
+    },
+    "Face": {
+      "gold": 267.0,
+      "pred": 126.0,
+      "gold_rate": 0.018326583842405108,
+      "pred_rate": 0.008648500240236117
+    },
+    "Security: personal": {
+      "gold": 352.0,
+      "pred": 419.0,
+      "gold_rate": 0.02416088956002471,
+      "pred_rate": 0.02875969524332487
+    },
+    "Security: societal": {
+      "gold": 1151.0,
+      "pred": 2049.0,
+      "gold_rate": 0.07900336330564899,
+      "pred_rate": 0.1406410872400302
+    },
+    "Tradition": {
+      "gold": 196.0,
+      "pred": 205.0,
+      "gold_rate": 0.01345322259592285,
+      "pred_rate": 0.014070972613082572
+    },
+    "Conformity: rules": {
+      "gold": 911.0,
+      "pred": 1364.0,
+      "gold_rate": 0.06253002951472304,
+      "pred_rate": 0.09362344704509575
+    },
+    "Conformity: interpersonal": {
+      "gold": 195.0,
+      "pred": 227.0,
+      "gold_rate": 0.013384583705127325,
+      "pred_rate": 0.015581028210584116
+    },
+    "Humility": {
+      "gold": 30.0,
+      "pred": 1.0,
+      "gold_rate": 0.0020591667238657424,
+      "pred_rate": 6.863889079552475e-05
+    },
+    "Benevolence: caring": {
+      "gold": 324.0,
+      "pred": 622.0,
+      "gold_rate": 0.022239000617750016,
+      "pred_rate": 0.042693390074816394
+    },
+    "Benevolence: dependability": {
+      "gold": 288.0,
+      "pred": 567.0,
+      "gold_rate": 0.019768000549111125,
+      "pred_rate": 0.03891825108106253
+    },
+    "Universalism: concern": {
+      "gold": 735.0,
+      "pred": 1177.0,
+      "gold_rate": 0.05044958473471069,
+      "pred_rate": 0.08078797446633262
+    },
+    "Universalism: nature": {
+      "gold": 293.0,
+      "pred": 478.0,
+      "gold_rate": 0.02011119500308875,
+      "pred_rate": 0.03280938980026083
+    },
+    "Universalism: tolerance": {
+      "gold": 171.0,
+      "pred": 157.0,
+      "gold_rate": 0.011737250326034732,
+      "pred_rate": 0.010776305854897385
+    }
+  },
+  "meta": {
+    "model_name": "microsoft/deberta-v3-large",
+    "context_type": "doc",
+    "rag_mode": "early",
+    "use_rag": true,
+    "top_k": 2,
+    "seed": 7,
+    "split": "test"
+  }
+}

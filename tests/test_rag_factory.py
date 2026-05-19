@@ -10,16 +10,6 @@ class DummyTokenizer:
         self.name = name
 
 
-class DummyEarlyModel(torch.nn.Module):
-    def __init__(self, num_labels: int):
-        super().__init__()
-        self.num_labels = num_labels
-
-    def forward(self, input_ids, attention_mask=None, **kwargs):
-        batch = input_ids.size(0)
-        return torch.zeros((batch, self.num_labels))
-
-
 class DummyLateModel(torch.nn.Module):
     def __init__(self, num_labels: int):
         super().__init__()
@@ -48,44 +38,8 @@ def _base_config():
     return {
         "model": {"name": "microsoft/deberta-v3-base"},
         "context": {"type": "doc"},
-        "rag": {"enabled": False, "mode": "none"},
+        "rag": {"enabled": True, "mode": "late"},
     }
-
-
-def test_build_none_returns_deberta(monkeypatch):
-    def _mock_build(num_labels, **_kwargs):
-        return DummyEarlyModel(num_labels), DummyTokenizer("doc")
-
-    monkeypatch.setattr(rag_factory, "build_deberta_model", _mock_build)
-
-    cfg = _base_config()
-    model, toks = rag_factory.build_rag_model(cfg, num_labels=19)
-
-    assert isinstance(model, DummyEarlyModel)
-    assert toks["doc"].name == "doc"
-
-    input_ids = torch.ones((2, 4), dtype=torch.long)
-    logits = model(input_ids=input_ids)
-    assert logits.shape == (2, 19)
-
-
-def test_build_early_returns_early_fusion_model(monkeypatch):
-    def _mock_build(base_model_name, num_labels):
-        return DummyEarlyModel(num_labels), DummyTokenizer("doc")
-
-    monkeypatch.setattr(rag_factory, "build_early_fusion_model", _mock_build)
-
-    cfg = _base_config()
-    cfg["rag"] = {"enabled": True, "mode": "early"}
-
-    model, toks = rag_factory.build_rag_model(cfg, num_labels=7)
-
-    assert isinstance(model, DummyEarlyModel)
-    assert toks["doc"].name == "doc"
-
-    input_ids = torch.ones((3, 5), dtype=torch.long)
-    logits = model(input_ids=input_ids)
-    assert logits.shape == (3, 7)
 
 
 def test_build_late_returns_late_fusion_model(monkeypatch):

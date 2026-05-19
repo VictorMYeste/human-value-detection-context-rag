@@ -1,0 +1,136 @@
+2026-03-13 03:36:34 | INFO | __main__ | ================================================================================
+2026-03-13 03:36:34 | INFO | __main__ | Starting DeBERTa training with config configs/deberta_doc_rag.yaml
+2026-03-13 03:36:34 | INFO | __main__ | Run: model=deberta context=doc rag=True seed=1701 eval=True dry_run=False
+2026-03-13 19:54:30 | INFO | __main__ | Test metrics - macro_f1=0.3224 micro_f1=0.3617
+2026-03-13 19:54:30 | INFO | __main__ | ================================================================================
+context_rag.data.dataset | Loading split validation
+2026-03-13 03:36:41 | INFO | value_context_rag.data.dataset | Loading label names from raw data
+2026-03-13 03:36:41 | INFO | value_context_rag.models.deberta | Loading DeBERTa model microsoft/deberta-v3-base
+2026-03-13 03:36:43 | INFO | value_context_rag.models.training | Enabled gradient checkpointing
+2026-03-13 03:36:43 | INFO | value_context_rag.models.training | Forced model parameters to fp32
+2026-03-13 03:36:43 | INFO | value_context_rag.models.training | Context budgets: max_length=1024 doc_budget=824 kb_budget=200
+2026-03-13 03:36:43 | INFO | value_context_rag.models.training | Building training contexts (doc)
+2026-03-13 03:40:02 | INFO | value_context_rag.models.training | Building validation contexts (doc)
+2026-03-13 03:41:12 | INFO | value_context_rag.models.training | Training config: batch=8 lr=1e-05 wd=0.15 max_len=1024 accum=2 save_ckpt=True
+2026-03-13 03:41:12 | INFO | value_context_rag.models.training | Starting epoch 1/20
+2026-03-13 04:39:45 | INFO | value_context_rag.models.training | Epoch 1/20 - train loss 0.0672
+2026-03-13 04:39:45 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 04:44:32 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.0780 micro_f1=0.1947
+2026-03-13 04:44:32 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 04:44:33 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 04:44:34 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 04:44:34 | INFO | value_context_rag.models.training | Starting epoch 2/20
+2026-03-13 05:43:07 | INFO | value_context_rag.models.training | Epoch 2/20 - train loss 0.0589
+2026-03-13 05:43:07 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 05:47:54 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.1256 micro_f1=0.2652
+2026-03-13 05:47:54 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 05:47:55 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 05:47:57 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 05:47:57 | INFO | value_context_rag.models.training | Starting epoch 3/20
+2026-03-13 06:46:30 | INFO | value_context_rag.models.training | Epoch 3/20 - train loss 0.0517
+2026-03-13 06:46:30 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 06:51:16 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.2278 micro_f1=0.3483
+2026-03-13 06:51:17 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 06:51:18 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 06:51:20 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 06:51:20 | INFO | value_context_rag.models.training | Starting epoch 4/20
+2026-03-13 07:49:53 | INFO | value_context_rag.models.training | Epoch 4/20 - train loss 0.0479
+2026-03-13 07:49:53 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 07:54:40 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.2650 micro_f1=0.3570
+2026-03-13 07:54:40 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 07:54:41 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 07:54:43 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 07:54:43 | INFO | value_context_rag.models.training | Starting epoch 5/20
+2026-03-13 08:53:16 | INFO | value_context_rag.models.training | Epoch 5/20 - train loss 0.0449
+2026-03-13 08:53:16 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 08:58:03 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.2623 micro_f1=0.3383
+2026-03-13 08:58:05 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 08:58:05 | INFO | value_context_rag.models.training | Starting epoch 6/20
+2026-03-13 09:56:39 | INFO | value_context_rag.models.training | Epoch 6/20 - train loss 0.0424
+2026-03-13 09:56:39 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 10:01:26 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.2840 micro_f1=0.3636
+2026-03-13 10:01:27 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 10:01:27 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 10:01:30 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 10:01:30 | INFO | value_context_rag.models.training | Starting epoch 7/20
+2026-03-13 11:00:05 | INFO | value_context_rag.models.training | Epoch 7/20 - train loss 0.0399
+2026-03-13 11:00:05 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 11:04:53 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.2908 micro_f1=0.3752
+2026-03-13 11:04:54 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 11:04:54 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 11:04:57 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 11:04:57 | INFO | value_context_rag.models.training | Starting epoch 8/20
+2026-03-13 12:03:33 | INFO | value_context_rag.models.training | Epoch 8/20 - train loss 0.0378
+2026-03-13 12:03:33 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 12:08:20 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.3041 micro_f1=0.3731
+2026-03-13 12:08:21 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 12:08:22 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 12:08:24 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 12:08:24 | INFO | value_context_rag.models.training | Starting epoch 9/20
+2026-03-13 13:07:10 | INFO | value_context_rag.models.training | Epoch 9/20 - train loss 0.0357
+2026-03-13 13:07:10 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 13:11:57 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.3066 micro_f1=0.3534
+2026-03-13 13:11:58 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 13:11:59 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 13:12:01 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 13:12:01 | INFO | value_context_rag.models.training | Starting epoch 10/20
+2026-03-13 14:10:49 | INFO | value_context_rag.models.training | Epoch 10/20 - train loss 0.0335
+2026-03-13 14:10:49 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 14:15:37 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.3052 micro_f1=0.3755
+2026-03-13 14:15:39 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 14:15:39 | INFO | value_context_rag.models.training | Starting epoch 11/20
+2026-03-13 15:19:31 | INFO | value_context_rag.models.training | Epoch 11/20 - train loss 0.0313
+2026-03-13 15:19:31 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 15:24:44 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.3076 micro_f1=0.3643
+2026-03-13 15:24:45 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 15:24:46 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 15:24:48 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 15:24:48 | INFO | value_context_rag.models.training | Starting epoch 12/20
+2026-03-13 16:29:48 | INFO | value_context_rag.models.training | Epoch 12/20 - train loss 0.0295
+2026-03-13 16:29:48 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 16:36:25 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.3085 micro_f1=0.3521
+2026-03-13 16:36:26 | INFO | value_context_rag.models.training | Saved best checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best.pt
+2026-03-13 16:36:27 | INFO | value_context_rag.models.training | Saved HF bundle to results/hf_models/deberta_doc_rag_seed1701_best
+2026-03-13 16:36:29 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 16:36:29 | INFO | value_context_rag.models.training | Starting epoch 13/20
+2026-03-13 17:39:21 | INFO | value_context_rag.models.training | Epoch 13/20 - train loss 0.0274
+2026-03-13 17:39:21 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 17:44:08 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.3067 micro_f1=0.3417
+2026-03-13 17:44:10 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 17:44:10 | INFO | value_context_rag.models.training | Starting epoch 14/20
+2026-03-13 18:42:44 | INFO | value_context_rag.models.training | Epoch 14/20 - train loss 0.0256
+2026-03-13 18:42:44 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 18:47:31 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.3024 micro_f1=0.3561
+2026-03-13 18:47:34 | INFO | value_context_rag.models.training | Saved last checkpoint to results/checkpoints/deberta_doc_rag_seed1701_best_last.pt
+2026-03-13 18:47:34 | INFO | value_context_rag.models.training | Starting epoch 15/20
+2026-03-13 19:46:07 | INFO | value_context_rag.models.training | Epoch 15/20 - train loss 0.0240
+2026-03-13 19:46:07 | INFO | value_context_rag.models.training | Evaluating on validation split
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training | Validation metrics - macro_f1=0.3027 micro_f1=0.3553
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training | Early stopping triggered after 3 epochs without improvement
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training | Saved token stats to results/logs/token_stats_deberta_doc_rag_seed1701_best.json
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training | Validation summary (per epoch):
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training | epoch  macro_f1  micro_f1
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     1    0.0780    0.1947
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     2    0.1256    0.2652
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     3    0.2278    0.3483
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     4    0.2650    0.3570
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     5    0.2623    0.3383
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     6    0.2840    0.3636
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     7    0.2908    0.3752
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     8    0.3041    0.3731
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |     9    0.3066    0.3534
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |    10    0.3052    0.3755
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |    11    0.3076    0.3643
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |    12    0.3085    0.3521
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |    13    0.3067    0.3417
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |    14    0.3024    0.3561
+2026-03-13 19:50:54 | INFO | value_context_rag.models.training |    15    0.3027    0.3553
+2026-03-13 19:50:54 | INFO | value_context_rag.data.dataset | Loading label names from raw data
+2026-03-13 19:50:54 | INFO | value_context_rag.models.deberta | Loading DeBERTa model microsoft/deberta-v3-base
+2026-03-13 19:50:56 | INFO | value_context_rag.data.dataset | Loading split test
+2026-03-13 19:50:56 | INFO | value_context_rag.data.dataset | Loading label names from raw data
+2026-03-13 19:50:56 | INFO | value_context_rag.models.deberta | Loading DeBERTa model microsoft/deberta-v3-base
+2026-03-13 19:50:58 | INFO | value_context_rag.models.training | Context budgets: max_length=1024 doc_budget=824 kb_budget=200
+2026-03-13 19:51:00 | INFO | value_context_rag.data.dataset | Loading split test
+2026-03-13 19:54:30 | INFO | value_context_rag.models.training | Saved predictions to results/predictions/deberta_doc_rag_seed1701.jsonl
+2026-03-13 19:54:30 | INFO | value_context_rag.models.training | Saved metrics to results/logs/deberta_doc_rag_seed1701_test_metrics.json

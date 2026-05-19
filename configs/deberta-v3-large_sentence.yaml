@@ -6,5 +6,7 @@ context:
 rag:
   enabled: False
 training:
-  bf16: True
+  batch_size: 16
   gradient_checkpointing: True
+  learning_rate: 3e-6
+  weight_decay: 0.1
