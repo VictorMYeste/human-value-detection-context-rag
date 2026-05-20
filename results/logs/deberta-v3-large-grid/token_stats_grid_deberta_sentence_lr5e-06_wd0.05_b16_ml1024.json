@@ -1,7 +1,0 @@
-{
-  "max_length": 1024,
-  "train_truncated": 0,
-  "train_total": 44758,
-  "train_truncated_rate": 0.0,
-  "truncation_method": "overflow_to_sample_mapping"
-}

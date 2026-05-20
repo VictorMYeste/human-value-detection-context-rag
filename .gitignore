@@ -16,8 +16,23 @@ data/kb/kb_index.faiss
 data/kb/kb_embeddings.npy
 results/checkpoints/
 results/hf_models/
-results/rag_architectures/checkpoints/
+results/rag_architectures/
+results/predictions/
+results/logs/
+results/analysis/*.csv
+results/analysis/final/qual_examples_*.jsonl
+results/test_metrics_summary.csv
 notebooks/colab_launcher_custom.ipynb
+
+# model artifacts
+*.pt
+*.safetensors
+*.bin
+
+# run logs
+*.log
+*.out
+*.err
 
 # Jupyter
 .ipynb_checkpoints/
